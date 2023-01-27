@@ -1,0 +1,54 @@
+.banner {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  top: 0;
+  justify-content: center;
+  z-index: -1;
+}
+
+.layout {
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+}
+
+.navbar {
+  font-family: client-bold;
+  font-size: 20px;
+  color: white;
+  padding: 2px 8px;
+  padding-top: 4px;
+  margin-top: 48px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.links > * {
+  background-image: url("/folder.png");
+  font-size: 32px;
+  width: 142px;
+  height: 56px;
+  padding-top: 16px;
+  padding-left: 8px;
+}
+
+.links > *:hover {
+  text-decoration: underline;
+}
+
+.main {
+  border: 20px solid;
+  border-image: url("/border-main.png") 10 fill;
+  padding: 8px 8px;
+  min-height: 500px;
+}

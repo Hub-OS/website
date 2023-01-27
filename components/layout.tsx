@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import bannerImg from "@/public/banner.png";
 import styles from "@/styles/Layout.module.css";
+import AccountBadge from "./account-badge";
 
 type Props = {
   children?: ReactNode;
@@ -36,6 +37,8 @@ export default function Layout({ children }: Props) {
             <Link href="/">Mods</Link>
             <Link href="/">Servers</Link>
           </div>
+
+          <AccountBadge />
         </div>
         <main className={styles.main}>{children}</main>
       </div>

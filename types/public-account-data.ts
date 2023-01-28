@@ -1,4 +1,4 @@
-export type Account = {
+export type PublicAccountData = {
   username: string;
   avatar: string;
 };

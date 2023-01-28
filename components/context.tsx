@@ -1,4 +1,4 @@
-import { Account } from "@/types/account";
+import { PublicAccountData } from "@/types/public-account-data";
 import { LoginState } from "@/types/login-state";
 import { useRouter } from "next/router";
 import {
@@ -10,7 +10,7 @@ import {
 } from "react";
 
 type AppContext = {
-  account?: Account;
+  account?: PublicAccountData;
   loginState: LoginState;
 };
 

@@ -1,7 +1,7 @@
 import discord from "discord.js";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getCookie } from "cookies-next";
-import { Account } from "@/types/account";
+import { PublicAccountData } from "@/types/public-account-data";
 
 type DiscordUser = {
   id: string; // the user's id
@@ -25,7 +25,7 @@ async function fetchDiscordUser(req: NextApiRequest, res: NextApiResponse) {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Account | undefined>
+  res: NextApiResponse<PublicAccountData | undefined>
 ) {
   if (req.method != "GET") {
     res.status(400).send(undefined);

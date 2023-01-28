@@ -24,8 +24,9 @@ export default function Layout({ children }: Props) {
         <div className={styles.navbar}>
           <div className={styles.links}>
             <Link href="/">Home</Link>
-            <Link href="/">Mods</Link>
-            <Link href="/">Servers</Link>
+            {/* <Link href="/mods">Mods</Link> */}
+            {/* <Link href="/servers">Servers</Link> */}
+            <Link href="/about">About</Link>
           </div>
 
           <AccountBadge />

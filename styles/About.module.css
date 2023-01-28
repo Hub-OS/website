@@ -1,0 +1,9 @@
+.thanks_list {
+  column-count: 3;
+}
+
+@media (max-width: 560px) {
+  .thanks_list {
+    column-count: 2;
+  }
+}

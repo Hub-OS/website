@@ -1,0 +1,19 @@
+.list_item {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+}
+
+.links > * {
+  margin-left: 16px;
+}
+
+.project_name {
+  flex: 1;
+}

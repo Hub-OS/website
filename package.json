@@ -3,16 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "npm run licenses && next dev",
+    "build": "npm run licenses && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "licenses": "node generate-licenses.js"
   },
   "dependencies": {
     "@iarna/toml": "^2.2.5",
-    "@types/node": "18.11.18",
-    "@types/react": "18.0.27",
-    "@types/react-dom": "18.0.10",
     "@zip.js/zip.js": "^2.6.62",
     "cookies-next": "^2.1.1",
     "discord.js": "^14.7.1",
@@ -25,6 +23,9 @@
     "typescript": "4.9.4"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.191"
+    "@types/lodash": "^4.14.191",
+    "@types/node": "18.11.18",
+    "@types/react": "18.0.27",
+    "@types/react-dom": "18.0.10"
   }
 }

@@ -61,4 +61,20 @@
   padding: 8px 8px;
   margin: 0 8px;
   min-height: 500px;
+
+  /* seems to force the browser to calculate height for children using percentages */
+  /* pretty broken */
+  height: fit-content;
+  margin-bottom: 16px;
+}
+
+.main a {
+  color: #52ff39;
+  /* color: #ffd532; */
+  /* color: #40C0E0 */
+  white-space: nowrap;
+}
+
+.main a:hover {
+  text-decoration: underline;
 }

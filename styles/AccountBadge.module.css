@@ -3,4 +3,18 @@
   justify-content: center;
   align-items: center;
   border-radius: 50%;
+  border: 2px solid #b54a29;
+}
+
+.avatar_container {
+  border-radius: 50%;
+  border: 7px solid #ffd629;
+  border-bottom-color: #e78c29;
+  border-right-color: #e78c29;
+  background-color: #555;
+  height: 53px;
+}
+
+.avatar {
+  border-radius: 50%;
 }

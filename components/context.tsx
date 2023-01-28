@@ -58,7 +58,7 @@ export function AppContextProvider({ children }: Props) {
   }, [router, params.access_token, abortController]);
 
   useEffect(() => {
-    fetch("/api/account", { signal: abortController.signal })
+    fetch("/api/me", { signal: abortController.signal })
       .then(async (response) => {
         if (response.status == 200) {
           setAccount(await response.json());

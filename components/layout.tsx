@@ -1,8 +1,6 @@
 import { ReactNode } from "react";
 import Head from "next/head";
-import Image from "next/image";
 import Link from "next/link";
-import bannerImg from "@/public/banner.png";
 import styles from "@/styles/Layout.module.css";
 import AccountBadge from "./account-badge";
 
@@ -20,15 +18,7 @@ export default function Layout({ children }: Props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className={styles.banner}>
-        <Image
-          src={bannerImg}
-          alt=""
-          width={bannerImg.width * 2}
-          height={bannerImg.height * 2}
-          quality={100}
-        />
-      </div>
+      <div className={styles.banner} />
 
       <div className={styles.layout}>
         <div className={styles.navbar}>

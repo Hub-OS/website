@@ -1,9 +1,14 @@
 .banner {
   width: 100%;
   display: flex;
+  background: url("/banner.png");
   flex-direction: row;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: 100%;
   position: absolute;
   top: 0;
+  background-position: 50% 0;
   justify-content: center;
   z-index: -1;
 }
@@ -17,20 +22,23 @@
 .navbar {
   font-family: client-bold;
   font-size: 20px;
+  text-shadow: 2px 2px #21738c;
   color: white;
-  padding: 2px 8px;
-  padding-top: 4px;
-  margin-top: 48px;
-  margin-bottom: 16px;
+  padding: 16px 8px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  overflow-x: scroll;
+  scrollbar-width: none;
+}
+
+.navbar::-webkit-scrollbar {
+  display: none;
 }
 
 .links {
   display: flex;
   flex-direction: row;
-  gap: 8px;
 }
 
 .links > * {
@@ -40,6 +48,7 @@
   height: 56px;
   padding-top: 16px;
   padding-left: 8px;
+  margin-right: 8px;
 }
 
 .links > *:hover {
@@ -50,5 +59,6 @@
   border: 20px solid;
   border-image: url("/border-main.png") 10 fill;
   padding: 8px 8px;
+  margin: 0 8px;
   min-height: 500px;
 }

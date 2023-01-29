@@ -1,6 +1,7 @@
 {
-  "name": "web",
+  "name": "website",
   "version": "0.1.0",
+  "license": "GPL-3.0",
   "private": true,
   "scripts": {
     "dev": "npm run licenses && next dev",

@@ -22,12 +22,6 @@ export interface InitOutput {
   readonly read_file: (a: number, b: number, c: number, d: number, e: number) => void;
   readonly rezip: (a: number, b: number, c: number) => void;
   readonly hook_panics: () => void;
-  readonly rust_zstd_wasm_shim_malloc: (a: number) => number;
-  readonly rust_zstd_wasm_shim_calloc: (a: number, b: number) => number;
-  readonly rust_zstd_wasm_shim_free: (a: number) => void;
-  readonly rust_zstd_wasm_shim_memcpy: (a: number, b: number, c: number) => number;
-  readonly rust_zstd_wasm_shim_memmove: (a: number, b: number, c: number) => number;
-  readonly rust_zstd_wasm_shim_memset: (a: number, b: number, c: number) => number;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;

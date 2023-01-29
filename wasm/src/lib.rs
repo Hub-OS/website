@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 use zip::read::ZipFile;
 use zip::result::ZipResult;
 use zip::write::FileOptions as ZipFileOptions;
-use zip::{CompressionMethod, ZipWriter};
+use zip::ZipWriter;
 
 #[wasm_bindgen]
 extern "C" {
@@ -34,7 +34,7 @@ pub fn read_file(bytes: &[u8], name: &str) -> Result<Vec<u8>, String> {
 
 #[wasm_bindgen]
 pub fn rezip(input: &[u8]) -> Result<Vec<u8>, String> {
-    let file_options = ZipFileOptions::default().compression_method(CompressionMethod::Zstd);
+    let file_options = ZipFileOptions::default();
 
     let mut data = Vec::new();
 

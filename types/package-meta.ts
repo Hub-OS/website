@@ -14,7 +14,6 @@ export type PackageMeta = {
     codes?: string[];
     long_description?: string;
     damage?: number;
-    element?: string;
     secondary_element?: string;
     card_class?: string;
     limit?: number;
@@ -26,6 +25,7 @@ export type PackageMeta = {
     meta_classes?: string[];
 
     // players
+    health?: number;
     overworld_animation_path?: string;
     overworld_texture_path?: string;
     mugshot_animation_path?: string;
@@ -36,6 +36,7 @@ export type PackageMeta = {
     preview_texture_path?: string;
 
     // players and cards
+    element?: string;
     icon_texture_path?: string;
   };
   defines?: {
@@ -113,4 +114,38 @@ function isDefinitionList(data: any) {
         typeof v.path == "string"
     )
   );
+}
+
+export function hasDependencies(meta: PackageMeta) {
+  if (!meta.dependencies) {
+    return false;
+  }
+
+  return (
+    meta.dependencies.cards?.length! > 0 ||
+    meta.dependencies.characters?.length! > 0 ||
+    meta.dependencies.libraries?.length! > 0
+  );
+}
+
+export function dependencies(meta: PackageMeta) {
+  const dependencies: string[] = [];
+
+  if (!meta.dependencies) {
+    return dependencies;
+  }
+
+  if (meta.dependencies.characters) {
+    dependencies.push(...meta.dependencies.characters);
+  }
+
+  if (meta.dependencies.cards) {
+    dependencies.push(...meta.dependencies.cards);
+  }
+
+  if (meta.dependencies.libraries) {
+    dependencies.push(...meta.dependencies.libraries);
+  }
+
+  return dependencies;
 }

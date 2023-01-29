@@ -15,21 +15,14 @@ export default async function handler(
   }
 }
 
-const mods_per_page = 10;
-
 async function handleGet(
   req: NextApiRequest,
   res: NextApiResponse<PackageMeta[] | undefined>
 ) {
-  if (typeof req.query.page != "string") {
-    res.status(400).send(undefined);
-    return;
-  }
+  let skip = Math.floor(+((req.query.skip as string) || 0));
 
-  let page = Math.floor(+(req.query.page as string));
-
-  if (page < 0 || page == Infinity) {
-    page = 0;
+  if (skip < 0 || skip == Infinity) {
+    skip = 0;
   }
 
   const query: Query = {};
@@ -38,12 +31,13 @@ async function handleGet(
     query["package.category"] = req.query.category;
   }
 
-  const skip = page * mods_per_page;
+  const limit = Math.min(+((req.query.limit as string) || 0), 100);
+
   const list = await db.listPackages(
     query,
     SortMethod.CreationDate,
     skip,
-    mods_per_page
+    limit
   );
 
   res.status(200).send(list);

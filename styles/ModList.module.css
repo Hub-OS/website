@@ -1,0 +1,26 @@
+.control_bar {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 4px;
+}
+
+.upload {
+  margin-left: auto;
+}
+
+.list {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.page_controls {
+  margin-top: auto;
+  display: flex;
+}
+
+.right_arrow {
+  margin-left: auto;
+}

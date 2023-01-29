@@ -3,7 +3,9 @@ import { LoginState } from "@/types/login-state";
 import { useRouter } from "next/router";
 import {
   createContext,
+  Dispatch,
   ReactNode,
+  SetStateAction,
   useContext,
   useEffect,
   useState,
@@ -12,10 +14,14 @@ import {
 type AppContext = {
   account?: PublicAccountData;
   loginState: LoginState;
+  modQuery: string;
+  setModQuery: Dispatch<SetStateAction<string>>;
 };
 
 const AppContext = createContext<AppContext>({
   loginState: LoginState.Pending,
+  modQuery: "",
+  setModQuery: () => {},
 });
 
 type Props = { children?: ReactNode };
@@ -39,6 +45,9 @@ export function AppContextProvider({ children }: Props) {
   // and the reference would be reset on the client causing a double fetch otherwise
   const [abortController, setAbortController] =
     useState<AbortController | null>();
+
+  // mod search context
+  const [modQuery, setModQuery] = useState("");
 
   const router = useRouter();
   const params = processParams();
@@ -90,7 +99,7 @@ export function AppContextProvider({ children }: Props) {
   }, [abortController]);
 
   return (
-    <AppContext.Provider value={{ account, loginState }}>
+    <AppContext.Provider value={{ account, loginState, modQuery, setModQuery }}>
       {children}
     </AppContext.Provider>
   );

@@ -1,0 +1,39 @@
+.top_controls {
+  display: flex;
+  margin-bottom: 4px;
+}
+
+.owner_controls {
+  margin-left: auto;
+}
+
+.preview {
+  width: 200px;
+  height: 200px;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.user_options {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.dynamic_container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+  .dynamic_container {
+    flex-direction: column;
+    align-items: center;
+  }
+}

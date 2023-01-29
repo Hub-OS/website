@@ -28,6 +28,10 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
+  stream.on("error", () => {
+    res.status(404).send(undefined);
+  });
+
   res.status(200).send(stream);
 }
 

@@ -52,7 +52,7 @@ async function handlePost(
 
   if (matchingMeta) {
     if (matchingMeta.creator != account.id) {
-      res.status(404).send(undefined);
+      res.status(403).send(undefined);
       return;
     }
 

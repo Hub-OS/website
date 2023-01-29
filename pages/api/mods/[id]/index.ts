@@ -39,12 +39,21 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  if (typeof req.query.id != "string") {
+  const id = req.query.id;
+
+  if (typeof id != "string") {
     res.status(400).send(undefined);
     return;
   }
 
-  await db.uploadPackageZip(req.query.id, req);
+  const meta = await db.findPackageMeta(id);
+
+  if (meta && meta.creator != account.id) {
+    res.status(403).send(undefined);
+    return;
+  }
+
+  await db.uploadPackageZip(id, req);
 
   res.status(200).send(undefined);
 }

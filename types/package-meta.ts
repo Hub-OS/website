@@ -70,7 +70,7 @@ export function asPackageMeta(obj: any): PackageMeta | undefined {
     }
 
     if (obj.defines.characters) {
-      if (isDefinitionList(obj.defines.characters)) {
+      if (!isDefinitionList(obj.defines.characters)) {
         return;
       }
     }
@@ -110,7 +110,7 @@ function isDefinitionList(data: any) {
       (v: any) =>
         typeof v == "object" &&
         typeof v.id == "string" &&
-        typeof v.id == "string"
+        typeof v.path == "string"
     )
   );
 }

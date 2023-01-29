@@ -31,6 +31,8 @@ export interface DB {
   downloadPackagePreview(
     id: string
   ): Promise<NodeJS.ReadableStream | undefined>;
+
+  deletePackage(id: string): Promise<void>;
 }
 
 import Disk from "./disk";

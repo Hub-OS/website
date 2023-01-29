@@ -10,6 +10,8 @@ export default async function handler(
     await handleGet(req, res);
   } else if (req.method == "POST") {
     await handlePost(req, res);
+  } else if (req.method == "DELETE") {
+    await handleDelete(req, res);
   } else {
     res.status(400).send(undefined);
   }
@@ -54,6 +56,33 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
   }
 
   await db.uploadPackageZip(id, req);
+
+  res.status(200).send(undefined);
+}
+
+async function handleDelete(req: NextApiRequest, res: NextApiResponse) {
+  const account = await getAccount(req, res);
+
+  if (!account) {
+    res.status(401).send(undefined);
+    return;
+  }
+
+  const id = req.query.id;
+
+  if (typeof id != "string") {
+    res.status(400).send(undefined);
+    return;
+  }
+
+  const meta = await db.findPackageMeta(id);
+
+  if (meta && meta.creator != account.id) {
+    res.status(403).send(undefined);
+    return;
+  }
+
+  await db.deletePackage(id);
 
   res.status(200).send(undefined);
 }

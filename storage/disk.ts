@@ -6,6 +6,7 @@ import { sortBy, SortMethod } from "@/types/sort-method";
 import { Account } from "@/types/account";
 import { DB as DB } from "./db";
 import fs from "fs";
+import fsPromises from "fs/promises";
 import crypto from "crypto";
 import { pipeline } from "stream/promises";
 
@@ -162,5 +163,24 @@ export default class Disk implements DB {
     return fs.createReadStream(
       `storage/_disk/mods/${encodeURIComponent(id)}.png`
     );
+  }
+
+  async deletePackage(id: string): Promise<void> {
+    const index = this.data.packages.findIndex((meta) => meta.package.id == id);
+
+    if (index == -1) {
+      return;
+    }
+
+    // swap remove to avoid shifting every element
+    this.data.packages[index] =
+      this.data.packages[this.data.packages.length - 1];
+    this.data.packages.pop();
+
+    await Promise.all([
+      fsPromises.rm(`storage/_disk/mods/${encodeURIComponent(id)}.png`),
+      fsPromises.rm(`storage/_disk/mods/${encodeURIComponent(id)}.zip`),
+      this.save(),
+    ]);
   }
 }

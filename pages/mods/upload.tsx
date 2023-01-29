@@ -100,7 +100,7 @@ export default function Upload() {
           const encodedId = encodeURIComponent(packageMeta.package.id);
 
           try {
-            await fetch("/api/mods", {
+            await fetch(`/api/mods/${encodedId}/meta`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ meta: packageMeta }),
@@ -117,7 +117,7 @@ export default function Upload() {
             return;
           }
 
-          // router.push(`/mods/${encodedId}`);
+          router.push(`/mods/${encodedId}`);
         }}
       />
     </label>

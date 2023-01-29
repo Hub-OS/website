@@ -4,11 +4,13 @@ import styles from "@/styles/About.module.css";
 export default function Home() {
   return (
     <>
-      REAL-PET is derived from{" "}
-      <Link href="https://github.com/TheMaverickProgrammer/OpenNetBattle">
-        OpenNetBattle
-      </Link>
-      , splintered off from creative differences.
+      <span>
+        REAL-PET is derived from{" "}
+        <Link href="https://github.com/TheMaverickProgrammer/OpenNetBattle">
+          OpenNetBattle
+        </Link>
+        , splintered off from creative differences.
+      </span>
       <br />
       <br />
       Special Thanks:
@@ -45,8 +47,10 @@ export default function Home() {
         <li>Zeek</li>
       </ul>
       <br />
-      This website was made with{" "}
-      <Link href="/licenses">open source software</Link>
+      <span>
+        This website was made with{" "}
+        <Link href="/licenses">open source software</Link>
+      </span>
     </>
   );
 }

@@ -47,11 +47,9 @@
   padding: 8px 8px;
   margin: 0 8px;
   min-height: 500px;
-
-  /* seems to force the browser to calculate height for children using percentages */
-  /* pretty broken */
-  height: fit-content;
   margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .main a {

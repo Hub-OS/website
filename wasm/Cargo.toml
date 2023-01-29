@@ -1,0 +1,22 @@
+[package]
+name = "zip-util"
+version = "0.1.0"
+edition = "2021"
+
+# wasm-opt is broken on linux with the latest wasm-pack (0.10.3)
+# at least for this setup
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]
+wasm-bindgen = "0.2.83"
+console_error_panic_hook = "0.1"
+path-clean = "0.1"
+zip = { git = "https://github.com/Real-PET/zip.git", features = [
+  "zstd",
+  "deflate",
+], default-features = false }

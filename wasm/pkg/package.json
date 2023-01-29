@@ -1,0 +1,12 @@
+{
+  "name": "zip-util",
+  "version": "0.1.0",
+  "files": [
+    "zip_util_bg.wasm",
+    "zip_util.js",
+    "zip_util.d.ts"
+  ],
+  "module": "zip_util.js",
+  "types": "zip_util.d.ts",
+  "sideEffects": false
+}

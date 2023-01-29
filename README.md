@@ -12,6 +12,13 @@ DISCORD_SECRET = ""
 NEXT_PUBLIC_HOST="http://localhost:3000"
 ```
 
+Download dependencies:
+
+```
+npm install
+npx linklocal
+```
+
 Run the development server:
 
 ```bash

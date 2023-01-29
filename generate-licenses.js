@@ -1,6 +1,7 @@
 const fs = require("fs/promises");
 const _ = require("lodash");
 const packageLock = require("./package-lock.json");
+const cargoLicenses = require("./wasm/licenses.json");
 
 const MIT = [
   "Permission is hereby granted, free of charge, to any person obtaining a copy",
@@ -23,7 +24,11 @@ const MIT = [
 ];
 
 async function main() {
-  const output = [];
+  const output = cargoLicenses.map(({ name, repository, license }) => ({
+    name,
+    homepage: repository,
+    license,
+  }));
 
   for (const name in packageLock.dependencies) {
     if (name == "" || name.startsWith("node_modules")) {
@@ -43,11 +48,6 @@ async function main() {
 
       if (!licenseText) {
         throw `Failed to find license text for ${packageMeta.name}`;
-      }
-
-      if (typeof licenseText != "string") {
-        console.log(licenseText);
-        throw "what";
       }
 
       if (!license) {
@@ -71,6 +71,16 @@ async function main() {
       continue;
     }
   }
+
+  output.sort((a, b) => {
+    if (a.name == b.name) {
+      return 0;
+    } else if (a.name < b.name) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
 
   await fs.writeFile("_licenses.json", JSON.stringify(output));
 }

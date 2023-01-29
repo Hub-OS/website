@@ -12,6 +12,9 @@
 /.next/
 /out/
 
+# cargo
+wasm/target
+
 # production
 /build
 

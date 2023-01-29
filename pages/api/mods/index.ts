@@ -3,7 +3,7 @@ import { asPackageMeta, PackageMeta } from "@/types/package-meta";
 import db from "@/storage/db";
 import { Query } from "@/types/query";
 import { SortMethod } from "@/types/sort-method";
-import { getAccount } from "./me";
+import { getAccount } from "../me";
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,45 +18,6 @@ export default async function handler(
     res.status(400).send(undefined);
     return;
   }
-}
-
-async function handlePost(
-  req: NextApiRequest,
-  res: NextApiResponse<PackageMeta | undefined>
-) {
-  const account = await getAccount(req, res);
-
-  if (!account) {
-    res.status(401).send(undefined);
-    return;
-  }
-
-  const meta = asPackageMeta(req.body.meta);
-
-  if (!meta) {
-    res.status(400).send(undefined);
-    return;
-  }
-
-  const matchingMeta = await db.findPackageMeta(req.query.id as string);
-
-  if (matchingMeta) {
-    if (matchingMeta.creator != account.id) {
-      res.status(404).send(undefined);
-      return;
-    }
-
-    meta.creation_date = matchingMeta.creation_date;
-  } else {
-    meta.creation_date = new Date();
-  }
-
-  meta.creator = account.id;
-  meta.updated_date = new Date();
-
-  await db.upsertPackageMeta(meta);
-
-  res.status(200).send(meta);
 }
 
 async function handleGet(req: NextApiRequest, res: NextApiResponse) {
@@ -110,4 +71,51 @@ async function handlePageRequest(
   );
 
   res.status(200).send(list);
+}
+
+async function handlePost(req: NextApiRequest, res: NextApiResponse) {
+  if (req.headers["content-type"] == "application/json") {
+    await handlePackageMetaPost(req, res);
+  } else {
+    res.status(400).send(undefined);
+  }
+}
+
+async function handlePackageMetaPost(
+  req: NextApiRequest,
+  res: NextApiResponse<PackageMeta | undefined>
+) {
+  const account = await getAccount(req, res);
+
+  if (!account) {
+    res.status(401).send(undefined);
+    return;
+  }
+
+  const meta = asPackageMeta(req.body.meta);
+
+  if (!meta) {
+    res.status(400).send(undefined);
+    return;
+  }
+
+  const matchingMeta = await db.findPackageMeta(req.query.id as string);
+
+  if (matchingMeta) {
+    if (matchingMeta.creator != account.id) {
+      res.status(404).send(undefined);
+      return;
+    }
+
+    meta.creation_date = matchingMeta.creation_date;
+  } else {
+    meta.creation_date = new Date();
+  }
+
+  meta.creator = account.id;
+  meta.updated_date = new Date();
+
+  await db.upsertPackageMeta(meta);
+
+  res.status(200).send(meta);
 }

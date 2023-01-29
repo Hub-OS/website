@@ -1,0 +1,23 @@
+.label {
+  position: relative;
+  border: 12px dashed;
+  /* border-color: #52ff39; */
+  /* border-color: #ffd532; */
+  /* border-color: #40c0e0; */
+  border-color: lightblue;
+  /* border-color: white; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 436px;
+  margin: 4px;
+  /* height: 100%; */
+}
+
+.input {
+  /* display: none; */
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}

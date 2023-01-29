@@ -3,9 +3,11 @@
 import { PackageMeta } from "@/types/package-meta";
 import { Query, queryTest } from "@/types/query";
 import { sortBy, SortMethod } from "@/types/sort-method";
+import { Account } from "@/types/account";
 import { DB as DB } from "./db";
 import fs from "fs";
-import { Account } from "@/types/account";
+import crypto from "crypto";
+import { pipeline } from "stream/promises";
 
 type Data = {
   packages: PackageMeta[];
@@ -67,8 +69,6 @@ export default class Disk implements DB {
   }
 
   async upsertPackageMeta(meta: PackageMeta) {
-    this.data.packages.push(meta);
-
     const existingMeta = this.data.packages.find(
       (storedMeta) => storedMeta.package.id == meta.package.id
     );
@@ -113,13 +113,33 @@ export default class Disk implements DB {
   }
 
   async uploadPackageZip(id: string, stream: NodeJS.ReadableStream) {
-    const writeStream = fs.createWriteStream(`storage/_disk/mods/${id}.zip`);
-    stream.pipe(writeStream);
+    const meta = this.data.packages.find((meta) => meta.package.id == id);
+
+    if (!meta) {
+      return;
+    }
+
+    const hasher = crypto.createHash("md5");
+
+    stream.on("data", (chunk) => {
+      hasher.update(chunk);
+    });
+
+    const writeStream = fs.createWriteStream(
+      `storage/_disk/mods/${encodeURIComponent(id)}.zip`
+    );
+
+    await pipeline(stream, writeStream);
+
+    meta.hash = hasher.digest("hex");
+    await this.save();
   }
 
   async downloadPackageZip(
     id: string
   ): Promise<NodeJS.ReadableStream | undefined> {
-    return fs.createReadStream(`storage/_disk/mods/${id}.zip`);
+    return fs.createReadStream(
+      `storage/_disk/mods/${encodeURIComponent(id)}.zip`
+    );
   }
 }

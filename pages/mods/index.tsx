@@ -9,6 +9,16 @@ import { useEffect } from "react";
 
 type Props = { mods: PackageMeta[]; moreExist: boolean };
 
+function createHref(page: number, category?: string) {
+  let query = `/mods?page=${page}`;
+
+  if (category) {
+    query += "&category=" + category;
+  }
+
+  return query;
+}
+
 export default function ModList({ mods, moreExist }: Props) {
   const context = useAppContext();
   const router = useRouter();
@@ -22,10 +32,27 @@ export default function ModList({ mods, moreExist }: Props) {
   }, [context, queryString]);
 
   const page = Math.max(+(router.query.page || 0), 0);
+  const category = router.query.category as string | undefined;
 
   return (
     <>
       <div className={styles.control_bar}>
+        <select
+          value={category || "All"}
+          onChange={(event) => {
+            const href = createHref(0, event.currentTarget.value);
+
+            router.push(href);
+          }}
+        >
+          <option value="">All</option>
+          <option value="card">Cards</option>
+          <option value="block">Blocks</option>
+          <option value="block">Battle</option>
+          <option value="player">Players</option>
+          <option value="library">Libraries</option>
+        </select>
+
         {context.account != undefined && (
           <Link className={styles.upload} href="/mods/upload">
             UPLOAD
@@ -40,10 +67,15 @@ export default function ModList({ mods, moreExist }: Props) {
       </div>
 
       <div className={styles.page_controls}>
-        {page > 0 && <Link href={`/mods?page=${page - 1}`}>{"< PREV"}</Link>}
+        {page > 0 && (
+          <Link href={createHref(page - 1, category)}>{"< PREV"}</Link>
+        )}
 
         {moreExist && (
-          <Link className={styles.right_arrow} href={`/mods?page=${page + 1}`}>
+          <Link
+            className={styles.right_arrow}
+            href={createHref(page + 1, category)}
+          >
             {"NEXT >"}
           </Link>
         )}
@@ -57,13 +89,20 @@ const mods_per_page = 25;
 export async function getServerSideProps(context: NextPageContext) {
   const props: Props = { mods: [], moreExist: false };
 
+  const host = process.env.NEXT_PUBLIC_HOST!;
+
   const page = +(context.query.page || 0);
   const skip = mods_per_page * page;
   const limit = mods_per_page + 1;
+  const category = context.query.category;
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_HOST!}/api/mods?skip=${skip}&limit=${limit}`
-  );
+  let url = `${host}/api/mods?skip=${skip}&limit=${limit}`;
+
+  if (category) {
+    url += `&category=${category}`;
+  }
+
+  const res = await fetch(url);
 
   if (res.status == 200) {
     props.mods = (await res.json()) as PackageMeta[];

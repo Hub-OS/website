@@ -5,15 +5,20 @@ import Link from "next/link";
 import styles from "@/styles/ModList.module.css";
 import { useAppContext } from "@/components/context";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import _ from "lodash";
 
 type Props = { mods: PackageMeta[]; moreExist: boolean };
 
-function createHref(page: number, category?: string) {
+function createHref(page: number, category?: string, name?: string) {
   let query = `/mods?page=${page}`;
 
   if (category) {
     query += "&category=" + category;
+  }
+
+  if (name) {
+    query += "&name=" + encodeURIComponent(name);
   }
 
   return query;
@@ -23,7 +28,7 @@ export default function ModList({ mods, moreExist }: Props) {
   const context = useAppContext();
   const router = useRouter();
 
-  const [_, queryString] = router.asPath.split("?");
+  const [_base, queryString] = router.asPath.split("?");
 
   useEffect(() => {
     if (context.modQuery != queryString) {
@@ -33,6 +38,17 @@ export default function ModList({ mods, moreExist }: Props) {
 
   const page = Math.max(+(router.query.page || 0), 0);
   const category = router.query.category as string | undefined;
+  const queryName = router.query.name as string | undefined;
+
+  const [name, setName] = useState(queryName);
+
+  const [debouncedSearchHandler] = useState(() =>
+    _.debounce((value: string) => {
+      const href = createHref(0, category, value);
+
+      router.push(href);
+    }, 300)
+  );
 
   return (
     <>
@@ -40,7 +56,7 @@ export default function ModList({ mods, moreExist }: Props) {
         <select
           value={category || "All"}
           onChange={(event) => {
-            const href = createHref(0, event.currentTarget.value);
+            const href = createHref(0, event.currentTarget.value, name);
 
             router.push(href);
           }}
@@ -52,6 +68,16 @@ export default function ModList({ mods, moreExist }: Props) {
           <option value="player">Players</option>
           <option value="library">Libraries</option>
         </select>
+
+        <input
+          placeholder="name"
+          value={name || ""}
+          onChange={(event) => {
+            const value = event.currentTarget.value;
+            debouncedSearchHandler(value);
+            setName(value);
+          }}
+        />
 
         {context.account != undefined && (
           <Link className={styles.upload} href="/mods/upload">
@@ -68,13 +94,13 @@ export default function ModList({ mods, moreExist }: Props) {
 
       <div className={styles.page_controls}>
         {page > 0 && (
-          <Link href={createHref(page - 1, category)}>{"< PREV"}</Link>
+          <Link href={createHref(page - 1, category, name)}>{"< PREV"}</Link>
         )}
 
         {moreExist && (
           <Link
             className={styles.right_arrow}
-            href={createHref(page + 1, category)}
+            href={createHref(page + 1, category, name)}
           >
             {"NEXT >"}
           </Link>
@@ -94,12 +120,16 @@ export async function getServerSideProps(context: NextPageContext) {
   const page = +(context.query.page || 0);
   const skip = mods_per_page * page;
   const limit = mods_per_page + 1;
-  const category = context.query.category;
+  const { category, name } = context.query;
 
   let url = `${host}/api/mods?skip=${skip}&limit=${limit}`;
 
   if (category) {
     url += `&category=${category}`;
+  }
+
+  if (name) {
+    url += `&name=${name}`;
   }
 
   const res = await fetch(url);

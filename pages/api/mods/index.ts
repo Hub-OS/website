@@ -31,6 +31,10 @@ async function handleGet(
     query["package.category"] = req.query.category;
   }
 
+  if (req.query.name) {
+    query["package.name"] = req.query.name;
+  }
+
   const limit = Math.min(+((req.query.limit as string) || 0), 100);
 
   const list = await db.listPackages(

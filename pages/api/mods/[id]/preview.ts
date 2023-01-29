@@ -7,13 +7,11 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method == "GET") {
-    handleGet(req, res);
-    return;
+    await handleGet(req, res);
   } else if (req.method == "POST") {
-    handlePost(req, res);
+    await handlePost(req, res);
   } else {
     res.status(400).send(undefined);
-    return;
   }
 }
 

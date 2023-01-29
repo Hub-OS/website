@@ -9,10 +9,9 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method == "GET") {
-    return handleGet(req, res);
+    await handleGet(req, res);
   } else {
     res.status(400).send(undefined);
-    return;
   }
 }
 

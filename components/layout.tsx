@@ -18,8 +18,6 @@ export default function Layout({ children }: Props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className={styles.banner} />
-
       <div className={styles.layout}>
         <div className={styles.navbar}>
           <div className={styles.links}>

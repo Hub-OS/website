@@ -1,18 +1,3 @@
-.banner {
-  width: 100%;
-  display: flex;
-  background: url("/banner.png");
-  flex-direction: row;
-  height: 100%;
-  background-repeat: no-repeat;
-  background-size: 100%;
-  position: absolute;
-  top: 0;
-  background-position: 50% 0;
-  justify-content: center;
-  z-index: -1;
-}
-
 .layout {
   width: 100%;
   max-width: 800px;

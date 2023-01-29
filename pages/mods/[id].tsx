@@ -108,7 +108,9 @@ export default function ModPage({ meta }: Props) {
             {hashText}
           </a>
         )}
-        <Link href={`/api/mods/${encodedId}`}>DOWNLOAD</Link>
+        <a href={`/api/mods/${encodedId}`} download={`${meta.package.id}.zip`}>
+          DOWNLOAD
+        </a>
       </div>
     </>
   );

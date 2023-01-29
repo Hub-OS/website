@@ -35,11 +35,23 @@ function processParams() {
 export function AppContextProvider({ children }: Props) {
   const [loginState, setLoginState] = useState(LoginState.Pending);
   const [account, setAccount] = useState(undefined);
-  const [abortController, setAbortController] = useState(new AbortController());
+  // setting abortController to null as this component renders on the server
+  // and the reference would be reset on the client causing a double fetch otherwise
+  const [abortController, setAbortController] =
+    useState<AbortController | null>();
+
   const router = useRouter();
   const params = processParams();
 
   useEffect(() => {
+    if (!abortController) {
+      return;
+    }
+
+    if (params.error) {
+      router.replace("/");
+    }
+
     if (params.access_token != undefined && !abortController.signal.aborted) {
       router.replace(router.pathname);
       abortController.abort();
@@ -55,9 +67,14 @@ export function AppContextProvider({ children }: Props) {
         })
         .catch(console.error);
     }
-  }, [router, params.access_token, abortController]);
+  }, [router, params, abortController]);
 
   useEffect(() => {
+    if (!abortController) {
+      setAbortController(new AbortController());
+      return;
+    }
+
     fetch("/api/me", { signal: abortController.signal })
       .then(async (response) => {
         if (response.status == 200) {

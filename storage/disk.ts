@@ -24,6 +24,11 @@ function loadData(): Data {
     const json = buffer.toString();
     const db = JSON.parse(json) as Data;
 
+    for (const meta of db.packages) {
+      meta.creation_date = new Date(meta.creation_date);
+      meta.updated_date = new Date(meta.updated_date);
+    }
+
     return db;
   } catch {
     return {

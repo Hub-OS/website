@@ -30,6 +30,7 @@
   justify-content: space-between;
   overflow-x: scroll;
   scrollbar-width: none;
+  user-select: none;
 }
 
 .navbar::-webkit-scrollbar {

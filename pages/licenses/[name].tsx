@@ -13,8 +13,6 @@ export default function License() {
     return <>Page not found</>;
   }
 
-  console.log(project.licenseText);
-
   return (
     <>
       <div key={project.name} className={styles.list_item}>

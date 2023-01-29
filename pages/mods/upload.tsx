@@ -117,6 +117,20 @@ export default function Upload() {
             return;
           }
 
+          try {
+            const previewPath = packageMeta.package.preview_texture_path;
+
+            if (previewPath != undefined) {
+              const bytes = read_file(rezipped, previewPath);
+
+              await fetch(`/api/mods/${encodedId}/preview`, {
+                method: "POST",
+                headers: { "Content-Type": "application/octet-stream" },
+                body: bytes,
+              });
+            }
+          } catch {}
+
           router.push(`/mods/${encodedId}`);
         }}
       />

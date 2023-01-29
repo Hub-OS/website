@@ -22,6 +22,15 @@ export interface DB {
   uploadPackageZip(id: string, stream: NodeJS.ReadableStream): Promise<void>;
 
   downloadPackageZip(id: string): Promise<NodeJS.ReadableStream | undefined>;
+
+  uploadPackagePreview(
+    id: string,
+    stream: NodeJS.ReadableStream
+  ): Promise<void>;
+
+  downloadPackagePreview(
+    id: string
+  ): Promise<NodeJS.ReadableStream | undefined>;
 }
 
 import Disk from "./disk";

@@ -142,4 +142,20 @@ export default class Disk implements DB {
       `storage/_disk/mods/${encodeURIComponent(id)}.zip`
     );
   }
+
+  async uploadPackagePreview(id: string, stream: NodeJS.ReadableStream) {
+    const writeStream = fs.createWriteStream(
+      `storage/_disk/mods/${encodeURIComponent(id)}.png`
+    );
+
+    await pipeline(stream, writeStream);
+  }
+
+  async downloadPackagePreview(
+    id: string
+  ): Promise<NodeJS.ReadableStream | undefined> {
+    return fs.createReadStream(
+      `storage/_disk/mods/${encodeURIComponent(id)}.png`
+    );
+  }
 }

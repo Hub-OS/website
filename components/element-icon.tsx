@@ -27,7 +27,7 @@ export default function ElementIcon({ element, className, style }: Props) {
   return (
     <div
       className={classNames(styles.icon, className)}
-      style={{ backgroundPosition: `${offset * 20}px 0`, ...(style || {}) }}
+      style={{ backgroundPosition: `${-offset * 20.5}px 0`, ...(style || {}) }}
     />
   );
 }

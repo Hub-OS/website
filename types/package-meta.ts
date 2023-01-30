@@ -54,6 +54,15 @@ export type PackageMeta = {
   hash?: string;
 };
 
+const validCategories = [
+  "block",
+  "card",
+  "battle",
+  "library",
+  "player",
+  "pack",
+];
+
 export function asPackageMeta(obj: any): PackageMeta | undefined {
   if (
     typeof obj != "object" ||
@@ -62,6 +71,10 @@ export function asPackageMeta(obj: any): PackageMeta | undefined {
     typeof obj.package.name != "string" ||
     typeof obj.package.category != "string"
   ) {
+    return;
+  }
+
+  if (!validCategories.includes(obj.package.category)) {
     return;
   }
 

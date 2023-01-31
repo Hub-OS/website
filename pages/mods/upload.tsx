@@ -83,7 +83,23 @@ export default function Upload() {
           let packageMeta;
 
           try {
-            packageMeta = TOML.parse(text);
+            packageMeta = TOML.parse(text) as any;
+
+            if (!packageMeta?.package?.id) {
+              setText("MISSING ID");
+              return;
+            }
+
+            if (!packageMeta?.package?.name) {
+              setText("MISSING NAME");
+              return;
+            }
+
+            if (!packageMeta?.package?.category) {
+              setText("MISSING CATEGORY");
+              return;
+            }
+
             packageMeta = asPackageMeta(packageMeta);
 
             if (!packageMeta) {

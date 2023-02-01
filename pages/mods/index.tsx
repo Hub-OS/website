@@ -129,7 +129,7 @@ export async function getServerSideProps(context: NextPageContext) {
   }
 
   if (name) {
-    url += `&name=${name}`;
+    url += `&name=${encodeURIComponent(name as string)}`;
   }
 
   const res = await fetch(url);

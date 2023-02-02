@@ -3,5 +3,5 @@
   width: 20px;
   margin: 2px;
   background-image: url("/elements.png");
-  background-size: cover;
+  background-size: auto 20px;
 }

@@ -48,7 +48,7 @@ export default function ModPreview({ meta, className }: Props) {
             </div>
           )}
 
-          {meta.package.damage && (
+          {meta.package.damage != 0 && meta.package.damage != undefined && (
             <div className={styles.damage}>{meta.package.damage}</div>
           )}
         </div>

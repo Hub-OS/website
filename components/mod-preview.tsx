@@ -92,7 +92,11 @@ export default function ModPreview({ meta, className }: Props) {
   }, [colors, meta]);
 
   return (
-    <div className={classNames(styles.preview_container, className)}>
+    <div
+      className={classNames(styles.preview_container, className, {
+        [styles.black_bars]: meta.package.category == "card",
+      })}
+    >
       {previewPath && (
         <Image
           className={styles.preview_image}

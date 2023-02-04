@@ -6,10 +6,10 @@ Create a `.env.local` file:
 
 ```
 NEXT_PUBLIC_DISCORD_CLIENT_ID = ""
-NEXT_PUBLIC_DISCORD_REDIRECT_URI = "http://localhost:3000/manage"
+NEXT_PUBLIC_DISCORD_REDIRECT_URI = "http://localhost:3000/mods/upload"
 DISCORD_SECRET = ""
 
-NEXT_PUBLIC_HOST="http://localhost:3000"
+NEXT_PUBLIC_HOST = "http://localhost:3000"
 ```
 
 Download dependencies:

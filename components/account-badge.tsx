@@ -17,7 +17,7 @@ export default function AccountBadge() {
   // show avatar
   if (account) {
     return (
-      <Link href="/account" className={styles.link}>
+      <Link href="/mods/upload" className={styles.link}>
         <div className={styles.avatar_container}>
           <Image
             className={styles.avatar}

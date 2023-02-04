@@ -42,5 +42,14 @@ export interface DB {
 }
 
 import Disk from "./disk";
+import MongoBasedDB from "./mongo";
 
-export default new Disk() as DB;
+let db: DB;
+
+if (process.env.MONGO_URI) {
+  db = new MongoBasedDB(process.env.MONGO_URI);
+} else {
+  db = new Disk();
+}
+
+export default db;

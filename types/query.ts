@@ -40,25 +40,3 @@ export function queryTest(query: Query, other: PackageMeta) {
 
   return true;
 }
-
-export function toMongoQuery(query: Query) {
-  const mongoQuery: Query = {};
-
-  for (const key in query) {
-    const value = query[key];
-
-    if (Array.isArray(value)) {
-      mongoQuery[key] = { $in: value };
-    } else if (typeof value == "string") {
-      mongoQuery[key] = {
-        $text: {
-          $search: value,
-        },
-      };
-    } else {
-      mongoQuery[key] = value;
-    }
-  }
-
-  return mongoQuery;
-}

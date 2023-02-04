@@ -60,3 +60,9 @@
   width: 64px;
   height: 24px;
 }
+
+.block_color {
+  width: 12px;
+  height: 12px;
+  margin: 4px 2px;
+}

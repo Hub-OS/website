@@ -45,6 +45,11 @@ pub fn rezip(input: &[u8]) -> Result<Vec<u8>, String> {
         let mut entries = Vec::new();
 
         extract(input, |path, mut file| {
+            if file.is_dir() {
+                // skip folders, wastes space
+                return;
+            }
+
             let mut bytes = Vec::new();
             let _ = file.read_to_end(&mut bytes);
             entries.push((path, bytes));

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { asPackageMeta, PackageMeta } from "@/types/package-meta";
 import db from "@/storage/db";
-import { getAccount } from "../../me";
+import { getAccount } from "../../users/me";
 
 export default async function handler(
   req: NextApiRequest,

@@ -1,6 +1,6 @@
 import db from "@/storage/db";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getAccount } from "../../me";
+import { getAccount } from "../../users/me";
 
 export default async function handler(
   req: NextApiRequest,

@@ -84,7 +84,7 @@ export function AppContextProvider({ children }: Props) {
       return;
     }
 
-    fetch("/api/me", { signal: abortController.signal })
+    fetch("/api/users/me", { signal: abortController.signal })
       .then(async (response) => {
         if (response.status == 200) {
           setAccount(await response.json());

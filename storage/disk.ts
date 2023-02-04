@@ -52,6 +52,10 @@ export default class Disk implements DB {
     fs.writeFile(databaseFilePath, JSON.stringify(this.data), () => {});
   }
 
+  stringToId(id: string): unknown {
+    return +id;
+  }
+
   async createAccount(account: Account): Promise<unknown> {
     const newAccount = {
       ...account,
@@ -64,6 +68,10 @@ export default class Disk implements DB {
     await this.save();
 
     return newAccount.id;
+  }
+
+  async findAccountById(id: unknown): Promise<Account | undefined> {
+    return this.data.accounts.find((account) => account.id == id);
   }
 
   async findAccountByDiscordId(

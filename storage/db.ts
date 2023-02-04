@@ -4,7 +4,11 @@ import { Query } from "@/types/query";
 import { SortMethod } from "@/types/sort-method";
 
 export interface DB {
+  stringToId(id: string): unknown;
+
   createAccount(account: Account): Promise<unknown>;
+
+  findAccountById(id: unknown): Promise<Account | undefined>;
 
   findAccountByDiscordId(discordId: string): Promise<Account | undefined>;
 

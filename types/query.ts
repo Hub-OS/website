@@ -3,14 +3,22 @@ import _ from "lodash";
 
 // valid query examples:
 // { ["package.time_freeze"]: true } // $eq
+// { ["package.category"]: "block" } // $eq
 // { ["package.codes"]: ["*"] } // $in
-// { ["package.name"]: "te" } // $text
+// { ["$package.name"]: "te" } // custom case insensitive partial search
 
 export type Query = { [key: string]: any };
 
 export function queryTest(query: Query, other: PackageMeta) {
-  for (const key in query) {
+  for (let key in query) {
     const queryValue = query[key];
+    let isPartialTextSearch = false;
+
+    if (key.startsWith("$")) {
+      key = key.slice(1);
+      isPartialTextSearch = true;
+    }
+
     const value = _.get(other, key);
 
     if (Array.isArray(queryValue)) {
@@ -21,13 +29,18 @@ export function queryTest(query: Query, other: PackageMeta) {
         }
       }
     } else if (typeof queryValue == "string") {
-      // $text
+      // $eq, but with a special partial text search case
       if (typeof value != "string") {
         return false;
       }
 
-      // approximation
-      if (!value.toLowerCase().includes(queryValue.toLowerCase())) {
+      if (value != queryValue) {
+        return false;
+      } else if (
+        isPartialTextSearch &&
+        !value.toLowerCase().includes(queryValue.toLowerCase())
+      ) {
+        // special case
         return false;
       }
     } else {

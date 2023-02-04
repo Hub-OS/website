@@ -14,6 +14,7 @@ import {
 } from "mongodb";
 import crypto from "crypto";
 import { pipeline } from "stream/promises";
+import escapeStringRegexp from "escape-string-regexp";
 
 // db: web
 // collections: users, packages
@@ -223,21 +224,22 @@ function toMongoQuery(query: Query) {
   const mongoQuery: Query = {};
 
   for (const key in query) {
+    const value = query[key];
+
     if (key.startsWith("$")) {
+      if (typeof value == "string") {
+        // special search case
+        mongoQuery[key.slice(1)] = {
+          $regex: new RegExp(escapeStringRegexp(value), "i"),
+        };
+      }
+
       // protect against possible attacks
       continue;
     }
 
-    const value = query[key];
-
     if (Array.isArray(value)) {
       mongoQuery[key] = { $in: value };
-    } else if (typeof value == "string") {
-      mongoQuery[key] = {
-        $text: {
-          $search: value,
-        },
-      };
     } else if (typeof value != "object") {
       // ignore objects to protect against possible attacks
       mongoQuery[key] = value;

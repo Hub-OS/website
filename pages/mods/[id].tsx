@@ -11,10 +11,11 @@ import clipboardCopy from "clipboard-copy";
 import { useAppContext } from "@/components/context";
 import styles from "@/styles/Mod.module.css";
 import ModPreview from "@/components/mod-preview";
+import { PublicAccountData } from "@/types/public-account-data";
 
-type Props = { meta?: PackageMeta };
+type Props = { meta?: PackageMeta; creator?: PublicAccountData };
 
-export default function ModPage({ meta }: Props) {
+export default function ModPage({ meta, creator }: Props) {
   const [hashText, setHashText] = useState("COPY HASH");
   const [deleteText, setDeleteText] = useState("DELETE");
   const context = useAppContext();
@@ -69,6 +70,7 @@ export default function ModPage({ meta }: Props) {
 
       <div className={styles.meta}>
         <div>Package ID: {meta.package.id}</div>
+        {creator && <div>Author: {creator.username}</div>}
 
         {meta.defines?.characters?.length! > 0 && (
           <div>
@@ -119,13 +121,25 @@ export default function ModPage({ meta }: Props) {
 export async function getServerSideProps(context: NextPageContext) {
   const props: Props = {};
 
-  const encodedId = encodeURIComponent(context.query.id as string);
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_HOST!}/api/mods/${encodedId}/meta`
-  );
+  const requestJSON = async (uri: string) => {
+    const res = await fetch(uri);
 
-  if (res.status == 200) {
-    props.meta = (await res.json()) as PackageMeta;
+    if (res.status != 200) {
+      return;
+    }
+
+    return await res.json();
+  };
+
+  const encodedId = encodeURIComponent(context.query.id as string);
+  const uri = `${process.env.NEXT_PUBLIC_HOST!}/api/mods/${encodedId}/meta`;
+  props.meta = await requestJSON(uri);
+
+  if (props.meta) {
+    const creatorId = props.meta.creator;
+    const uri = `${process.env.NEXT_PUBLIC_HOST!}/api/users/${creatorId}`;
+
+    props.creator = await requestJSON(uri);
   }
 
   return {

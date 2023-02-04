@@ -4,7 +4,7 @@ import { PackageMeta } from "@/types/package-meta";
 import { Query, queryTest } from "@/types/query";
 import { sortBy, SortMethod } from "@/types/sort-method";
 import { Account } from "@/types/account";
-import { DB as DB } from "./db";
+import { DB } from "./db";
 import fs from "fs";
 import fsPromises from "fs/promises";
 import crypto from "crypto";
@@ -50,6 +50,10 @@ export default class Disk implements DB {
 
   async save() {
     fs.writeFile(databaseFilePath, JSON.stringify(this.data), () => {});
+  }
+
+  compareIds(a: unknown, b: unknown): boolean {
+    return a == b;
   }
 
   stringToId(id: string): unknown {

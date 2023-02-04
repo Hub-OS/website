@@ -50,7 +50,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
 
   const meta = await db.findPackageMeta(id);
 
-  if (meta && meta.creator != account.id) {
+  if (meta && !db.compareIds(meta.creator, account.id)) {
     res.status(403).send(undefined);
     return;
   }
@@ -77,7 +77,7 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse) {
 
   const meta = await db.findPackageMeta(id);
 
-  if (meta && meta.creator != account.id) {
+  if (meta && !db.compareIds(meta.creator, account.id)) {
     res.status(403).send(undefined);
     return;
   }

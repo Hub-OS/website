@@ -4,6 +4,8 @@ import { Query } from "@/types/query";
 import { SortMethod } from "@/types/sort-method";
 
 export interface DB {
+  compareIds(a: unknown, b: unknown): boolean;
+
   stringToId(id: string): unknown;
 
   createAccount(account: Account): Promise<unknown>;

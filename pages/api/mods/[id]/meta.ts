@@ -51,7 +51,7 @@ async function handlePost(
   const matchingMeta = await db.findPackageMeta(meta.package.id as string);
 
   if (matchingMeta) {
-    if (matchingMeta.creator != account.id) {
+    if (!db.compareIds(matchingMeta.creator, account.id)) {
       res.status(403).send(undefined);
       return;
     }

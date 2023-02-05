@@ -96,7 +96,6 @@ export default class Disk implements DB {
       existingMeta.package = meta.package;
       existingMeta.dependencies = meta.dependencies;
       existingMeta.defines = meta.defines;
-      existingMeta.updated_date = new Date();
     } else {
       meta.creation_date = new Date();
       meta.updated_date = new Date();
@@ -164,7 +163,13 @@ export default class Disk implements DB {
 
     await pipeline(stream, writeStream);
 
-    meta.hash = hasher.digest("hex");
+    const hash = hasher.digest("hex");
+
+    if (meta.hash != hash) {
+      meta.hash = hash;
+      meta.updated_date = new Date();
+    }
+
     await this.save();
   }
 

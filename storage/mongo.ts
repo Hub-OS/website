@@ -94,7 +94,6 @@ export default class MongoBasedDB implements DB {
             package: meta.package,
             dependencies: meta.dependencies,
             defines: meta.defines,
-            updated_date: new Date(),
           },
         }
       );
@@ -149,16 +148,25 @@ export default class MongoBasedDB implements DB {
 
     await pipeline(stream, writeStream);
 
-    this.packages.updateOne(
-      { "package.id": id },
-      {
-        $set: {
-          hash: hasher.digest("hex"),
-        },
-      }
-    );
-
+    // remove duplicate files
     this.deleteDuplicateFiles(name, writeStream.id);
+
+    // update hash
+    const query = { "package.id": id };
+    const projection = { hash: 1 };
+    const meta = await this.packages.findOne(query, { projection });
+
+    const hash = hasher.digest("hex");
+
+    if (meta && meta.hash != hash) {
+      console.log(meta.hash, hash);
+      await this.packages.updateOne(query, {
+        $set: {
+          hash,
+          updated_date: new Date(),
+        },
+      });
+    }
   }
 
   async downloadPackageZip(

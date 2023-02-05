@@ -57,15 +57,10 @@ async function handlePost(
       res.status(403).send(undefined);
       return;
     }
-
-    meta.creation_date = matchingMeta.creation_date;
   } else {
     meta.hidden = false;
-    meta.creation_date = new Date();
+    meta.creator = account.id;
   }
-
-  meta.creator = account.id;
-  meta.updated_date = new Date();
 
   await db.upsertPackageMeta(meta);
 

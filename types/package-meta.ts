@@ -52,6 +52,7 @@ export type PackageMeta = {
   creator: unknown;
   creation_date: Date;
   updated_date: Date;
+  hidden?: boolean;
   hash?: string;
 };
 

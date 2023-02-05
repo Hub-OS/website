@@ -12,12 +12,15 @@ import { useAppContext } from "@/components/context";
 import styles from "@/styles/Mod.module.css";
 import ModPreview from "@/components/mod-preview";
 import { PublicAccountData } from "@/types/public-account-data";
+import classNames from "classnames";
 
 type Props = { meta?: PackageMeta; creator?: PublicAccountData };
 
 export default function ModPage({ meta, creator }: Props) {
   const [hashText, setHashText] = useState("COPY HASH");
-  const [deleteText, setDeleteText] = useState("DELETE");
+  const [hidden, setHidden] = useState(meta?.hidden);
+  const [togglingHidden, setTogglingHidden] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const context = useAppContext();
   const router = useRouter();
 
@@ -38,18 +41,47 @@ export default function ModPage({ meta, creator }: Props) {
         <div className={styles.owner_controls}>
           {meta.creator == context.account?.id && (
             <a
+              className={classNames({
+                [styles.disabled_link]: togglingHidden,
+              })}
               onClick={async () => {
-                setDeleteText("DELETING");
+                setTogglingHidden(true);
+
+                try {
+                  const response = await fetch(`/api/mods/${encodedId}/meta`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ hidden: !hidden }),
+                  });
+
+                  if (response.ok) {
+                    setHidden(!hidden);
+                  }
+                } finally {
+                  setTogglingHidden(false);
+                }
+              }}
+            >
+              {hidden ? "PUBLISH" : "UNLIST"}
+            </a>
+          )}
+          {meta.creator == context.account?.id && (
+            <a
+              className={classNames({
+                [styles.disabled_link]: deleting,
+              })}
+              onClick={async () => {
+                setDeleting(true);
 
                 try {
                   await fetch(`/api/mods/${encodedId}`, { method: "DELETE" });
                   router.push(`/mods`);
                 } catch {
-                  setDeleteText("DELETE FAILED");
+                  setDeleting(false);
                 }
               }}
             >
-              {deleteText}
+              DELETE
             </a>
           )}
         </div>

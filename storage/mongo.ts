@@ -105,6 +105,10 @@ export default class MongoBasedDB implements DB {
     }
   }
 
+  async patchPackageMeta(id: string, patch: { [key: string]: any }) {
+    await this.packages.updateOne({ "package.id": id }, { $set: { ...patch } });
+  }
+
   async findPackageMeta(id: string): Promise<PackageMeta | undefined> {
     const meta = await this.packages.findOne({ "package.id": id });
 

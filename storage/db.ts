@@ -16,6 +16,8 @@ export interface DB {
 
   upsertPackageMeta(meta: PackageMeta): Promise<void>;
 
+  patchPackageMeta(id: string, patch: { [key: string]: any }): Promise<void>;
+
   findPackageMeta(id: string): Promise<PackageMeta | undefined>;
 
   listPackages(

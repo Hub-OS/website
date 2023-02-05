@@ -11,6 +11,8 @@ export default async function handler(
     await handleGet(req, res);
   } else if (req.method == "POST") {
     await handlePost(req, res);
+  } else if (req.method == "PATCH") {
+    await handlePatch(req, res);
   } else {
     res.status(400).send(undefined);
   }
@@ -58,6 +60,7 @@ async function handlePost(
 
     meta.creation_date = matchingMeta.creation_date;
   } else {
+    meta.hidden = false;
     meta.creation_date = new Date();
   }
 
@@ -65,6 +68,58 @@ async function handlePost(
   meta.updated_date = new Date();
 
   await db.upsertPackageMeta(meta);
+
+  res.status(200).send(meta);
+}
+
+const patchWhitelist = ["hidden"];
+
+async function handlePatch(req: NextApiRequest, res: NextApiResponse) {
+  const account = await getAccount(req, res);
+
+  if (!account) {
+    res.status(401).send(undefined);
+    return;
+  }
+
+  // validate patch
+  const patch = req.body;
+
+  if (typeof patch != "object") {
+    res.status(400).send(undefined);
+    return;
+  }
+
+  for (const key in patch) {
+    if (!patchWhitelist.includes(key)) {
+      res.status(400).send(undefined);
+      return;
+    }
+  }
+
+  // get package meta
+  const id = req.query.id;
+
+  if (typeof id != "string") {
+    res.status(400).send(undefined);
+    return;
+  }
+
+  const meta = await db.findPackageMeta(id);
+
+  // verify existence
+  if (!meta) {
+    res.status(404).send(undefined);
+    return;
+  }
+
+  // verify ownership
+  if (!db.compareIds(meta.creator, account.id)) {
+    res.status(403).send(undefined);
+    return;
+  }
+
+  await db.patchPackageMeta(id, patch);
 
   res.status(200).send(meta);
 }

@@ -9,6 +9,7 @@ import fs from "fs";
 import fsPromises from "fs/promises";
 import crypto from "crypto";
 import { pipeline } from "stream/promises";
+import _ from "lodash";
 
 type Data = {
   packages: PackageMeta[];
@@ -101,6 +102,20 @@ export default class Disk implements DB {
       meta.updated_date = new Date();
       this.data.packages.push(meta);
     }
+    await this.save();
+  }
+
+  async patchPackageMeta(id: string, patch: { [key: string]: any }) {
+    const meta = this.data.packages.find((meta) => meta.package.id == id);
+
+    if (!meta) {
+      return;
+    }
+
+    for (const key in patch) {
+      _.set(meta, key, patch[key]);
+    }
+
     await this.save();
   }
 

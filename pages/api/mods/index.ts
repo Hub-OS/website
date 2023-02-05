@@ -25,7 +25,9 @@ async function handleGet(
     skip = 0;
   }
 
-  const query: Query = {};
+  const query: Query = {
+    hidden: false,
+  };
 
   if (req.query.category) {
     query["package.category"] = req.query.category;

@@ -5,7 +5,7 @@ export type PackageMeta = {
     name: string;
     description?: string;
 
-    // blocks
+    // block augments
     colors?: string[];
     shape?: number[][];
     flat?: boolean;
@@ -57,7 +57,7 @@ export type PackageMeta = {
 };
 
 const validCategories = [
-  "block",
+  "augment",
   "card",
   "battle",
   "library",

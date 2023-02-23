@@ -3,7 +3,7 @@ import _ from "lodash";
 
 // valid query examples:
 // { ["package.time_freeze"]: true } // $eq
-// { ["package.category"]: "block" } // $eq
+// { ["package.category"]: "augment" } // $eq
 // { ["package.codes"]: ["*"] } // $in
 // { ["$package.name"]: "te" } // custom case insensitive partial search
 

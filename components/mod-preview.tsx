@@ -140,7 +140,7 @@ export default function ModPreview({ meta, className }: Props) {
         </div>
       )}
 
-      {meta.package.category == "block" && (
+      {meta.package.category == "augment" && (
         <div className={styles.banner}>
           {colors?.map((color) => (
             <div

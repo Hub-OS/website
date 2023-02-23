@@ -4,7 +4,7 @@ import { PackageMeta } from "@/types/package-meta";
 import { Query, queryTest } from "@/types/query";
 import { sortBy, SortMethod } from "@/types/sort-method";
 import { Account } from "@/types/account";
-import { DB } from "./db";
+import { DB, PackageHashResult } from "./db";
 import fs from "fs";
 import fsPromises from "fs/promises";
 import crypto from "crypto";
@@ -142,6 +142,20 @@ export default class Disk implements DB {
     }
 
     return packages;
+  }
+
+  async *getPackageHashes(ids: string[]): AsyncGenerator<PackageHashResult> {
+    const results = this.data.packages
+      .filter((meta) => ids.includes(meta.package.id))
+      .map((meta) => ({
+        id: meta.package.id,
+        category: meta.package.category,
+        hash: meta.hash,
+      }));
+
+    for (const result of results) {
+      yield result;
+    }
   }
 
   async uploadPackageZip(id: string, stream: NodeJS.ReadableStream) {

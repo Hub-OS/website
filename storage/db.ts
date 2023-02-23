@@ -3,6 +3,8 @@ import { PackageMeta } from "@/types/package-meta";
 import { Query } from "@/types/query";
 import { SortMethod } from "@/types/sort-method";
 
+export type PackageHashResult = { id: string; category: string; hash?: string };
+
 export interface DB {
   compareIds(a: unknown, b: unknown): boolean;
 
@@ -26,6 +28,8 @@ export interface DB {
     skip: number,
     count: number
   ): Promise<PackageMeta[]>;
+
+  getPackageHashes(ids: string[]): AsyncGenerator<PackageHashResult>;
 
   uploadPackageZip(id: string, stream: NodeJS.ReadableStream): Promise<void>;
 

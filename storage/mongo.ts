@@ -2,7 +2,7 @@ import { PackageMeta } from "@/types/package-meta";
 import { Query } from "@/types/query";
 import { SortMethod } from "@/types/sort-method";
 import { Account } from "@/types/account";
-import { DB } from "./db";
+import { DB, PackageHashResult } from "./db";
 import {
   Collection,
   Db as MongoDb,
@@ -134,6 +134,17 @@ export default class MongoBasedDB implements DB {
       .sort(sortParam);
 
     return await metas.toArray();
+  }
+
+  getPackageHashes(ids: string[]): AsyncGenerator<PackageHashResult> {
+    return this.packages
+      .find({ "package.id": { $in: ids } })
+      .project<PackageHashResult>({
+        _id: 0,
+        id: "$package.id",
+        category: "$package.category",
+        hash: 1,
+      }) as unknown as AsyncGenerator<PackageHashResult>;
   }
 
   async uploadPackageZip(id: string, stream: NodeJS.ReadableStream) {

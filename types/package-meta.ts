@@ -43,6 +43,7 @@ export type PackageMeta = {
     characters?: { id: string; path: string }[];
   };
   dependencies?: {
+    augments?: string[];
     battles?: string[];
     characters?: string[];
     libraries?: string[];
@@ -137,6 +138,7 @@ export function hasDependencies(meta: PackageMeta) {
   }
 
   return (
+    meta.dependencies.augments?.length! > 0 ||
     meta.dependencies.battles?.length! > 0 ||
     meta.dependencies.cards?.length! > 0 ||
     meta.dependencies.characters?.length! > 0 ||
@@ -149,6 +151,10 @@ export function dependencies(meta: PackageMeta) {
 
   if (!meta.dependencies) {
     return dependencies;
+  }
+
+  if (meta.dependencies.augments) {
+    dependencies.push(...meta.dependencies.augments);
   }
 
   if (meta.dependencies.battles) {

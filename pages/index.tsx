@@ -15,7 +15,7 @@ export default function Home() {
           </Link>
         </li> */}
         <li>
-          <Link href="https://real-pet.github.io/documentation-website/client/lua-api/packages/">
+          <Link href="https://real-pet.github.io/documentation-website/client/packages/">
             DOCUMENTATION
           </Link>
         </li>

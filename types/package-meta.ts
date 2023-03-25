@@ -44,7 +44,7 @@ export type PackageMeta = {
   };
   dependencies?: {
     augments?: string[];
-    battles?: string[];
+    encounters?: string[];
     characters?: string[];
     libraries?: string[];
     cards?: string[];
@@ -60,7 +60,7 @@ export type PackageMeta = {
 const validCategories = [
   "augment",
   "card",
-  "battle",
+  "encounter",
   "library",
   "player",
   "pack",
@@ -139,7 +139,7 @@ export function hasDependencies(meta: PackageMeta) {
 
   return (
     meta.dependencies.augments?.length! > 0 ||
-    meta.dependencies.battles?.length! > 0 ||
+    meta.dependencies.encounters?.length! > 0 ||
     meta.dependencies.cards?.length! > 0 ||
     meta.dependencies.characters?.length! > 0 ||
     meta.dependencies.libraries?.length! > 0
@@ -157,8 +157,8 @@ export function dependencies(meta: PackageMeta) {
     dependencies.push(...meta.dependencies.augments);
   }
 
-  if (meta.dependencies.battles) {
-    dependencies.push(...meta.dependencies.battles);
+  if (meta.dependencies.encounters) {
+    dependencies.push(...meta.dependencies.encounters);
   }
 
   if (meta.dependencies.cards) {

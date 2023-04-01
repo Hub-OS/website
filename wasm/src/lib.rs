@@ -29,7 +29,7 @@ pub fn read_file(bytes: &[u8], name: &str) -> Result<Vec<u8>, String> {
 
     let _ = file.read_to_end(&mut buffer);
 
-    return Ok(buffer);
+    Ok(buffer)
 }
 
 #[wasm_bindgen]
@@ -93,7 +93,7 @@ fn extract(bytes: &[u8], mut file_callback: impl FnMut(String, ZipFile)) -> ZipR
         file_callback(path, file);
     }
 
-    return Ok(());
+    Ok(())
 }
 
 fn clean_path(path_str: &str) -> String {

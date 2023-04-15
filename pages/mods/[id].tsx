@@ -9,10 +9,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import clipboardCopy from "clipboard-copy";
 import { useAppContext } from "@/components/context";
-import styles from "@/styles/Mod.module.css";
 import ModPreview from "@/components/mod-preview";
+import PageActions from "@/components/page-actions";
 import { PublicAccountData } from "@/types/public-account-data";
 import classNames from "classnames";
+import styles from "@/styles/Mod.module.css";
 
 type Props = { meta?: PackageMeta; creator?: PublicAccountData };
 
@@ -129,7 +130,7 @@ export default function ModPage({ meta, creator }: Props) {
         )}
       </div>
 
-      <div className={styles.user_options}>
+      <PageActions>
         {meta.hash && (
           <a
             title={meta.hash}
@@ -145,7 +146,7 @@ export default function ModPage({ meta, creator }: Props) {
         <a href={`/api/mods/${encodedId}`} download={`${meta.package.id}.zip`}>
           DOWNLOAD
         </a>
-      </div>
+      </PageActions>
     </>
   );
 }

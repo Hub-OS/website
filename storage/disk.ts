@@ -75,6 +75,16 @@ export default class Disk implements DB {
     return newAccount.id;
   }
 
+  async patchAccount(id: unknown, patch: Partial<Account>): Promise<void> {
+    const account = await this.findAccountById(id);
+
+    if (!account) {
+      return;
+    }
+
+    Object.assign(account, patch);
+  }
+
   async findAccountById(id: unknown): Promise<Account | undefined> {
     return this.data.accounts.find((account) => account.id == id);
   }

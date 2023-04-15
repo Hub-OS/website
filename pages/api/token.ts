@@ -25,9 +25,12 @@ export default async function handler(
   const account = await db.findAccountByDiscordId(discordUser.id);
 
   if (!account) {
+    const username = discordUser.username + "#" + discordUser.discriminator;
+
     // create an account
     await db.createAccount({
-      username: discordUser.username + "#" + discordUser.discriminator,
+      username,
+      normalized_username: username.toLowerCase(),
       discord_id: discordUser.id,
       avatar:
         discordUser.avatar != undefined

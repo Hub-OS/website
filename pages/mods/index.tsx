@@ -2,10 +2,11 @@ import ModListing from "@/components/mod-listing";
 import { PackageMeta } from "@/types/package-meta";
 import { NextPageContext } from "next";
 import Link from "next/link";
-import styles from "@/styles/ModList.module.css";
+import PageActions from "@/components/page-actions";
 import { useAppContext } from "@/components/context";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import styles from "@/styles/ModList.module.css";
 import _ from "lodash";
 
 type Props = { mods: PackageMeta[]; moreExist: boolean };
@@ -92,7 +93,7 @@ export default function ModList({ mods, moreExist }: Props) {
         ))}
       </div>
 
-      <div className={styles.page_controls}>
+      <PageActions>
         {page > 0 && (
           <Link href={createHref(page - 1, category, name)}>{"< PREV"}</Link>
         )}
@@ -105,7 +106,7 @@ export default function ModList({ mods, moreExist }: Props) {
             {"NEXT >"}
           </Link>
         )}
-      </div>
+      </PageActions>
     </>
   );
 }

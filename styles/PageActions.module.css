@@ -1,0 +1,6 @@
+.container {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
+  margin-top: auto;
+}

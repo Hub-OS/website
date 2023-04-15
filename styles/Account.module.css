@@ -1,0 +1,13 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.message {
+  margin-right: auto;
+}
+
+.error {
+  color: #ff3d3d;
+}

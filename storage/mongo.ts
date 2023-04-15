@@ -35,6 +35,8 @@ export default class MongoBasedDB implements DB {
     this.packages = this.db.collection("packages");
     this.files = this.db.collection("fs.files");
     this.bucket = new GridFSBucket(this.db);
+
+    this.users.createIndex({ normalized_username: 1 }, { unique: true });
   }
 
   compareIds(a: unknown, b: unknown): boolean {
@@ -53,6 +55,10 @@ export default class MongoBasedDB implements DB {
     const result = await this.users.insertOne(account);
 
     return result.insertedId;
+  }
+
+  async patchAccount(id: unknown, patch: Partial<Account>) {
+    await this.users.updateOne({ _id: id as ObjectId }, { $set: patch });
   }
 
   async findAccountById(id: unknown): Promise<Account | undefined> {

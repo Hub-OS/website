@@ -12,6 +12,8 @@ export interface DB {
 
   createAccount(account: Account): Promise<unknown>;
 
+  patchAccount(id: unknown, patch: Partial<Account>): Promise<void>;
+
   findAccountById(id: unknown): Promise<Account | undefined>;
 
   findAccountByDiscordId(discordId: string): Promise<Account | undefined>;

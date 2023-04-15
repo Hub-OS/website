@@ -17,11 +17,6 @@
   justify-content: center;
 }
 
-.page_controls {
-  margin-top: auto;
-  display: flex;
-}
-
 .right_arrow {
   margin-left: auto;
 }

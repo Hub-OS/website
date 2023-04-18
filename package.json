@@ -8,7 +8,7 @@
     "build": "npm run licenses && next build",
     "start": "next start",
     "lint": "next lint",
-    "licenses": "node generate-licenses.js"
+    "licenses": "node generate-licenses.mjs"
   },
   "dependencies": {
     "@iarna/toml": "^2.2.5",
@@ -17,14 +17,11 @@
     "cookies-next": "^2.1.1",
     "discord.js": "^14.7.1",
     "escape-string-regexp": "^5.0.0",
-    "eslint": "8.32.0",
-    "eslint-config-next": "13.1.5",
     "lodash": "^4.17.21",
     "mongodb": "^5.0.0",
     "next": "13.1.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "4.9.4",
     "zip-utils": "file:./wasm/pkg"
   },
   "devDependencies": {
@@ -32,6 +29,10 @@
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
-    "@wasm-tool/wasm-pack-plugin": "^1.6.0"
+    "@wasm-tool/wasm-pack-plugin": "^1.6.0",
+    "eslint": "8.32.0",
+    "eslint-config-next": "13.1.5",
+    "license-ripper": "^0.1.3",
+    "typescript": "^5.0.4"
   }
 }

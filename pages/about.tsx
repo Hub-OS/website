@@ -15,7 +15,7 @@ export default function Home() {
       <br />
       Special Thanks:
       <ul className={styles.thanks_list}>
-        <li>Alison Allbright</li>
+        <li>Abigail Allbright</li>
         <li>Alrysc</li>
         <li>cantrem404</li>
         <li>CosmicNobab</li>
@@ -28,6 +28,7 @@ export default function Home() {
         <li>FrozenLake</li>
         <li>Gemini</li>
         <li>Gray Nine</li>
+        <li>Gwyneth Hestin</li>
         <li>JamesKing</li>
         <li>JonTheBurger</li>
         <li>KayThree</li>
@@ -39,6 +40,7 @@ export default function Home() {
         <li>Mars</li>
         <li>Mint</li>
         <li>Mithalan</li>
+        <li>Mx. Claris Glennwood</li>
         <li>nickblock</li>
         <li>OuroYisus</li>
         <li>Pion</li>

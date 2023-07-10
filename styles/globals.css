@@ -21,25 +21,18 @@ body {
   overflow-x: hidden;
 }
 
-html {
-  background: url("/bg.png") repeat;
-  background-size: 162px;
-  image-rendering: pixelated;
-  animation-name: background-loop;
-  animation-duration: 4s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-}
-
 body {
   font-family: client-thin;
   font-size: 24px;
   color: white;
-  background: url("/banner.png");
-  background-repeat: no-repeat;
-  background-size: 100%;
-  background-position: 50% 0;
   min-height: 100vh;
+  background: url("/bg.png") repeat;
+  background-size: 8px;
+  image-rendering: pixelated;
+  animation-name: background-loop;
+  animation-duration: 0.4s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
 }
 
 @keyframes background-loop {
@@ -47,7 +40,7 @@ body {
     background-position: 0px 0px;
   }
   to {
-    background-position: 324px 162px;
+    background-position: 8px 0px;
   }
 }
 

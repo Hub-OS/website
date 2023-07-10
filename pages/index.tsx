@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <>
-      Latest version: Real-PET 0.3.0
+      Latest version: Real-PET 0.4.0
       <br />
       <br />
       Links:

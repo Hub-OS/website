@@ -25,6 +25,7 @@
 .links {
   display: flex;
   flex-direction: row;
+  align-items: end;
 }
 
 .links > * {
@@ -42,10 +43,10 @@
 }
 
 .main {
-  border: 20px solid;
-  border-image: url("/border-main.png") 10 fill;
+  border: 16px solid;
+  border-image: url("/border-main.png") 12 fill;
   padding: 8px 8px;
-  margin: 0 8px;
+  margin: 0 4px;
   min-height: 500px;
   margin-bottom: 16px;
   display: flex;
@@ -53,9 +54,7 @@
 }
 
 .main a {
-  color: #52ff39;
-  /* color: #ffd532; */
-  /* color: #40C0E0 */
+  color: #3deaff;
   white-space: nowrap;
 }
 

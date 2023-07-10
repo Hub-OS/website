@@ -18,16 +18,13 @@ export default function AccountBadge() {
   if (account) {
     return (
       <Link href="/account" className={styles.link}>
-        <div className={styles.avatar_container}>
-          <Image
-            className={styles.avatar}
-            src={account.avatar}
-            width="40"
-            height="40"
-            alt="discord-avatar"
-            unoptimized
-          />
-        </div>
+        <Image
+          src={account.avatar}
+          width="40"
+          height="40"
+          alt="discord-avatar"
+          unoptimized
+        />
       </Link>
     );
   }
@@ -38,15 +35,7 @@ export default function AccountBadge() {
       className={styles.link}
       href={`https://discord.com/oauth2/authorize?response_type=token&client_id=${client_id}&scope=identify&redirect_uri=${redirect_uri}`}
     >
-      <div className={styles.avatar_container}>
-        <Image
-          className={styles.avatar}
-          src={"/default-avatar.png"}
-          width="40"
-          height="40"
-          alt="default-avatar"
-        />
-      </div>
+      LOGIN
     </Link>
   );
 }

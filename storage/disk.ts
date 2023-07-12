@@ -175,7 +175,7 @@ export default class Disk implements DB {
       return;
     }
 
-    const hasher = crypto.createHash("md5");
+    const hasher = crypto.createHash("sha256");
 
     stream.on("data", (chunk) => {
       hasher.update(chunk);

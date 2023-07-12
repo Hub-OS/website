@@ -154,7 +154,7 @@ export default class MongoBasedDB implements DB {
   }
 
   async uploadPackageZip(id: string, stream: NodeJS.ReadableStream) {
-    const hasher = crypto.createHash("md5");
+    const hasher = crypto.createHash("sha256");
 
     stream.on("data", (chunk) => {
       hasher.update(chunk);

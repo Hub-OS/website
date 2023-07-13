@@ -11,7 +11,7 @@ export default function AccountBadge() {
   const { loginState, account } = useAppContext();
 
   if (loginState == LoginState.Pending) {
-    return <></>;
+    return <Link href="/account" className={styles.link}></Link>;
   }
 
   // show avatar

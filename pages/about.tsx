@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <>
       <span>
-        REAL-PET is derived from{" "}
+        HubOS is derived from{" "}
         <Link href="https://github.com/TheMaverickProgrammer/OpenNetBattle">
           OpenNetBattle
         </Link>

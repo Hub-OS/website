@@ -5,6 +5,7 @@ export default function Home() {
     <>
       HubOS
       <br />
+      <br />
       Latest version: 0.5.0
       <br />
       <br />
@@ -17,9 +18,7 @@ export default function Home() {
           </Link>
         </li> */}
         <li>
-          <Link href="https://hub-os.github.io/documentation-website/client/packages/">
-            DOCUMENTATION
-          </Link>
+          <Link href="https://docs.hubos.dev">DOCUMENTATION</Link>
         </li>
         <li>
           <Link href="https://github.com/orgs/Hub-OS/repositories">

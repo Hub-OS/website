@@ -67,9 +67,9 @@ export default function ModList({ mods, moreExist }: Props) {
           <option value="augment">Augments</option>
           <option value="encounter">Encounters</option>
           <option value="player">Players</option>
+          <option value="resource">Resources</option>
           <option value="pack">Packs</option>
           <option value="library">Libraries</option>
-          <option value="resource">Resources</option>
         </select>
 
         <input

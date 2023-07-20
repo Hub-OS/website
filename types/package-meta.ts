@@ -64,6 +64,7 @@ const validCategories = [
   "library",
   "player",
   "pack",
+  "resource",
 ];
 
 export function asPackageMeta(obj: any): PackageMeta | undefined {

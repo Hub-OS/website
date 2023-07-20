@@ -6,7 +6,7 @@ export default function Home() {
       HubOS
       <br />
       <br />
-      Latest version: 0.5.0
+      Latest version: 0.6.0
       <br />
       <br />
       Links:

@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <>
       <span>
-        HubOS is derived from{" "}
+        Hub OS is derived from{" "}
         <Link href="https://github.com/TheMaverickProgrammer/OpenNetBattle">
           OpenNetBattle
         </Link>

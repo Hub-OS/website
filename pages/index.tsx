@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <>
-      HubOS
+      Hub OS
       <br />
       <br />
       Latest version: 0.7.0

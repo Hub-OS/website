@@ -25,6 +25,9 @@ export default function Home() {
             CONTRIBUTE
           </Link>
         </li>
+        <li>
+          <Link href="/cat.png">CAT</Link>
+        </li>
       </ul>
     </>
   );

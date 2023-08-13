@@ -3,7 +3,7 @@ import {
   hasDependencies,
   PackageMeta,
 } from "@/types/package-meta";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NextPageContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -22,8 +22,16 @@ export default function ModPage({ meta, creator }: Props) {
   const [hidden, setHidden] = useState(meta?.hidden);
   const [togglingHidden, setTogglingHidden] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [updatedDate, setUpdatedDate] = useState<string | undefined>(undefined);
   const context = useAppContext();
   const router = useRouter();
+
+  // locale can only be handled on the client, as the server doesn't have this information
+  useEffect(() => {
+    setUpdatedDate(
+      meta ? new Date(meta.updated_date).toLocaleString() : undefined
+    );
+  }, [meta]);
 
   if (!meta) {
     return <>Package not found.</>;
@@ -102,8 +110,30 @@ export default function ModPage({ meta, creator }: Props) {
       </div>
 
       <div className={styles.meta}>
-        <div>Package ID: {meta.package.id}</div>
-        {creator && <div>Author: {creator.username}</div>}
+        {creator && (
+          <div>
+            Author:
+            <ul>
+              <li>{creator.username}</li>
+            </ul>
+          </div>
+        )}
+
+        {creator && (
+          <div>
+            Last Update:
+            <ul>
+              <li>{updatedDate}</li>
+            </ul>
+          </div>
+        )}
+
+        <div>
+          Package ID:
+          <ul>
+            <li>{meta.package.id}</li>
+          </ul>
+        </div>
 
         {meta.defines?.characters?.length! > 0 && (
           <div>

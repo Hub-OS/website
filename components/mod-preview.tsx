@@ -36,6 +36,10 @@ export default function ModPreview({ meta, className }: Props) {
     const flat = meta.package.flat;
 
     if (!color || !shape) {
+      setPreviewUri(
+        meta.package.preview_texture_path && `/api/mods/${encodedId}/preview`
+      );
+
       return;
     }
 
@@ -89,7 +93,7 @@ export default function ModPreview({ meta, className }: Props) {
       }
     });
     console.log();
-  }, [colors, meta]);
+  }, [encodedId, colors, meta]);
 
   return (
     <div

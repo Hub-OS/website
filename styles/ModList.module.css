@@ -17,6 +17,6 @@
   justify-content: center;
 }
 
-.right_arrow {
-  margin-left: auto;
+.left_arrow {
+  margin-right: auto;
 }

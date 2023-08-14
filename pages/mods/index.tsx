@@ -97,16 +97,16 @@ export default function ModList({ mods, moreExist }: Props) {
 
       <PageActions>
         {page > 0 && (
-          <Link href={createHref(page - 1, category, name)}>{"< PREV"}</Link>
+          <Link
+            className={styles.left_arrow}
+            href={createHref(page - 1, category, name)}
+          >
+            {"< PREV"}
+          </Link>
         )}
 
         {moreExist && (
-          <Link
-            className={styles.right_arrow}
-            href={createHref(page + 1, category, name)}
-          >
-            {"NEXT >"}
-          </Link>
+          <Link href={createHref(page + 1, category, name)}>{"NEXT >"}</Link>
         )}
       </PageActions>
     </>

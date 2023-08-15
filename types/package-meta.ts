@@ -38,6 +38,14 @@ export type PackageMeta = {
     // players and cards
     element?: string;
     icon_texture_path?: string;
+
+    // statuses
+    flag_name?: string;
+    blocks_flags?: string[];
+    blocked_by?: string[];
+    blocks_actions?: boolean;
+    blocks_mobility?: boolean;
+    durations?: number[];
   };
   defines?: {
     characters?: { id: string; path: string }[];
@@ -47,6 +55,7 @@ export type PackageMeta = {
     encounters?: string[];
     characters?: string[];
     libraries?: string[];
+    statuses?: string[];
     cards?: string[];
   };
   // storage specific
@@ -65,6 +74,7 @@ const validCategories = [
   "player",
   "pack",
   "resource",
+  "status",
 ];
 
 export function asPackageMeta(obj: any): PackageMeta | undefined {
@@ -99,13 +109,17 @@ export function asPackageMeta(obj: any): PackageMeta | undefined {
       return;
     }
 
-    const { characters, libraries, cards } = obj.dependencies;
+    const { characters, libraries, statuses, cards } = obj.dependencies;
 
     if (characters && !isDependencyList(characters)) {
       return;
     }
 
     if (libraries && !isDependencyList(libraries)) {
+      return;
+    }
+
+    if (statuses && !isDependencyList(statuses)) {
       return;
     }
 
@@ -143,7 +157,8 @@ export function hasDependencies(meta: PackageMeta) {
     meta.dependencies.encounters?.length! > 0 ||
     meta.dependencies.cards?.length! > 0 ||
     meta.dependencies.characters?.length! > 0 ||
-    meta.dependencies.libraries?.length! > 0
+    meta.dependencies.libraries?.length! > 0 ||
+    meta.dependencies.statuses?.length! > 0
   );
 }
 
@@ -168,6 +183,10 @@ export function dependencies(meta: PackageMeta) {
 
   if (meta.dependencies.libraries) {
     dependencies.push(...meta.dependencies.libraries);
+  }
+
+  if (meta.dependencies.statuses) {
+    dependencies.push(...meta.dependencies.statuses);
   }
 
   return dependencies;

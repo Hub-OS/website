@@ -70,6 +70,7 @@ export default function ModList({ mods, moreExist }: Props) {
           <option value="resource">Resources</option>
           <option value="pack">Packs</option>
           <option value="library">Libraries</option>
+          <option value="status">Statuses</option>
         </select>
 
         <input

@@ -13,7 +13,12 @@ export default async function handler(
   }
 
   const token = req.body?.token;
-  setCookie("token", token, { req, res, maxAge: 60 * 60 * 24 * 30 });
+  setCookie("token", token, {
+    req,
+    res,
+    maxAge: 60 * 60 * 24 * 30,
+    httpOnly: true,
+  });
 
   const discordUser = await fetchDiscordUser(req, res);
 

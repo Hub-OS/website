@@ -20,6 +20,7 @@
     "lodash": "^4.17.21",
     "mongodb": "^5.0.0",
     "next": "13.1.5",
+    "next-nprogress-bar": "^2.1.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "zip-utils": "file:./wasm/pkg"

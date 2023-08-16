@@ -3,6 +3,7 @@ import { PackageMeta } from "./package-meta";
 export enum SortMethod {
   CreationDate,
   RecentlyUpdated,
+  // PackageId
   // Downloads,
   // trending?
 }

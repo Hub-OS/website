@@ -4,6 +4,7 @@ import { useAppContext } from "@/components/context";
 import PageActions from "@/components/page-actions";
 import styles from "@/styles/Account.module.css";
 import classNames from "classnames";
+import Link from "next/link";
 
 type Message = {
   text: string;
@@ -43,6 +44,19 @@ export default function Account() {
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
+
+          <br />
+
+          <ul>
+            <li>
+              <Link href={`/mods?creator=${account!.id}`}>
+                View Published Mods
+              </Link>
+            </li>
+            <li>
+              <Link href="/mods/upload">Upload New Mods</Link>
+            </li>
+          </ul>
 
           <PageActions>
             {message && (

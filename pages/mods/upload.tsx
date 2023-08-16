@@ -1,6 +1,6 @@
 import styles from "@/styles/Upload.module.css";
 import { useEffect, useState } from "react";
-import init, { read_file, rezip, hook_panics } from "zip-utils";
+import init, { read_file, rezip_packages, hook_panics } from "zip-utils";
 import TOML from "@iarna/toml";
 import { PackageMeta, asPackageMeta } from "@/types/package-meta";
 import { Result, Ok, Err } from "@/types/result";
@@ -14,7 +14,7 @@ export default function Upload() {
   const [value, setValue] = useState("");
   const [text, setText] = useState("PREPARING...");
   const [preparing, setPreparing] = useState(true);
-  const [log, setLog] = useState<UploadLog>([]);
+  let [log, setLog] = useState<UploadLog>([]);
 
   useEffect(() => {
     if (!startedInit) {
@@ -61,37 +61,41 @@ export default function Upload() {
               return;
             }
 
-            let rezipped;
+            let rezipped_packages;
 
             try {
               const buffer = await file.arrayBuffer();
               const bytes = new Uint8Array(buffer);
-              rezipped = rezip(bytes);
+              rezipped_packages = rezip_packages(bytes) as Uint8Array[];
             } catch {
               setText("FAILED TO READ ZIP");
               return;
             }
 
-            const packageMetaResult = resolvePackageMeta(rezipped);
+            for (const rezipped of rezipped_packages) {
+              const packageMetaResult = resolvePackageMeta(rezipped);
 
-            if (!packageMetaResult.ok) {
-              // handle error and resolve to a single type
-              setText(packageMetaResult.error);
-              return;
+              if (!packageMetaResult.ok) {
+                // handle error and resolve to a single type
+                setText(packageMetaResult.error);
+                return;
+              }
+
+              const packageMeta = packageMetaResult.value;
+
+              setText(`UPLOADING ${packageMeta.package.name.toUpperCase()}`);
+
+              const urlResult = await uploadPackage(packageMeta, rezipped);
+
+              if (!urlResult.ok) {
+                setText(urlResult.error);
+                return;
+              }
+
+              log = [...log, { packageMeta, url: urlResult.value }];
+              setLog(log);
             }
 
-            const packageMeta = packageMetaResult.value;
-
-            setText(`UPLOADING ${packageMeta.package.name.toUpperCase()}`);
-
-            const urlResult = await uploadPackage(packageMeta, rezipped);
-
-            if (!urlResult.ok) {
-              setText(urlResult.error);
-              return;
-            }
-
-            setLog([...log, { packageMeta, url: urlResult.value }]);
             setText("DROP ZIP HERE");
           }}
         />

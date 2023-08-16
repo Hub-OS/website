@@ -10,22 +10,22 @@ export function hook_panics(): void;
 */
 export function read_file(bytes: Uint8Array, name: string): Uint8Array;
 /**
-* @param {Uint8Array} input
-* @returns {Uint8Array}
+* @param {Uint8Array} bytes
+* @returns {Array<any>}
 */
-export function rezip(input: Uint8Array): Uint8Array;
+export function rezip_packages(bytes: Uint8Array): Array<any>;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly read_file: (a: number, b: number, c: number, d: number, e: number) => void;
-  readonly rezip: (a: number, b: number, c: number) => void;
+  readonly rezip_packages: (a: number, b: number, c: number) => void;
   readonly hook_panics: () => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
-  readonly __wbindgen_malloc: (a: number) => number;
-  readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
-  readonly __wbindgen_free: (a: number, b: number) => void;
+  readonly __wbindgen_malloc: (a: number, b: number) => number;
+  readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
+  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
@@ -47,4 +47,4 @@ export function initSync(module: SyncInitInput): InitOutput;
 *
 * @returns {Promise<InitOutput>}
 */
-export default function init (module_or_path?: InitInput | Promise<InitInput>): Promise<InitOutput>;
+export default function __wbg_init (module_or_path?: InitInput | Promise<InitInput>): Promise<InitOutput>;

@@ -8,7 +8,8 @@ crate-type = ["cdylib", "rlib"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-wasm-bindgen = "0.2.83"
+wasm-bindgen = "0.2"
 console_error_panic_hook = "0.1"
-path-clean = "0.1"
+path-clean = "1"
 zip = { version = "0.6", features = ["deflate"], default-features = false }
+js-sys = "0.3"

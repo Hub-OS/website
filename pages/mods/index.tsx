@@ -148,7 +148,7 @@ const host = process.env.NEXT_PUBLIC_HOST!;
 const mods_per_page = 25;
 
 export async function getServerSideProps(context: NextPageContext) {
-  const props: Props = { mods: [], moreExist: false };
+  const props: Props = { mods: [], creator: null, moreExist: false };
 
   const [modsResult, creatorResult] = await Promise.all([
     requestMods(context.query),

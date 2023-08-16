@@ -9,11 +9,11 @@ import { useEffect, useState } from "react";
 import styles from "@/styles/ModList.module.css";
 import { requestJSON } from "@/types/request";
 import _ from "lodash";
-import { Result } from "@/types/result";
+import { Ok, Result } from "@/types/result";
 import { PublicAccountData } from "@/types/public-account-data";
 
 type Props = {
-  creator?: PublicAccountData;
+  creator: PublicAccountData | null;
   mods: PackageMeta[];
   moreExist: boolean;
 };
@@ -200,7 +200,11 @@ async function requestMods(
 
 async function requestCreator(
   query: NextPageContext["query"]
-): Promise<Result<PublicAccountData, string>> {
+): Promise<Result<PublicAccountData | null, string>> {
+  if (!query.creator) {
+    return Ok(null);
+  }
+
   const uri = `${host}/api/users/${query.creator}`;
 
   return (await requestJSON(uri)) as Result<PublicAccountData, string>;

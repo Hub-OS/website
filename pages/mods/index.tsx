@@ -20,9 +20,10 @@ type Props = {
 
 function createHref(
   page: number,
-  category?: string,
-  name?: string,
-  creator?: string
+  category: string | undefined,
+  name: string | undefined,
+  creator: string | undefined,
+  hidden: boolean
 ) {
   let query = `/mods?page=${page}`;
 
@@ -36,6 +37,10 @@ function createHref(
 
   if (creator) {
     query += "&creator=" + encodeURIComponent(creator);
+  }
+
+  if (hidden) {
+    query += "&hidden=true";
   }
 
   return query;
@@ -57,12 +62,13 @@ export default function ModList({ creator, mods, moreExist }: Props) {
   const category = router.query.category as string | undefined;
   const queryName = router.query.name as string | undefined;
   const creatorId = router.query.creator as string | undefined;
+  const hidden = router.query.hidden == "true";
 
   const [name, setName] = useState(queryName);
 
   const [debouncedSearchHandler] = useState(() =>
     _.debounce((value: string) => {
-      const href = createHref(0, category, value, creatorId);
+      const href = createHref(0, category, value, creatorId, hidden);
 
       router.push(href);
     }, 300)
@@ -72,7 +78,19 @@ export default function ModList({ creator, mods, moreExist }: Props) {
     <>
       {creator && (
         <div className={styles.creator_section}>
-          Mods from {creator.username}:
+          <div>Mods from {creator.username}:</div>
+
+          {context.account != undefined &&
+            context.account.id == creator.id &&
+            (hidden ? (
+              <Link href={createHref(page, category, name, creatorId, false)}>
+                VIEW PUBLIC
+              </Link>
+            ) : (
+              <Link href={createHref(page, category, name, creatorId, true)}>
+                VIEW HIDDEN
+              </Link>
+            ))}
         </div>
       )}
 
@@ -84,7 +102,8 @@ export default function ModList({ creator, mods, moreExist }: Props) {
               0,
               event.currentTarget.value,
               name,
-              creatorId
+              creatorId,
+              hidden
             );
 
             router.push(href);
@@ -128,14 +147,14 @@ export default function ModList({ creator, mods, moreExist }: Props) {
         {page > 0 && (
           <Link
             className={styles.left_arrow}
-            href={createHref(page - 1, category, name, creatorId)}
+            href={createHref(page - 1, category, name, creatorId, hidden)}
           >
             {"< PREV"}
           </Link>
         )}
 
         {moreExist && (
-          <Link href={createHref(page + 1, category, name, creatorId)}>
+          <Link href={createHref(page + 1, category, name, creatorId, hidden)}>
             {"NEXT >"}
           </Link>
         )}
@@ -151,7 +170,7 @@ export async function getServerSideProps(context: NextPageContext) {
   const props: Props = { mods: [], creator: null, moreExist: false };
 
   const [modsResult, creatorResult] = await Promise.all([
-    requestMods(context.query),
+    requestMods(context),
     requestCreator(context.query),
   ]);
 
@@ -174,12 +193,12 @@ export async function getServerSideProps(context: NextPageContext) {
 }
 
 async function requestMods(
-  query: NextPageContext["query"]
+  context: NextPageContext
 ): Promise<Result<PackageMeta[], string>> {
-  const page = +(query.page || 0);
+  const page = +(context.query.page || 0);
   const skip = mods_per_page * page;
   const limit = mods_per_page + 1;
-  const { category, name, creator } = query;
+  const { category, name, creator, hidden } = context.query;
 
   let url = `${host}/api/mods?skip=${skip}&limit=${limit}`;
 
@@ -195,7 +214,17 @@ async function requestMods(
     url += `&creator=${encodeURIComponent(creator as string)}`;
   }
 
-  return (await requestJSON(url)) as Result<PackageMeta[], string>;
+  if (hidden == "true") {
+    url += "&hidden=true";
+  }
+
+  const requestInit = {
+    headers: {
+      cookie: context.req?.headers.cookie || "",
+    },
+  };
+
+  return (await requestJSON(url, requestInit)) as Result<PackageMeta[], string>;
 }
 
 async function requestCreator(

@@ -1,8 +1,11 @@
 import { Err, Ok, Result } from "./result";
 
-export async function requestJSON(uri: string): Promise<Result<any, string>> {
+export async function requestJSON(
+  uri: string,
+  init?: RequestInit | undefined
+): Promise<Result<any, string>> {
   try {
-    const res = await fetch(uri);
+    const res = await fetch(uri, init);
 
     if (res.status != 200) {
       return Err(await res.text());

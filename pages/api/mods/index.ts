@@ -3,6 +3,8 @@ import { PackageMeta } from "@/types/package-meta";
 import db from "@/storage/db";
 import { Query } from "@/types/query";
 import { SortMethod } from "@/types/sort-method";
+import { getAccount } from "../users/me";
+import { getCookie } from "cookies-next";
 
 export default async function handler(
   req: NextApiRequest,
@@ -38,7 +40,19 @@ async function handleGet(
   }
 
   if (typeof req.query.creator == "string") {
-    query["creator"] = db.stringToId(req.query.creator);
+    const creatorId = db.stringToId(req.query.creator);
+    query["creator"] = creatorId;
+
+    if (req.query.hidden == "true") {
+      const account = await getAccount(req, res);
+
+      if (db.compareIds(creatorId, account?.id)) {
+        query.hidden = true;
+      } else {
+        res.status(403).end();
+        return;
+      }
+    }
   }
 
   const limit = Math.min(+((req.query.limit as string) || 0), 100);

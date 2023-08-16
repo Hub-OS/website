@@ -7,11 +7,23 @@ import { useAppContext } from "@/components/context";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "@/styles/ModList.module.css";
+import { requestJSON } from "@/types/request";
 import _ from "lodash";
+import { Result } from "@/types/result";
+import { PublicAccountData } from "@/types/public-account-data";
 
-type Props = { mods: PackageMeta[]; moreExist: boolean };
+type Props = {
+  creator?: PublicAccountData;
+  mods: PackageMeta[];
+  moreExist: boolean;
+};
 
-function createHref(page: number, category?: string, name?: string) {
+function createHref(
+  page: number,
+  category?: string,
+  name?: string,
+  creator?: string
+) {
   let query = `/mods?page=${page}`;
 
   if (category) {
@@ -22,10 +34,14 @@ function createHref(page: number, category?: string, name?: string) {
     query += "&name=" + encodeURIComponent(name);
   }
 
+  if (creator) {
+    query += "&creator=" + encodeURIComponent(creator);
+  }
+
   return query;
 }
 
-export default function ModList({ mods, moreExist }: Props) {
+export default function ModList({ creator, mods, moreExist }: Props) {
   const context = useAppContext();
   const router = useRouter();
 
@@ -40,12 +56,13 @@ export default function ModList({ mods, moreExist }: Props) {
   const page = Math.max(+(router.query.page || 0), 0);
   const category = router.query.category as string | undefined;
   const queryName = router.query.name as string | undefined;
+  const creatorId = router.query.creator as string | undefined;
 
   const [name, setName] = useState(queryName);
 
   const [debouncedSearchHandler] = useState(() =>
     _.debounce((value: string) => {
-      const href = createHref(0, category, value);
+      const href = createHref(0, category, value, creatorId);
 
       router.push(href);
     }, 300)
@@ -53,11 +70,22 @@ export default function ModList({ mods, moreExist }: Props) {
 
   return (
     <>
+      {creator && (
+        <div className={styles.creator_section}>
+          Mods from {creator.username}:
+        </div>
+      )}
+
       <div className={styles.control_bar}>
         <select
           value={category || "All"}
           onChange={(event) => {
-            const href = createHref(0, event.currentTarget.value, name);
+            const href = createHref(
+              0,
+              event.currentTarget.value,
+              name,
+              creatorId
+            );
 
             router.push(href);
           }}
@@ -100,31 +128,58 @@ export default function ModList({ mods, moreExist }: Props) {
         {page > 0 && (
           <Link
             className={styles.left_arrow}
-            href={createHref(page - 1, category, name)}
+            href={createHref(page - 1, category, name, creatorId)}
           >
             {"< PREV"}
           </Link>
         )}
 
         {moreExist && (
-          <Link href={createHref(page + 1, category, name)}>{"NEXT >"}</Link>
+          <Link href={createHref(page + 1, category, name, creatorId)}>
+            {"NEXT >"}
+          </Link>
         )}
       </PageActions>
     </>
   );
 }
 
+const host = process.env.NEXT_PUBLIC_HOST!;
 const mods_per_page = 25;
 
 export async function getServerSideProps(context: NextPageContext) {
   const props: Props = { mods: [], moreExist: false };
 
-  const host = process.env.NEXT_PUBLIC_HOST!;
+  const [modsResult, creatorResult] = await Promise.all([
+    requestMods(context.query),
+    requestCreator(context.query),
+  ]);
 
-  const page = +(context.query.page || 0);
+  if (modsResult.ok) {
+    props.mods = modsResult.value;
+  }
+
+  if (props.mods.length > mods_per_page) {
+    props.mods.pop();
+    props.moreExist = true;
+  }
+
+  if (creatorResult.ok) {
+    props.creator = creatorResult.value;
+  }
+
+  return {
+    props,
+  };
+}
+
+async function requestMods(
+  query: NextPageContext["query"]
+): Promise<Result<PackageMeta[], string>> {
+  const page = +(query.page || 0);
   const skip = mods_per_page * page;
   const limit = mods_per_page + 1;
-  const { category, name } = context.query;
+  const { category, name, creator } = query;
 
   let url = `${host}/api/mods?skip=${skip}&limit=${limit}`;
 
@@ -136,18 +191,17 @@ export async function getServerSideProps(context: NextPageContext) {
     url += `&name=${encodeURIComponent(name as string)}`;
   }
 
-  const res = await fetch(url);
-
-  if (res.status == 200) {
-    props.mods = (await res.json()) as PackageMeta[];
+  if (creator) {
+    url += `&creator=${encodeURIComponent(creator as string)}`;
   }
 
-  if (props.mods.length > mods_per_page) {
-    props.mods.pop();
-    props.moreExist = true;
-  }
+  return (await requestJSON(url)) as Result<PackageMeta[], string>;
+}
 
-  return {
-    props,
-  };
+async function requestCreator(
+  query: NextPageContext["query"]
+): Promise<Result<PublicAccountData, string>> {
+  const uri = `${host}/api/users/${query.creator}`;
+
+  return (await requestJSON(uri)) as Result<PublicAccountData, string>;
 }

@@ -267,10 +267,12 @@ function toMongoQuery(query: Query) {
       continue;
     }
 
+    // type check to protect against possible attacks
     if (Array.isArray(value)) {
       mongoQuery[key] = { $in: value };
     } else if (typeof value != "object") {
-      // ignore objects to protect against possible attacks
+      mongoQuery[key] = value;
+    } else if (value instanceof ObjectId) {
       mongoQuery[key] = value;
     }
   }

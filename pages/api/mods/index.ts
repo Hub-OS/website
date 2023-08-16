@@ -37,6 +37,10 @@ async function handleGet(
     query["$package.name"] = req.query.name;
   }
 
+  if (typeof req.query.creator == "string") {
+    query["creator"] = db.stringToId(req.query.creator);
+  }
+
   const limit = Math.min(+((req.query.limit as string) || 0), 100);
 
   const list = await db.listPackages(

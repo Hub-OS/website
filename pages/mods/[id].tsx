@@ -14,6 +14,7 @@ import PageActions from "@/components/page-actions";
 import { PublicAccountData } from "@/types/public-account-data";
 import classNames from "classnames";
 import styles from "@/styles/Mod.module.css";
+import { requestJSON } from "@/types/request";
 
 type Props = { meta?: PackageMeta; creator?: PublicAccountData };
 
@@ -114,7 +115,15 @@ export default function ModPage({ meta, creator }: Props) {
           <div>
             Author:
             <ul>
-              <li>{creator.username}</li>
+              <li>
+                <a
+                  href={`/mods?creator=${decodeURIComponent(
+                    creator.id as string
+                  )}`}
+                >
+                  {creator.username}
+                </a>
+              </li>
             </ul>
           </div>
         )}
@@ -184,25 +193,24 @@ export default function ModPage({ meta, creator }: Props) {
 export async function getServerSideProps(context: NextPageContext) {
   const props: Props = {};
 
-  const requestJSON = async (uri: string) => {
-    const res = await fetch(uri);
-
-    if (res.status != 200) {
-      return;
-    }
-
-    return await res.json();
-  };
-
   const encodedId = encodeURIComponent(context.query.id as string);
   const uri = `${process.env.NEXT_PUBLIC_HOST!}/api/mods/${encodedId}/meta`;
-  props.meta = await requestJSON(uri);
+
+  const metaResult = await requestJSON(uri);
+
+  if (metaResult.ok) {
+    props.meta = metaResult.value;
+  }
 
   if (props.meta) {
     const creatorId = props.meta.creator;
     const uri = `${process.env.NEXT_PUBLIC_HOST!}/api/users/${creatorId}`;
 
-    props.creator = await requestJSON(uri);
+    const creatorResult = await requestJSON(uri);
+
+    if (creatorResult.ok) {
+      props.creator = creatorResult.value;
+    }
   }
 
   return {

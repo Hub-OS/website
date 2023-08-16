@@ -102,7 +102,13 @@ pub fn rezip_root_folders(bytes: &[u8]) -> ZipResult<impl Iterator<Item = ZipRes
         entries.push((path.to_string(), bytes));
     })?;
 
-    Ok(folder_map.into_values().map(zip_entries))
+    let mut folder_map_vec: Vec<_> = folder_map.into_iter().collect();
+    folder_map_vec.sort_by_cached_key(|(key, _)| key.clone());
+
+    Ok(folder_map_vec
+        .into_iter()
+        .rev()
+        .map(|(_, entries)| zip_entries(entries)))
 }
 
 fn zip_entries(mut entries: Vec<(String, Vec<u8>)>) -> ZipResult<Vec<u8>> {

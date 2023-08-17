@@ -12,7 +12,6 @@ export default function App({ Component, pageProps }: AppProps) {
         color="white"
         options={{ showSpinner: false }}
         delay={100}
-        shallowRouting
       />
       <Layout>
         <Component {...pageProps} />

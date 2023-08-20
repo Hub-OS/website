@@ -1,7 +1,7 @@
 .control_bar {
   display: flex;
   flex-direction: row;
-  margin-bottom: 4px;
+  margin-bottom: 12px;
   gap: 8px;
 }
 

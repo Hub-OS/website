@@ -118,6 +118,7 @@ export default function ModList({ creator, mods, moreExist }: Props) {
           <option value="pack">Packs</option>
           <option value="library">Libraries</option>
           <option value="status">Statuses</option>
+          <option value="tile_state">Tile States</option>
         </select>
 
         <input

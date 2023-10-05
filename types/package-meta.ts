@@ -46,6 +46,16 @@ export type PackageMeta = {
     blocks_actions?: boolean;
     blocks_mobility?: boolean;
     durations?: number[];
+
+    // tile states
+    state_name?: string;
+    texture_path?: string;
+    animation_path?: string;
+    max_lifetime?: number;
+    hide_frame?: boolean;
+    hide_frame_body?: boolean;
+    hole?: boolean;
+    cleanser_element?: string;
   };
   defines?: {
     characters?: { id: string; path: string }[];
@@ -75,6 +85,17 @@ const validCategories = [
   "pack",
   "resource",
   "status",
+  "tile_state",
+];
+
+const dependencyListNames = [
+  "augments",
+  "encounters",
+  "characters",
+  "libraries",
+  "statuses",
+  "cards",
+  "tile_states",
 ];
 
 export function asPackageMeta(obj: any): PackageMeta | undefined {
@@ -109,22 +130,12 @@ export function asPackageMeta(obj: any): PackageMeta | undefined {
       return;
     }
 
-    const { characters, libraries, statuses, cards } = obj.dependencies;
+    for (const name of dependencyListNames) {
+      const list = obj.dependencies[name];
 
-    if (characters && !isDependencyList(characters)) {
-      return;
-    }
-
-    if (libraries && !isDependencyList(libraries)) {
-      return;
-    }
-
-    if (statuses && !isDependencyList(statuses)) {
-      return;
-    }
-
-    if (cards && !isDependencyList(cards)) {
-      return;
+      if (list && !isDependencyList(list)) {
+        return;
+      }
     }
   }
 
@@ -152,14 +163,17 @@ export function hasDependencies(meta: PackageMeta) {
     return false;
   }
 
-  return (
-    meta.dependencies.augments?.length! > 0 ||
-    meta.dependencies.encounters?.length! > 0 ||
-    meta.dependencies.cards?.length! > 0 ||
-    meta.dependencies.characters?.length! > 0 ||
-    meta.dependencies.libraries?.length! > 0 ||
-    meta.dependencies.statuses?.length! > 0
-  );
+  const dependencyListMap = meta.dependencies as { [key: string]: string[] };
+
+  for (const name of dependencyListNames) {
+    const list = dependencyListMap[name];
+
+    if (list?.length > 0) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 export function dependencies(meta: PackageMeta) {
@@ -169,24 +183,14 @@ export function dependencies(meta: PackageMeta) {
     return dependencies;
   }
 
-  if (meta.dependencies.augments) {
-    dependencies.push(...meta.dependencies.augments);
-  }
+  const dependencyListMap = meta.dependencies as { [key: string]: string[] };
 
-  if (meta.dependencies.encounters) {
-    dependencies.push(...meta.dependencies.encounters);
-  }
+  for (const name of dependencyListNames) {
+    const list = dependencyListMap[name];
 
-  if (meta.dependencies.cards) {
-    dependencies.push(...meta.dependencies.cards);
-  }
-
-  if (meta.dependencies.libraries) {
-    dependencies.push(...meta.dependencies.libraries);
-  }
-
-  if (meta.dependencies.statuses) {
-    dependencies.push(...meta.dependencies.statuses);
+    if (list) {
+      dependencies.push(...list);
+    }
   }
 
   return dependencies;

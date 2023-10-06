@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { PublicAccountData } from "@/types/public-account-data";
 import { fetchDiscordUser } from "@/types/discord";
-import { Account } from "@/types/account";
+import { Account, normalizeUsername } from "@/types/account";
 import db from "@/storage/db";
 import { MongoServerError } from "mongodb";
 
@@ -68,7 +68,7 @@ async function handlePatch(
     patchRequest.username != account.username
   ) {
     patch.username = patchRequest.username;
-    patch.normalized_username = patchRequest.username.toLowerCase();
+    patch.normalized_username = normalizeUsername(patchRequest.username);
 
     if (!USERNAME_REGEX.test(patchRequest.username)) {
       // restrict username for client font, as well as avoiding name clash with discord

@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { setCookie } from "cookies-next";
 import { fetchDiscordUser } from "@/types/discord";
 import db from "@/storage/db";
+import { normalizeUsername } from "@/types/account";
 
 export default async function handler(
   req: NextApiRequest,
@@ -35,7 +36,7 @@ export default async function handler(
     // create an account
     await db.createAccount({
       username,
-      normalized_username: username.toLowerCase(),
+      normalized_username: normalizeUsername(username),
       discord_id: discordUser.id,
       avatar:
         discordUser.avatar != undefined

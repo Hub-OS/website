@@ -5,3 +5,7 @@ export type Account = {
   discord_id: string;
   avatar: string;
 };
+
+export function normalizeUsername(name: string) {
+  return name.toLowerCase();
+}

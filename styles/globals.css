@@ -59,10 +59,53 @@ ul {
 
 li {
   margin-left: 16px;
+  margin-right: 16px;
   margin-top: 2px;
 }
 
 pre {
   font: inherit;
   white-space: pre-line;
+}
+
+.input-row {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.input-row > a {
+  align-self: flex-end;
+}
+
+.input-row > * {
+  align-self: stretch;
+}
+
+input[type="text"],
+input:not([type]) {
+  padding-top: 3px;
+  padding-bottom: 1px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+select,
+input[type="text"],
+input:not([type]) {
+  font-size: 14px;
+}
+
+.table-list {
+  width: fit-content;
+  margin-left: 16px;
+}
+
+td {
+  height: 1px;
+}
+
+.error {
+  color: #ff3d3d;
 }

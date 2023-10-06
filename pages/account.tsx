@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import { LoginState } from "@/types/login-state";
 import { useAppContext } from "@/components/context";
 import PageActions from "@/components/page-actions";
-import styles from "@/styles/Account.module.css";
-import classNames from "classnames";
 import Link from "next/link";
+import PageActionMessage from "@/components/page-action-message";
 
 type Message = {
   text: string;
@@ -37,7 +36,7 @@ export default function Account() {
     case LoginState.LoggedIn:
       return (
         <>
-          <div className={styles.row}>
+          <div className="input-row">
             Username:
             <input
               value={username}
@@ -60,13 +59,11 @@ export default function Account() {
 
           <PageActions>
             {message && (
-              <div
-                className={classNames(styles.message, {
-                  [styles.error]: message.isError,
-                })}
+              <PageActionMessage
+                className={message.isError ? "error" : undefined}
               >
                 {message.text}
-              </div>
+              </PageActionMessage>
             )}
 
             <a

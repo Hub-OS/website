@@ -162,13 +162,13 @@ async function uploadPackage(
   const encodedId = encodeURIComponent(packageMeta.package.id);
 
   try {
-    await fetch(`/api/mods/${encodedId}/meta`, {
+    await fetch200(`/api/mods/${encodedId}/meta`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ meta: packageMeta }),
     });
 
-    await fetch(`/api/mods/${encodedId}`, {
+    await fetch200(`/api/mods/${encodedId}`, {
       method: "POST",
       headers: { "Content-Type": "application/octet-stream" },
       body: zipBytes,
@@ -190,7 +190,29 @@ async function uploadPackage(
         body: bytes,
       });
     }
-  } catch {}
+  } catch {
+    // ignore preview failure
+  }
 
   return Ok(`/mods/${encodedId}`);
+}
+
+async function fetch200(
+  input: RequestInfo | URL,
+  init?: RequestInit
+): Promise<Response> {
+  const response = await fetch(input, init);
+
+  if (!response.ok) {
+    let errorText = `"${input.toString()}" (${response.status})`;
+    const responseText = await response.text();
+
+    if (responseText) {
+      errorText += ":" + responseText;
+    }
+
+    throw new Error(errorText);
+  }
+
+  return response;
 }

@@ -24,6 +24,8 @@ export interface DB {
 
   findPackageMeta(id: string): Promise<PackageMeta | undefined>;
 
+  findPackageMetas(ids: string[]): Promise<PackageMeta[]>;
+
   listPackages(
     query: Query,
     sortMethod: SortMethod,
@@ -47,6 +49,7 @@ export interface DB {
   ): Promise<NodeJS.ReadableStream | undefined>;
 
   deletePackage(id: string): Promise<void>;
+  deletePackages(id: string[]): Promise<void>;
 }
 
 import Disk from "./disk";

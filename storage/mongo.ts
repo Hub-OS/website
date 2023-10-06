@@ -11,6 +11,7 @@ import {
   MongoClient,
   ObjectId,
   SortDirection,
+  WithId,
 } from "mongodb";
 import crypto from "crypto";
 import { pipeline } from "stream/promises";
@@ -88,9 +89,8 @@ export default class MongoBasedDB implements DB {
   }
 
   async upsertPackageMeta(meta: PackageMeta) {
-    const existingMeta = await this.packages.findOne({
-      "package.id": meta.package.id,
-    });
+    const promise = this.findPackageMeta(meta.package.id);
+    const existingMeta = (await promise) as WithId<PackageMeta>;
 
     if (existingMeta) {
       await this.packages.updateOne(
@@ -115,13 +115,26 @@ export default class MongoBasedDB implements DB {
   }
 
   async findPackageMeta(id: string): Promise<PackageMeta | undefined> {
-    const meta = await this.packages.findOne({ "package.id": id });
+    const meta = await this.packages.findOne({
+      $or: [{ "package.id": id }, { "package.past_ids": id }],
+    });
 
     if (!meta) {
       return;
     }
 
     return meta;
+  }
+
+  async findPackageMetas(ids: string[]): Promise<PackageMeta[]> {
+    return this.packages
+      .find({
+        $or: [
+          { "package.id": { $in: ids } },
+          { "package.past_ids": { $in: ids } },
+        ],
+      })
+      .toArray();
   }
 
   async listPackages(
@@ -176,7 +189,6 @@ export default class MongoBasedDB implements DB {
     const hash = hasher.digest("hex");
 
     if (meta && meta.hash != hash) {
-      console.log(meta.hash, hash);
       await this.packages.updateOne(query, {
         $set: {
           hash,
@@ -209,10 +221,13 @@ export default class MongoBasedDB implements DB {
 
   async deletePackage(id: string): Promise<void> {
     await Promise.all([
-      this.deleteFile(`${id}.png`),
-      this.deleteFile(`${id}.zip`),
+      this.deletePackageFiles(id),
       this.packages.deleteOne({ "package.id": id }),
     ]);
+  }
+
+  async deletePackages(ids: string[]): Promise<void> {
+    await Promise.all(ids.map((id) => this.deletePackage(id)));
   }
 
   async openDownloadStream(
@@ -235,6 +250,13 @@ export default class MongoBasedDB implements DB {
     }
 
     return this.bucket.delete(file._id);
+  }
+
+  async deletePackageFiles(id: string): Promise<void> {
+    await Promise.all([
+      this.deleteFile(`${id}.png`),
+      this.deleteFile(`${id}.zip`),
+    ]);
   }
 
   async deleteDuplicateFiles(name: string, latest_id: ObjectId) {

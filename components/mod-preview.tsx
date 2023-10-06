@@ -92,7 +92,6 @@ export default function ModPreview({ meta, className }: Props) {
         setPreviewUri(uri);
       }
     });
-    console.log();
   }, [encodedId, colors, meta]);
 
   return (

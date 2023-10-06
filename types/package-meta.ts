@@ -2,6 +2,7 @@ export type PackageMeta = {
   package: {
     category: string;
     id: string;
+    past_ids?: string[];
     name: string;
     description?: string;
 

@@ -98,9 +98,7 @@ export default class Disk implements DB {
   }
 
   async upsertPackageMeta(meta: PackageMeta) {
-    const existingMeta = this.data.packages.find(
-      (storedMeta) => storedMeta.package.id == meta.package.id
-    );
+    const existingMeta = await this.findPackageMeta(meta.package.id);
 
     if (existingMeta) {
       existingMeta.package = meta.package;
@@ -129,7 +127,16 @@ export default class Disk implements DB {
   }
 
   async findPackageMeta(id: string): Promise<PackageMeta | undefined> {
-    return this.data.packages.find((meta) => meta.package.id == id);
+    return this.data.packages.find(
+      (meta) => meta.package.id == id || meta.package.past_ids?.includes(id)
+    );
+  }
+
+  async findPackageMetas(ids: string[]): Promise<PackageMeta[]> {
+    const promises = ids.map((id) => this.findPackageMeta(id));
+    const packageMetas = await Promise.all(promises);
+
+    return packageMetas.filter((meta) => meta != undefined) as PackageMeta[];
   }
 
   async listPackages(
@@ -238,5 +245,9 @@ export default class Disk implements DB {
       fsPromises.rm(`storage/_disk/mods/${encodeURIComponent(id)}.zip`),
       this.save(),
     ]);
+  }
+
+  async deletePackages(ids: string[]): Promise<void> {
+    await Promise.all(ids.map((id) => this.deletePackage(id)));
   }
 }

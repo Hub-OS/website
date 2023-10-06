@@ -50,16 +50,34 @@ async function handlePost(
     return;
   }
 
-  const matchingMeta = await db.findPackageMeta(meta.package.id as string);
+  const ids = [meta.package.id];
 
-  if (matchingMeta) {
-    if (!db.compareIds(matchingMeta.creator, account.id)) {
-      res.status(403).send(undefined);
-      return;
-    }
-  } else {
+  if (meta.package.past_ids) {
+    ids.push(...meta.package.past_ids);
+  }
+
+  const matchingMetas = await db.findPackageMetas(ids);
+
+  if (matchingMetas.some((meta) => !db.compareIds(meta.creator, account.id))) {
+    console.log(JSON.stringify({ meta, matchingMetas }, null, 2));
+    // we're not the creator of every package
+    res.status(403).send(undefined);
+    return;
+  }
+
+  const matchingIdExists = matchingMetas.some(
+    (m) => m.package.id == meta.package.id
+  );
+
+  if (!matchingIdExists) {
+    // new package, init
     meta.hidden = false;
     meta.creator = account.id;
+  }
+
+  // enforcing uniqueness
+  if (matchingMetas.some((m) => m.package.id != meta.package.id)) {
+    await db.deletePackages(matchingMetas.map((meta) => meta.package.id));
   }
 
   await db.upsertPackageMeta(meta);

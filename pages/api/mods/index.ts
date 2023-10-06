@@ -4,7 +4,6 @@ import db from "@/storage/db";
 import { Query } from "@/types/query";
 import { SortMethod } from "@/types/sort-method";
 import { getAccount } from "../users/me";
-import { getCookie } from "cookies-next";
 
 export default async function handler(
   req: NextApiRequest,

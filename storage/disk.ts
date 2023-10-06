@@ -163,9 +163,15 @@ export default class Disk implements DB {
 
   async *getPackageHashes(ids: string[]): AsyncGenerator<PackageHashResult> {
     const results = this.data.packages
-      .filter((meta) => ids.includes(meta.package.id))
+      .filter(
+        (meta) =>
+          ids.includes(meta.package.id) ||
+          meta.package.past_ids?.some((id) => ids.includes(id))
+      )
       .map((meta) => ({
-        id: meta.package.id,
+        id: [meta.package.id, ...(meta.package.past_ids || [])].find((id) =>
+          ids.includes(id)
+        )!,
         category: meta.package.category,
         hash: meta.hash,
       }));

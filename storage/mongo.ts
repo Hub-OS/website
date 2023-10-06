@@ -156,14 +156,29 @@ export default class MongoBasedDB implements DB {
   }
 
   getPackageHashes(ids: string[]): AsyncGenerator<PackageHashResult> {
-    return this.packages
-      .find({ "package.id": { $in: ids } })
-      .project<PackageHashResult>({
-        _id: 0,
-        id: "$package.id",
-        category: "$package.category",
-        hash: 1,
-      }) as unknown as AsyncGenerator<PackageHashResult>;
+    const mergeIds = { $concatArrays: [["$package.id"], "$package.past_ids"] };
+    const vars = { ids: mergeIds };
+    const indexOfId = { $indexOfArray: ["$$ids", ids] };
+    const firstMatchingId = { $arrayElemAt: ["$$ids", indexOfId] };
+
+    return this.packages.aggregate([
+      {
+        $match: {
+          $or: [
+            { "package.id": { $in: ids } },
+            { "package.past_ids": { $in: ids } },
+          ],
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          id: { $let: { vars, in: firstMatchingId } },
+          category: "$package.category",
+          hash: 1,
+        },
+      },
+    ]) as unknown as AsyncGenerator<PackageHashResult>;
   }
 
   async uploadPackageZip(id: string, stream: NodeJS.ReadableStream) {

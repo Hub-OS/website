@@ -289,28 +289,48 @@ export default class MongoBasedDB implements DB {
 function toMongoQuery(query: Query) {
   const mongoQuery: Query = {};
 
-  for (const key in query) {
+  for (let key in query) {
     const value = query[key];
 
-    if (key.startsWith("$")) {
-      if (typeof value == "string") {
-        // special search case
-        mongoQuery[key.slice(1)] = {
-          $regex: new RegExp(escapeStringRegexp(value), "i"),
-        };
-      }
+    // handle "!"
+    const oldKey = key;
+    key = key.replace(/^!+/, "");
+    const invert = (oldKey.length - key.length) % 2 == 1;
 
-      // protect against possible attacks
-      continue;
+    // handle other special prefixes
+    const firstChar = key[0];
+
+    switch (firstChar) {
+      case "$":
+        // special search case
+        if (typeof value == "string") {
+          mongoQuery[key.slice(1)] = {
+            $regex: new RegExp(escapeStringRegexp(value), "i"),
+          };
+        }
+        break;
+      case "^":
+        // special search case
+        if (typeof value == "string") {
+          mongoQuery[key.slice(1)] = {
+            $regex: new RegExp("^" + escapeStringRegexp(value)),
+          };
+        }
+        break;
+      default:
+        // type check to protect against possible attacks
+        if (Array.isArray(value)) {
+          mongoQuery[key] = { $in: value };
+        } else if (typeof value != "object") {
+          mongoQuery[key] = value;
+        } else if (value instanceof ObjectId) {
+          mongoQuery[key] = value;
+        }
+        break;
     }
 
-    // type check to protect against possible attacks
-    if (Array.isArray(value)) {
-      mongoQuery[key] = { $in: value };
-    } else if (typeof value != "object") {
-      mongoQuery[key] = value;
-    } else if (value instanceof ObjectId) {
-      mongoQuery[key] = value;
+    if (invert) {
+      mongoQuery[key] = { $not: mongoQuery[key] };
     }
   }
 

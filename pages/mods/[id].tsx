@@ -18,6 +18,13 @@ import { requestJSON } from "@/types/request";
 
 type Props = { meta?: PackageMeta; creator?: PublicAccountData };
 
+function snakeToTitle(text: string) {
+  return text
+    .split("_")
+    .map((s) => s[0].toUpperCase() + s.slice(1))
+    .join(" ");
+}
+
 export default function ModPage({ meta, creator }: Props) {
   const [hashText, setHashText] = useState("COPY HASH");
   const [hidden, setHidden] = useState(meta?.hidden);
@@ -102,8 +109,7 @@ export default function ModPage({ meta, creator }: Props) {
 
         <div className={styles.meta}>
           <div>
-            {meta.package.name} - {meta.package.category[0].toUpperCase()}
-            {meta.package.category.slice(1)} Package
+            {meta.package.name} - {snakeToTitle(meta.package.category)} Package
           </div>
 
           {description && <div>{description}</div>}

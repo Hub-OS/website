@@ -151,7 +151,7 @@ export default class Disk implements DB {
     accountId: unknown,
     prefix: string
   ): Promise<string | undefined> {
-    let relevantNamespace;
+    let relevantNamespace: Namespace | undefined;
     let conflict;
 
     for (const namespace of this.data.namespaces) {

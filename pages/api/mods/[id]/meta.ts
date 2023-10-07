@@ -38,19 +38,19 @@ async function handleGet(
 
 async function handlePost(
   req: NextApiRequest,
-  res: NextApiResponse<PackageMeta | undefined>
+  res: NextApiResponse<PackageMeta | string>
 ) {
   const account = await getAccount(req, res);
 
   if (!account) {
-    res.status(401).send(undefined);
+    res.status(401).send("Not logged in");
     return;
   }
 
   const meta = asPackageMeta(req.body.meta);
 
   if (!meta || meta.package.id != req.query.id) {
-    res.status(400).send(undefined);
+    res.status(400).send("Invalid package id");
     return;
   }
 
@@ -67,7 +67,7 @@ async function handlePost(
 
   if (permissionChecks.some((permitted) => !permitted)) {
     // we don't have permission to update every package
-    res.status(403).send(undefined);
+    res.status(403).send("Missing permission for past_ids");
     return;
   }
 
@@ -78,7 +78,7 @@ async function handlePost(
   if (!matchingIdExists) {
     // make sure we have namespace permission
     if (!(await hasEditPermission(db, meta, account.id))) {
-      res.status(403).send(undefined);
+      res.status(403).send("Package ID conflicts with a namespace");
       return;
     }
 

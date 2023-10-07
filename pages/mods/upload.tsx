@@ -208,7 +208,7 @@ async function fetch200(
     const responseText = await response.text();
 
     if (responseText) {
-      errorText += ":" + responseText;
+      errorText += ": " + responseText;
     }
 
     throw new Error(errorText);

@@ -1,3 +1,5 @@
+export type AccountIdNameMap = { [id: string]: string };
+
 export type Account = {
   id?: unknown;
   username: string;

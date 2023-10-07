@@ -1,6 +1,7 @@
 import db from "@/storage/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAccount } from "../../users/me";
+import { hasEditPermission } from "@/types/package-meta";
 
 export default async function handler(
   req: NextApiRequest,
@@ -52,7 +53,12 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
 
   const meta = await db.findPackageMeta(id);
 
-  if (meta && !db.compareIds(meta.creator, account.id)) {
+  if (!meta) {
+    res.status(404).send(undefined);
+    return;
+  }
+
+  if (!(await hasEditPermission(db, meta, account.id))) {
     res.status(403).send(undefined);
     return;
   }

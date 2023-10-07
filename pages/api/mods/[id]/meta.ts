@@ -1,5 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { asPackageMeta, PackageMeta } from "@/types/package-meta";
+import {
+  asPackageMeta,
+  hasEditPermission,
+  PackageMeta,
+} from "@/types/package-meta";
 import db from "@/storage/db";
 import { getAccount } from "../../users/me";
 
@@ -57,9 +61,12 @@ async function handlePost(
   }
 
   const matchingMetas = await db.findPackageMetas(ids);
+  const permissionChecks = await Promise.all(
+    matchingMetas.map((meta) => hasEditPermission(db, meta, account.id))
+  );
 
-  if (matchingMetas.some((meta) => !db.compareIds(meta.creator, account.id))) {
-    // we're not the creator of every package
+  if (permissionChecks.some((permitted) => !permitted)) {
+    // we don't have permission to update every package
     res.status(403).send(undefined);
     return;
   }
@@ -69,6 +76,12 @@ async function handlePost(
   );
 
   if (!matchingIdExists) {
+    // make sure we have namespace permission
+    if (!(await hasEditPermission(db, meta, account.id))) {
+      res.status(403).send(undefined);
+      return;
+    }
+
     // new package, init
     meta.hidden = false;
     meta.creator = account.id;
@@ -125,8 +138,8 @@ async function handlePatch(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  // verify ownership
-  if (!db.compareIds(meta.creator, account.id)) {
+  // verify permission
+  if (!(await hasEditPermission(db, meta, account.id))) {
     res.status(403).send(undefined);
     return;
   }

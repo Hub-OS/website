@@ -1,3 +1,6 @@
+import { DB } from "@/storage/db";
+import { Account } from "./account";
+
 export type PackageMeta = {
   package: {
     category: string;
@@ -195,4 +198,30 @@ export function dependencies(meta: PackageMeta) {
   }
 
   return dependencies;
+}
+
+// meta passed in should be from the server if availiable,
+// otherwise fallback to a new meta object
+export async function hasEditPermission(
+  db: DB,
+  meta: PackageMeta,
+  accountId: Account["id"]
+): Promise<boolean> {
+  if (meta.creator && db.compareIds(meta.creator, accountId)) {
+    // is owner
+    return true;
+  }
+
+  const namespace = await db.findPackageNamespace(meta.package.id);
+
+  if (!namespace) {
+    // no restrictive namespace
+    return true;
+  }
+
+  const member = namespace.members.find((member) =>
+    db.compareIds(member.id, accountId)
+  );
+
+  return member?.role == "admin";
 }

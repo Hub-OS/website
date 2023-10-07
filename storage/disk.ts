@@ -3,7 +3,8 @@
 import { PackageMeta } from "@/types/package-meta";
 import { Query, queryTest } from "@/types/query";
 import { sortBy, SortMethod } from "@/types/sort-method";
-import { Account } from "@/types/account";
+import { Account, AccountIdNameMap, normalizeUsername } from "@/types/account";
+import { MemberUpdates, Namespace, Role } from "@/types/namespace";
 import { DB, PackageHashResult } from "./db";
 import fs from "fs";
 import fsPromises from "fs/promises";
@@ -13,6 +14,7 @@ import _ from "lodash";
 
 type Data = {
   packages: PackageMeta[];
+  namespaces: Namespace[];
   accounts: Account[];
   latest_account: number;
 };
@@ -20,6 +22,13 @@ type Data = {
 const databaseFilePath = "storage/_disk/data.json";
 
 function loadData(): Data {
+  const defaultData = {
+    packages: [],
+    namespaces: [],
+    accounts: [],
+    latest_account: 0,
+  };
+
   try {
     // assuming the data is stored properly, if it isn't we can just delete the file
     const buffer = fs.readFileSync(databaseFilePath);
@@ -31,13 +40,15 @@ function loadData(): Data {
       meta.updated_date = new Date(meta.updated_date);
     }
 
+    for (const key in defaultData) {
+      // use default for missing keys
+      // @ts-ignore
+      db[key] = db[key] || defaultData[key];
+    }
+
     return db;
   } catch {
-    return {
-      packages: [],
-      accounts: [],
-      latest_account: 0,
-    };
+    return defaultData;
   }
 }
 
@@ -59,6 +70,10 @@ export default class Disk implements DB {
 
   stringToId(id: string): unknown {
     return +id;
+  }
+
+  idToString(id: unknown): string {
+    return String(id);
   }
 
   async createAccount(account: Account): Promise<unknown> {
@@ -85,6 +100,13 @@ export default class Disk implements DB {
     Object.assign(account, patch);
   }
 
+  async findAccountByName(username: string): Promise<Account | undefined> {
+    const normalized_username = normalizeUsername(username);
+    return this.data.accounts.find(
+      (account) => account.normalized_username == normalized_username
+    );
+  }
+
   async findAccountById(id: unknown): Promise<Account | undefined> {
     return this.data.accounts.find((account) => account.id == id);
   }
@@ -95,6 +117,168 @@ export default class Disk implements DB {
     return this.data.accounts.find(
       (account) => account.discord_id == discordId
     );
+  }
+
+  async createAccountNameMap(ids: unknown[]): Promise<AccountIdNameMap> {
+    const users = this.data.accounts.filter((account) =>
+      ids.includes(account.id)
+    );
+
+    const map: { [id: string]: string } = {};
+
+    for (const user of users) {
+      map[this.idToString(user.id)] = user.username;
+    }
+
+    return map;
+  }
+
+  async createNamespace(namespace: Namespace): Promise<void> {
+    this.data.namespaces.push(namespace);
+  }
+
+  async registerNamespace(prefix: string): Promise<void> {
+    const namespace = this.data.namespaces.find(
+      (namespace) => namespace.prefix == prefix
+    );
+
+    if (namespace) {
+      namespace.registered = true;
+    }
+  }
+
+  async findExistingNamespaceConflict(
+    accountId: unknown,
+    prefix: string
+  ): Promise<string | undefined> {
+    let relevantNamespace;
+    let conflict;
+
+    for (const namespace of this.data.namespaces) {
+      if (namespace.prefix == prefix) {
+        return prefix;
+      }
+
+      const isConflict =
+        namespace.prefix.startsWith(prefix) ||
+        prefix.startsWith(namespace.prefix);
+
+      if (!isConflict) {
+        continue;
+      }
+
+      if (
+        namespace.prefix.length < prefix.length &&
+        (!relevantNamespace ||
+          namespace.prefix.length > relevantNamespace.prefix.length)
+      ) {
+        // longest namespace shorter than our prefix
+        relevantNamespace = namespace;
+      }
+
+      const isAdmin = namespace.members.some(
+        (member) => member.id == accountId && member.role == "admin"
+      );
+
+      if (isAdmin) {
+        // not a real conflict if we're an admin of this namespace
+        continue;
+      }
+
+      if (!conflict || conflict.prefix.length < namespace.prefix.length) {
+        // longest conflict
+        conflict = namespace;
+      }
+    }
+
+    if (!conflict) {
+      // no conflcit
+      return;
+    }
+
+    const isAdmin =
+      relevantNamespace &&
+      relevantNamespace.members.some(
+        (member) => member.id == accountId && member.role == "admin"
+      );
+
+    if (isAdmin && relevantNamespace!.prefix.length > conflict.prefix.length) {
+      // for registering x.y.z.*
+      // not being an admin of x.* doesn't matter as long as we're an admin of x.y.*
+      return;
+    }
+
+    return conflict.prefix;
+  }
+
+  async findMemberOrInvitedNamespaces(
+    accountId: unknown
+  ): Promise<Namespace[]> {
+    return this.data.namespaces.filter((namespace) =>
+      namespace.members.some((member) => member.id == accountId)
+    );
+  }
+
+  async findNamespace(prefix: string): Promise<Namespace | undefined> {
+    return this.data.namespaces.find((namespace) => namespace.prefix == prefix);
+  }
+
+  async findPackageNamespace(id: string): Promise<Namespace | undefined> {
+    let longestNamespace;
+
+    for (const namespace of this.data.namespaces) {
+      if (!id.startsWith(namespace.prefix)) {
+        continue;
+      }
+
+      if (
+        !longestNamespace ||
+        namespace.prefix.length > longestNamespace.prefix.length
+      ) {
+        longestNamespace = namespace;
+      }
+    }
+
+    return longestNamespace;
+  }
+
+  async updateNamespaceMembers(
+    prefix: string,
+    updates: MemberUpdates
+  ): Promise<void> {
+    const namespace = await this.findNamespace(prefix);
+
+    if (!namespace) {
+      return;
+    }
+
+    for (const id of updates.invited) {
+      namespace.members.push({ id, role: "invited" });
+    }
+
+    for (const id in updates.roleChanges) {
+      const member = namespace.members.find((member) => member.id == id);
+
+      if (!member) {
+        continue;
+      }
+
+      member.role = updates.roleChanges[id] as Role;
+    }
+
+    namespace.members = namespace.members.filter(
+      (member) => !updates.removed.includes(member.id)
+    );
+
+    namespace.members = _.uniqBy(namespace.members, (member) => member.id);
+  }
+
+  async deleteNamespace(prefix: string): Promise<void> {
+    const index = this.data.namespaces.findIndex(
+      (namespace) => namespace.prefix == prefix
+    );
+
+    this.data.namespaces.splice(index, 1);
   }
 
   async upsertPackageMeta(meta: PackageMeta) {

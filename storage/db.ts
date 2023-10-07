@@ -1,4 +1,4 @@
-import { Account } from "@/types/account";
+import { Account, AccountIdNameMap } from "@/types/account";
 import { PackageMeta } from "@/types/package-meta";
 import { Query } from "@/types/query";
 import { SortMethod } from "@/types/sort-method";
@@ -9,14 +9,38 @@ export interface DB {
   compareIds(a: unknown, b: unknown): boolean;
 
   stringToId(id: string): unknown;
+  idToString(id: unknown): string;
 
   createAccount(account: Account): Promise<unknown>;
 
   patchAccount(id: unknown, patch: Partial<Account>): Promise<void>;
 
+  findAccountByName(username: string): Promise<Account | undefined>;
+
   findAccountById(id: unknown): Promise<Account | undefined>;
 
   findAccountByDiscordId(discordId: string): Promise<Account | undefined>;
+
+  createAccountNameMap(ids: unknown[]): Promise<AccountIdNameMap>;
+
+  createNamespace(namespace: Namespace): Promise<void>;
+
+  registerNamespace(prefix: string): Promise<void>;
+
+  findExistingNamespaceConflict(
+    accountId: unknown,
+    prefix: string
+  ): Promise<string | undefined>;
+
+  findMemberOrInvitedNamespaces(accountId: unknown): Promise<Namespace[]>;
+
+  findNamespace(prefix: string): Promise<Namespace | undefined>;
+
+  findPackageNamespace(id: string): Promise<Namespace | undefined>;
+
+  updateNamespaceMembers(prefix: string, updates: MemberUpdates): Promise<void>;
+
+  deleteNamespace(prefix: string): Promise<void>;
 
   upsertPackageMeta(meta: PackageMeta): Promise<void>;
 
@@ -54,6 +78,7 @@ export interface DB {
 
 import Disk from "./disk";
 import MongoBasedDB from "./mongo";
+import { MemberUpdates, Namespace } from "@/types/namespace";
 
 let db: DB;
 

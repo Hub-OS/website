@@ -1,7 +1,13 @@
 import { PackageMeta } from "@/types/package-meta";
 import { Query } from "@/types/query";
 import { SortMethod } from "@/types/sort-method";
-import { Account } from "@/types/account";
+import { Account, AccountIdNameMap, normalizeUsername } from "@/types/account";
+import {
+  MemberUpdates,
+  Namespace,
+  Role,
+  SYMBOL_REGEX,
+} from "@/types/namespace";
 import { DB, PackageHashResult } from "./db";
 import {
   Collection,
@@ -12,6 +18,9 @@ import {
   ObjectId,
   SortDirection,
   WithId,
+  MatchKeysAndValues,
+  UpdateOptions,
+  UpdateFilter,
 } from "mongodb";
 import crypto from "crypto";
 import { pipeline } from "stream/promises";
@@ -25,6 +34,7 @@ export default class MongoBasedDB implements DB {
   client: MongoClient;
   db: MongoDb;
   users: Collection<Account>;
+  namespaces: Collection<Namespace>;
   packages: Collection<PackageMeta>;
   files: Collection<GridFSFile>;
   bucket: GridFSBucket;
@@ -33,6 +43,7 @@ export default class MongoBasedDB implements DB {
     this.client = new MongoClient(uri);
     this.db = this.client.db("web");
     this.users = this.db.collection("users");
+    this.namespaces = this.db.collection("namespaces");
     this.packages = this.db.collection("packages");
     this.files = this.db.collection("fs.files");
     this.bucket = new GridFSBucket(this.db);
@@ -52,6 +63,10 @@ export default class MongoBasedDB implements DB {
     }
   }
 
+  idToString(id: unknown): string {
+    return (id as ObjectId).toHexString();
+  }
+
   async createAccount(account: Account): Promise<unknown> {
     const result = await this.users.insertOne(account);
 
@@ -60,6 +75,19 @@ export default class MongoBasedDB implements DB {
 
   async patchAccount(id: unknown, patch: Partial<Account>) {
     await this.users.updateOne({ _id: id as ObjectId }, { $set: patch });
+  }
+
+  async findAccountByName(username: string): Promise<Account | undefined> {
+    const normalized_username = normalizeUsername(username);
+    const user = await this.users.findOne({ normalized_username });
+
+    if (!user) {
+      return;
+    }
+
+    user.id = user?._id;
+
+    return user;
   }
 
   async findAccountById(id: unknown): Promise<Account | undefined> {
@@ -86,6 +114,263 @@ export default class MongoBasedDB implements DB {
     user.id = user?._id;
 
     return user;
+  }
+
+  async createAccountNameMap(ids: unknown[]): Promise<AccountIdNameMap> {
+    const users = await this.users
+      .find({ _id: { $in: ids as ObjectId[] } })
+      .project({ username: 1 })
+      .toArray();
+
+    const map: AccountIdNameMap = {};
+
+    for (const user of users) {
+      map[user._id.toHexString()] = user.username;
+    }
+
+    return map;
+  }
+
+  async createNamespace(namespace: Namespace): Promise<void> {
+    await this.namespaces.insertOne(namespace);
+  }
+
+  async registerNamespace(prefix: string): Promise<void> {
+    await this.namespaces.updateOne({ prefix }, { $set: { registered: true } });
+  }
+
+  async findExistingNamespaceConflict(
+    accountId: unknown,
+    prefix: string
+  ): Promise<string | undefined> {
+    // find identical match
+    const exists = await this.namespaces.findOne(
+      { prefix },
+      { projection: { _id: 0 } }
+    );
+
+    if (exists) {
+      return prefix;
+    }
+
+    const prefixLenExpr = { $strLenBytes: "$prefix" };
+    const isAdminExpr = { $in: [{ id: accountId, role: "admin" }, "$members"] };
+    const pipelinePreparations = [
+      { $match: { prefix: initialNamespaceRegex(prefix)! } },
+      {
+        $project: { prefix: 1, prefixLen: prefixLenExpr, isAdmin: isAdminExpr },
+      },
+    ];
+    type PipelineResult = { prefix: string; isAdmin: boolean };
+    const pipelineCompletion = [
+      {
+        $group: {
+          _id: null,
+          prefix: { $top: { output: "$prefix", sortBy: { prefixLen: -1 } } },
+          isAdmin: { $top: { output: "$isAdmin", sortBy: { prefixLen: -1 } } },
+        },
+      },
+    ];
+
+    // stored is a subtring if the start of our prefix matches the stored prefix
+    // same as prefix.startsWith($prefix)
+    const isStoredASubstrExpr = {
+      $eq: ["$prefix", { $substrBytes: [prefix, 0, prefixLenExpr] }],
+    };
+    // substring of stored if our prefix matches the start of the stored prefix
+    // same as $prefix.startsWith(prefix)
+    const isSubstrOfStoredExpr = {
+      $eq: [prefix, { $substrBytes: ["$prefix", 0, prefix.length] }],
+    };
+
+    // grab the longest prefix that's shorter than our prefix
+    const relevantNamespacePromise = this.namespaces
+      .aggregate<PipelineResult>([
+        ...pipelinePreparations,
+        { $match: { $expr: isStoredASubstrExpr } },
+        ...pipelineCompletion,
+      ])
+      .next();
+
+    // grab the longest prefix that conflicts with our prefix
+    const conflictPromise = this.namespaces
+      .aggregate<PipelineResult>([
+        ...pipelinePreparations,
+        {
+          $match: {
+            $expr: {
+              $and: [
+                { $or: [isStoredASubstrExpr, isSubstrOfStoredExpr] },
+                { $not: "$isAdmin" },
+              ],
+            },
+          },
+        },
+        ...pipelineCompletion,
+      ])
+      .next();
+
+    const [relevantNamespace, conflict] = await Promise.all([
+      relevantNamespacePromise,
+      conflictPromise,
+    ]);
+
+    if (!conflict) {
+      // no conflcit
+      return;
+    }
+
+    if (
+      relevantNamespace &&
+      relevantNamespace.isAdmin &&
+      relevantNamespace.prefix.length > conflict.prefix.length
+    ) {
+      // for registering x.y.z.*
+      // not being an admin of x.* doesn't matter as long as we're an admin of x.y.*
+      return;
+    }
+
+    return conflict.prefix;
+  }
+
+  async findMemberOrInvitedNamespaces(
+    accountId: unknown
+  ): Promise<Namespace[]> {
+    return this.namespaces
+      .find({ "members.id": accountId as ObjectId })
+      .sort({ prefix: 1 })
+      .toArray();
+  }
+
+  async findNamespace(prefix: string): Promise<Namespace | undefined> {
+    const namespace = await this.namespaces.findOne({ prefix });
+
+    if (!namespace) {
+      return;
+    }
+
+    return namespace;
+  }
+
+  async findPackageNamespace(id: string): Promise<Namespace | undefined> {
+    const initialRegex = initialNamespaceRegex(id);
+
+    if (!initialRegex) {
+      // if we can't make a regex, it's impossible to have a namespace
+      return;
+    }
+
+    // stored is a subtring if the start of our prefix matches the stored prefix
+    const isStoredASubstrExpr = {
+      eq: ["$prefix", { $substrBytes: [id, 0, "$prefixLen"] }],
+    };
+    const registeredExpr = "$registered";
+
+    const sortBy = { prefixLen: -1 };
+    const prefixLen = { $strLenBytes: "$prefix" };
+
+    const namespace = await this.namespaces
+      .aggregate<Namespace>([
+        { $match: { prefix: initialRegex } },
+        {
+          $project: { _id: 1, prefix: 1, registered: 1, members: 1, prefixLen },
+        },
+        { $match: { $expr: { $and: [isStoredASubstrExpr, registeredExpr] } } },
+        {
+          $group: {
+            _id: null,
+            prefix: { $top: { output: "$prefix", sortBy } },
+            registered: { $top: { output: "$registered", sortBy } },
+            members: { $top: { output: "$members", sortBy } },
+          },
+        },
+      ])
+      .next();
+
+    if (!namespace) {
+      return;
+    }
+
+    return namespace;
+  }
+
+  async updateNamespaceMembers(
+    prefix: string,
+    updates: MemberUpdates
+  ): Promise<void> {
+    type UpdateOneSpread = [
+      Partial<Namespace> | UpdateFilter<Namespace>,
+      UpdateOptions | undefined
+    ];
+    const updateOperations: UpdateOneSpread[] = [];
+
+    // remove
+    if (updates.invited.length > 0 || updates.removed.length > 0) {
+      const $in = [];
+
+      for (const id of updates.invited) {
+        $in.push(this.stringToId(id as string));
+      }
+
+      for (const id of updates.removed) {
+        $in.push(this.stringToId(id as string));
+      }
+
+      const $pull = { members: { id: { $in } } };
+
+      // apply immediately, as we don't want to delete new invites
+      await this.namespaces.updateOne({ prefix }, { $pull });
+    }
+
+    // invite
+    if (updates.invited.length > 0) {
+      const $push = {
+        members: {
+          $each: updates.invited.map((id) => ({
+            id: this.stringToId(id as string),
+            role: "invited" as Role,
+          })),
+        },
+      };
+
+      updateOperations.push([{ $push }, undefined]);
+    }
+
+    // role changes
+    const $set: MatchKeysAndValues<Namespace> = {};
+    const arrayFilters: { [key: string]: any }[] = [];
+    let i = 0;
+
+    for (const key in updates.roleChanges) {
+      const id = this.stringToId(key as string);
+
+      $set[`members.$[i${i}].role`] = updates.roleChanges[key];
+      arrayFilters.push({ [`i${i}.id`]: id });
+      i++;
+    }
+
+    if (arrayFilters.length > 0) {
+      updateOperations.push([{ $set }, { arrayFilters }]);
+    }
+
+    // update, separate updates as we're not allowed to modify the same field in multiple operations
+    await Promise.all(
+      updateOperations.map((args) =>
+        this.namespaces.updateOne({ prefix }, ...args)
+      )
+    );
+
+    // todo: prevent duplicates from invites to the same user from multiple sessions
+
+    // delete the namespace if it no longer has any admins
+    await this.namespaces.deleteOne({
+      prefix,
+      "members.role": { $ne: "admin" },
+    });
+  }
+
+  async deleteNamespace(prefix: string): Promise<void> {
+    await this.namespaces.deleteOne({ prefix });
   }
 
   async upsertPackageMeta(meta: PackageMeta) {
@@ -147,7 +432,7 @@ export default class MongoBasedDB implements DB {
 
     let findCursor = this.packages.find(mongoQuery).skip(skip).limit(count);
 
-    if (sortMethod) {
+    if (sortMethod != null) {
       const sortParam = toMongoSortParam(sortMethod);
       findCursor = findCursor.sort(sortParam);
     }
@@ -348,4 +633,14 @@ function toMongoSortParam(sortMethod: SortMethod): {
     // case SortMethod.Downloads:
     //   return { downloads: -1 };
   }
+}
+
+function initialNamespaceRegex(id: string): RegExp | undefined {
+  const index = id.search(SYMBOL_REGEX);
+
+  if (index == -1) {
+    return;
+  }
+
+  return new RegExp("^" + id.slice(0, index + 1));
 }

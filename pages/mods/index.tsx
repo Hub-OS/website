@@ -66,10 +66,8 @@ export default function ModList({ creator, mods, moreExist }: Props) {
 
   const [name, setName] = useState(queryName);
 
-  const [debouncedSearchHandler] = useState(() =>
-    _.debounce((value: string) => {
-      const href = createHref(0, category, value, creatorId, hidden);
-
+  const [debouncedPushRoute] = useState(() =>
+    _.debounce((href: string) => {
       router.push(href);
     }, 300)
   );
@@ -96,7 +94,7 @@ export default function ModList({ creator, mods, moreExist }: Props) {
 
       <div className={styles.control_bar}>
         <select
-          value={category || "All"}
+          value={category || ""}
           onChange={(event) => {
             const href = createHref(
               0,
@@ -126,7 +124,8 @@ export default function ModList({ creator, mods, moreExist }: Props) {
           value={name || ""}
           onChange={(event) => {
             const value = event.currentTarget.value;
-            debouncedSearchHandler(value);
+            const href = createHref(0, category, value, creatorId, hidden);
+            debouncedPushRoute(href);
             setName(value);
           }}
         />

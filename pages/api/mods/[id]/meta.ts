@@ -88,8 +88,12 @@ async function handlePost(
   }
 
   // enforcing uniqueness
-  if (matchingMetas.some((m) => m.package.id != meta.package.id)) {
-    await db.deletePackages(matchingMetas.map((meta) => meta.package.id));
+  const nonMatchingMetas = matchingMetas.filter(
+    (m) => m.package.id != meta.package.id
+  );
+
+  if (nonMatchingMetas.length > 0) {
+    await db.deletePackages(nonMatchingMetas.map((meta) => meta.package.id));
   }
 
   await db.upsertPackageMeta(meta);

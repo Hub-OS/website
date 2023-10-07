@@ -28,7 +28,7 @@ export interface DB {
 
   listPackages(
     query: Query,
-    sortMethod: SortMethod,
+    sortMethod: SortMethod | null,
     skip: number,
     count: number
   ): Promise<PackageMeta[]>;

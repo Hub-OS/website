@@ -139,20 +139,20 @@ export default class MongoBasedDB implements DB {
 
   async listPackages(
     query: Query,
-    sortMethod: SortMethod,
+    sortMethod: SortMethod | null,
     skip: number,
     count: number
   ): Promise<PackageMeta[]> {
     const mongoQuery = toMongoQuery(query);
-    const sortParam = toMongoSortParam(sortMethod);
 
-    const metas = await this.packages
-      .find(mongoQuery)
-      .skip(skip)
-      .limit(count)
-      .sort(sortParam);
+    let findCursor = this.packages.find(mongoQuery).skip(skip).limit(count);
 
-    return await metas.toArray();
+    if (sortMethod) {
+      const sortParam = toMongoSortParam(sortMethod);
+      findCursor = findCursor.sort(sortParam);
+    }
+
+    return await findCursor.toArray();
   }
 
   getPackageHashes(ids: string[]): AsyncGenerator<PackageHashResult> {
@@ -337,7 +337,7 @@ function toMongoQuery(query: Query) {
   return mongoQuery;
 }
 
-export function toMongoSortParam(sortMethod: SortMethod): {
+function toMongoSortParam(sortMethod: SortMethod): {
   [key: string]: SortDirection;
 } {
   switch (sortMethod) {

@@ -141,7 +141,7 @@ export default class Disk implements DB {
 
   async listPackages(
     query: Query,
-    sortMethod: SortMethod,
+    sortMethod: SortMethod | null,
     skip: number,
     count: number
   ): Promise<PackageMeta[]> {
@@ -152,7 +152,9 @@ export default class Disk implements DB {
       queryTest(query, meta)
     );
 
-    sortBy(relevantPackages, sortMethod);
+    if (sortMethod) {
+      sortBy(relevantPackages, sortMethod);
+    }
 
     for (let i = skip; i < relevantPackages.length && i < skip + count; i++) {
       packages.push(relevantPackages[i]);

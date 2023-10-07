@@ -59,7 +59,6 @@ async function handlePost(
   const matchingMetas = await db.findPackageMetas(ids);
 
   if (matchingMetas.some((meta) => !db.compareIds(meta.creator, account.id))) {
-    console.log(JSON.stringify({ meta, matchingMetas }, null, 2));
     // we're not the creator of every package
     res.status(403).send(undefined);
     return;

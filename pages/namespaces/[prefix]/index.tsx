@@ -296,6 +296,8 @@ export async function getServerSideProps(context: NextPageContext) {
 
   if (nameMapResult.ok) {
     props.nameMap = nameMapResult.value;
+  } else {
+    console.error(nameMapResult.error);
   }
 
   return {

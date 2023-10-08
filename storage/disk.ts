@@ -227,7 +227,7 @@ export default class Disk implements DB {
     let longestNamespace;
 
     for (const namespace of this.data.namespaces) {
-      if (!id.startsWith(namespace.prefix)) {
+      if (!namespace.registered || !id.startsWith(namespace.prefix)) {
         continue;
       }
 

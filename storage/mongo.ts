@@ -271,7 +271,7 @@ export default class MongoBasedDB implements DB {
 
     const namespace = await this.namespaces
       .aggregate<Namespace>([
-        { $match: { prefix: initialRegex } },
+        { $match: { prefix: initialRegex, registered: true } },
         {
           $project: { _id: 1, prefix: 1, registered: 1, members: 1, prefixLen },
         },

@@ -6,7 +6,7 @@ import _ from "lodash";
 // { ["package.category"]: "augment" } // $eq
 // { ["package.codes"]: ["*"] } // $in
 // { ["$package.name"]: "te" } // custom case insensitive partial search
-// { ["^package.name"]: "dev.konstinople." } // custom case for prefix search
+// { ["^package.name"]: "dev.konstinople." } // custom case for case insensitive prefix search
 // { ["!package.name"]: any } // inverts the expression
 
 export type Query = { [key: string]: any };
@@ -63,7 +63,10 @@ function testKey(other: PackageMeta, queryValue: any, key: string): boolean {
     ) {
       // special case
       return false;
-    } else if (isPrefixSearch && !value.startsWith(queryValue)) {
+    } else if (
+      isPrefixSearch &&
+      !value.toLowerCase().startsWith(queryValue.toLowerCase())
+    ) {
       // special case
       return false;
     }

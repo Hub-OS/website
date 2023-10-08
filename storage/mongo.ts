@@ -174,14 +174,14 @@ export default class MongoBasedDB implements DB {
 
     // stored is a subtring if the start of our prefix matches the stored prefix
     // same as prefix.startsWith($prefix)
-    const isStoredASubstrExpr = {
-      $eq: ["$prefix", { $substrBytes: [prefix, 0, prefixLenExpr] }],
-    };
+    const isStoredASubstrExpr = caseInsensitiveEqExpr("$prefix", {
+      $substrBytes: [prefix, 0, prefixLenExpr],
+    });
     // substring of stored if our prefix matches the start of the stored prefix
     // same as $prefix.startsWith(prefix)
-    const isSubstrOfStoredExpr = {
-      $eq: [prefix, { $substrBytes: ["$prefix", 0, prefix.length] }],
-    };
+    const isSubstrOfStoredExpr = caseInsensitiveEqExpr(prefix, {
+      $substrBytes: ["$prefix", 0, prefix.length],
+    });
 
     // grab the longest prefix that's shorter than our prefix
     const relevantNamespacePromise = this.namespaces
@@ -261,9 +261,9 @@ export default class MongoBasedDB implements DB {
     }
 
     // stored is a subtring if the start of our prefix matches the stored prefix
-    const isStoredASubstrExpr = {
-      eq: ["$prefix", { $substrBytes: [id, 0, "$prefixLen"] }],
-    };
+    const isStoredASubstrExpr = caseInsensitiveEqExpr("$prefix", {
+      $substrBytes: [id, 0, "$prefixLen"],
+    });
     const registeredExpr = "$registered";
 
     const sortBy = { prefixLen: -1 };
@@ -598,7 +598,7 @@ function toMongoQuery(query: Query) {
         // special search case
         if (typeof value == "string") {
           mongoQuery[key.slice(1)] = {
-            $regex: new RegExp("^" + escapeStringRegexp(value)),
+            $regex: new RegExp("^" + escapeStringRegexp(value), "i"),
           };
         }
         break;
@@ -642,5 +642,11 @@ function initialNamespaceRegex(id: string): RegExp | undefined {
     return;
   }
 
-  return new RegExp("^" + id.slice(0, index + 1));
+  return new RegExp("^" + id.slice(0, index + 1), "i");
+}
+
+function caseInsensitiveEqExpr(a: any, b: any) {
+  return {
+    $eq: [{ $strcasecmp: [a, b] }, 0],
+  };
 }

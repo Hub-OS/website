@@ -50,7 +50,7 @@ async function handlePost(
   const meta = asPackageMeta(req.body.meta);
 
   if (!meta || meta.package.id != req.query.id) {
-    res.status(400).send("Invalid package id");
+    res.status(400).send("Invalid package ID");
     return;
   }
 
@@ -85,13 +85,13 @@ async function handlePost(
       );
 
       if (!member || member.role == "invited") {
-        const message = `Package ID conflicts with namespace: ${namespace.prefix}*`;
+        const message = `Package ID conflicts with namespace:\n\n${namespace.prefix}*`;
         res.status(403).send(message);
         return;
       }
 
       if (!meta.package.id.startsWith(namespace.prefix)) {
-        const message = `Package ID capitalization inconsistent with namespace: ${namespace.prefix}*`;
+        const message = `Package ID capitalization inconsistent with namespace:\n\n${namespace.prefix}*`;
         res.status(400).send(message);
         return;
       }

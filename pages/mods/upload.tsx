@@ -4,6 +4,7 @@ import init, { read_file, rezip_packages, hook_panics } from "zip-utils";
 import TOML from "@iarna/toml";
 import { PackageMeta, asPackageMeta } from "@/types/package-meta";
 import { Result, Ok, Err } from "@/types/result";
+import { requestVoid } from "@/types/request";
 
 let wasmInitiated = false;
 let startedInit = false;
@@ -161,13 +162,17 @@ async function uploadPackage(
 ): Promise<Result<string, string>> {
   const encodedId = encodeURIComponent(packageMeta.package.id);
 
-  try {
-    await fetch200(`/api/mods/${encodedId}/meta`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ meta: packageMeta }),
-    });
+  const uploadMetaResponse = await requestVoid(`/api/mods/${encodedId}/meta`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ meta: packageMeta }),
+  });
 
+  if (!uploadMetaResponse.ok) {
+    return uploadMetaResponse;
+  }
+
+  try {
     await fetch200(`/api/mods/${encodedId}`, {
       method: "POST",
       headers: { "Content-Type": "application/octet-stream" },

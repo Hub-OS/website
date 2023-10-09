@@ -223,5 +223,9 @@ export async function hasEditPermission(
     db.compareIds(member.id, accountId)
   );
 
-  return member?.role == "admin";
+  if (!member || member.role == "invited") {
+    return false;
+  }
+
+  return true;
 }

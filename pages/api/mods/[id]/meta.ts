@@ -76,10 +76,25 @@ async function handlePost(
   );
 
   if (!matchingIdExists) {
+    const namespace = await db.findPackageNamespace(meta.package.id);
+
     // make sure we have namespace permission
-    if (!(await hasEditPermission(db, meta, account.id))) {
-      res.status(403).send("Package ID conflicts with a namespace");
-      return;
+    if (namespace) {
+      const member = namespace.members.find((member) =>
+        db.compareIds(member.id, account.id)
+      );
+
+      if (!member || member.role == "invited") {
+        const message = `Package ID conflicts with namespace: ${namespace.prefix}*`;
+        res.status(403).send(message);
+        return;
+      }
+
+      if (!meta.package.id.startsWith(namespace.prefix)) {
+        const message = `Package ID capitalization inconsistent with namespace: ${namespace.prefix}*`;
+        res.status(400).send(message);
+        return;
+      }
     }
 
     // new package, init

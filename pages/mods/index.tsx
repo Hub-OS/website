@@ -18,32 +18,37 @@ type Props = {
   moreExist: boolean;
 };
 
-function createHref(
-  page: number,
-  category: string | undefined,
-  name: string | undefined,
-  creator: string | undefined,
-  hidden: boolean
-) {
-  let query = `/mods?page=${page}`;
+type HrefParams = {
+  page: number;
+  category: string | undefined;
+  name: string | undefined;
+  creator: string | undefined;
+  hidden: boolean;
+};
 
-  if (category) {
-    query += "&category=" + category;
+function createHref(params: HrefParams): string {
+  const pairs = [];
+
+  const paramsMap = params as {
+    [key: string]: string | number | boolean | undefined;
+  };
+
+  for (const key in params) {
+    const value = paramsMap[key];
+
+    if (!value) {
+      // false or undefined
+      continue;
+    }
+
+    pairs.push(key + "=" + encodeURIComponent(value));
   }
 
-  if (name) {
-    query += "&name=" + encodeURIComponent(name);
+  if (pairs.length == 0) {
+    return "/mods";
   }
 
-  if (creator) {
-    query += "&creator=" + encodeURIComponent(creator);
-  }
-
-  if (hidden) {
-    query += "&hidden=true";
-  }
-
-  return query;
+  return "/mods?" + pairs.join("&");
 }
 
 export default function ModList({ creator, mods, moreExist }: Props) {
@@ -58,13 +63,15 @@ export default function ModList({ creator, mods, moreExist }: Props) {
     }
   }, [context, queryString]);
 
-  const page = Math.max(+(router.query.page || 0), 0);
-  const category = router.query.category as string | undefined;
-  const queryName = router.query.name as string | undefined;
-  const creatorId = router.query.creator as string | undefined;
-  const hidden = router.query.hidden == "true";
+  const params = {
+    page: Math.max(+(router.query.page || 0), 0),
+    category: router.query.category as string | undefined,
+    name: router.query.name as string | undefined,
+    creator: router.query.creator as string | undefined,
+    hidden: router.query.hidden == "true",
+  };
 
-  const [name, setName] = useState(queryName);
+  const [name, setName] = useState(params.name);
 
   const [debouncedPushRoute] = useState(() =>
     _.debounce((href: string) => {
@@ -80,12 +87,12 @@ export default function ModList({ creator, mods, moreExist }: Props) {
 
           {context.account != undefined &&
             context.account.id == creator.id &&
-            (hidden ? (
-              <Link href={createHref(page, category, name, creatorId, false)}>
+            (params.hidden ? (
+              <Link href={createHref({ ...params, page: 0, hidden: false })}>
                 VIEW PUBLIC
               </Link>
             ) : (
-              <Link href={createHref(page, category, name, creatorId, true)}>
+              <Link href={createHref({ ...params, page: 0, hidden: true })}>
                 VIEW HIDDEN
               </Link>
             ))}
@@ -94,15 +101,10 @@ export default function ModList({ creator, mods, moreExist }: Props) {
 
       <div className={styles.control_bar}>
         <select
-          value={category || ""}
+          value={params.category || ""}
           onChange={(event) => {
-            const href = createHref(
-              0,
-              event.currentTarget.value,
-              name,
-              creatorId,
-              hidden
-            );
+            const category = event.target.value;
+            const href = createHref({ ...params, category, page: 0 });
 
             router.push(href);
           }}
@@ -123,10 +125,10 @@ export default function ModList({ creator, mods, moreExist }: Props) {
           placeholder="name"
           value={name || ""}
           onChange={(event) => {
-            const value = event.currentTarget.value;
-            const href = createHref(0, category, value, creatorId, hidden);
+            const name = event.currentTarget.value;
+            const href = createHref({ ...params, name, page: 0 });
             debouncedPushRoute(href);
-            setName(value);
+            setName(name);
           }}
         />
 
@@ -144,17 +146,17 @@ export default function ModList({ creator, mods, moreExist }: Props) {
       </div>
 
       <PageActions>
-        {page > 0 && (
+        {params.page > 0 && (
           <Link
             className={styles.left_arrow}
-            href={createHref(page - 1, category, name, creatorId, hidden)}
+            href={createHref({ ...params, page: params.page - 1 })}
           >
             {"< PREV"}
           </Link>
         )}
 
         {moreExist && (
-          <Link href={createHref(page + 1, category, name, creatorId, hidden)}>
+          <Link href={createHref({ ...params, page: params.page + 1 })}>
             {"NEXT >"}
           </Link>
         )}
@@ -198,24 +200,16 @@ async function requestMods(
   const page = +(context.query.page || 0);
   const skip = mods_per_page * page;
   const limit = mods_per_page + 1;
-  const { category, name, creator, hidden } = context.query;
+  const forwardedParams = ["category", "name", "creator", "hidden"];
 
   let url = `${host}/api/mods?skip=${skip}&limit=${limit}`;
 
-  if (category) {
-    url += `&category=${category}`;
-  }
+  for (const key of forwardedParams) {
+    const value = context.query[key];
 
-  if (name) {
-    url += `&name=${encodeURIComponent(name as string)}`;
-  }
-
-  if (creator) {
-    url += `&creator=${encodeURIComponent(creator as string)}`;
-  }
-
-  if (hidden == "true") {
-    url += "&hidden=true";
+    if (typeof value == "string") {
+      url += "&" + key + "=" + encodeURIComponent(value);
+    }
   }
 
   const requestInit = {

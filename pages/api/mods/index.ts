@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { PackageMeta } from "@/types/package-meta";
 import db from "@/storage/db";
 import { Query } from "@/types/query";
-import { SortMethod } from "@/types/sort-method";
+import { fromString as sortMethodFromString } from "@/types/sort-method";
 import { getAccount } from "../users/me";
 
 export default async function handler(
@@ -26,6 +26,7 @@ async function handleGet(
     skip = 0;
   }
 
+  const sortMethod = sortMethodFromString(req.query.sort);
   const query: Query = {
     hidden: false,
   };
@@ -56,12 +57,7 @@ async function handleGet(
 
   const limit = Math.min(+((req.query.limit as string) || 0), 100);
 
-  const list = await db.listPackages(
-    query,
-    SortMethod.CreationDate,
-    skip,
-    limit
-  );
+  const list = await db.listPackages(query, sortMethod, skip, limit);
 
   res.status(200).send(list);
 }

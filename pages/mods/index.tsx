@@ -23,6 +23,7 @@ type HrefParams = {
   category: string | undefined;
   name: string | undefined;
   creator: string | undefined;
+  sort: string | undefined;
   hidden: boolean;
 };
 
@@ -68,6 +69,7 @@ export default function ModList({ creator, mods, moreExist }: Props) {
     category: router.query.category as string | undefined,
     name: router.query.name as string | undefined,
     creator: router.query.creator as string | undefined,
+    sort: router.query.sort as string | undefined,
     hidden: router.query.hidden == "true",
   };
 
@@ -131,6 +133,20 @@ export default function ModList({ creator, mods, moreExist }: Props) {
             setName(name);
           }}
         />
+
+        <select
+          value={params.sort || ""}
+          onChange={(event) => {
+            const sort = event.target.value;
+            const href = createHref({ ...params, sort, page: 0 });
+
+            router.push(href);
+          }}
+        >
+          <option value="">Sort: Creation</option>
+          <option value="recently_updated">Sort: Updated</option>
+          <option value="package_id">Sort: ID</option>
+        </select>
 
         {context.account != undefined && (
           <Link className={styles.upload} href="/mods/upload">
@@ -200,7 +216,7 @@ async function requestMods(
   const page = +(context.query.page || 0);
   const skip = mods_per_page * page;
   const limit = mods_per_page + 1;
-  const forwardedParams = ["category", "name", "creator", "hidden"];
+  const forwardedParams = ["category", "name", "creator", "sort", "hidden"];
 
   let url = `${host}/api/mods?skip=${skip}&limit=${limit}`;
 

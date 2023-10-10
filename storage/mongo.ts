@@ -630,6 +630,8 @@ function toMongoSortParam(sortMethod: SortMethod): {
       return { creation_date: -1 };
     case SortMethod.RecentlyUpdated:
       return { updated_date: -1 };
+    case SortMethod.PackageId:
+      return { "package.id": 1 };
     // case SortMethod.Downloads:
     //   return { downloads: -1 };
   }

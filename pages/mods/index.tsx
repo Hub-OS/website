@@ -143,7 +143,7 @@ export default function ModList({ creator, mods, moreExist }: Props) {
             router.push(href);
           }}
         >
-          <option value="">Sort: Creation</option>
+          <option value="">Sort: Newest</option>
           <option value="recently_updated">Sort: Updated</option>
           <option value="package_id">Sort: ID</option>
         </select>

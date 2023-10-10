@@ -1,4 +1,4 @@
-import { PackageMeta } from "@/types/package-meta";
+import { PackageMeta, hasPreviewTexture } from "@/types/package-meta";
 import Image from "next/image";
 import styles from "@/styles/ModPreview.module.css";
 import classNames from "classnames";
@@ -22,7 +22,7 @@ function mapColors(colors: string[] | undefined) {
 export default function ModPreview({ meta, className }: Props) {
   const encodedId = encodeURIComponent(meta.package.id);
   const [previewPath, setPreviewUri] = useState(
-    meta.package.preview_texture_path && `/api/mods/${encodedId}/preview`
+    hasPreviewTexture(meta) && `/api/mods/${encodedId}/preview`
   );
   const [colors, setColors] = useState<string[] | undefined>();
 
@@ -37,7 +37,7 @@ export default function ModPreview({ meta, className }: Props) {
 
     if (!color || !shape) {
       setPreviewUri(
-        meta.package.preview_texture_path && `/api/mods/${encodedId}/preview`
+        hasPreviewTexture(meta) && `/api/mods/${encodedId}/preview`
       );
 
       return;

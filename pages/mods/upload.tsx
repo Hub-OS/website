@@ -157,15 +157,15 @@ function resolvePackageMeta(zipBytes: Uint8Array): Result<PackageMeta, string> {
 }
 
 async function uploadPackage(
-  packageMeta: PackageMeta,
+  meta: PackageMeta,
   zipBytes: Uint8Array
 ): Promise<Result<string, string>> {
-  const encodedId = encodeURIComponent(packageMeta.package.id);
+  const encodedId = encodeURIComponent(meta.package.id);
 
   const uploadMetaResponse = await requestVoid(`/api/mods/${encodedId}/meta`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ meta: packageMeta }),
+    body: JSON.stringify({ meta: meta }),
   });
 
   if (!uploadMetaResponse.ok) {
@@ -184,7 +184,16 @@ async function uploadPackage(
   }
 
   try {
-    const previewPath = packageMeta.package.preview_texture_path;
+    let previewPath = meta.package.preview_texture_path;
+
+    if (
+      !previewPath &&
+      meta.package.category == "tile_state" &&
+      meta.package.texture_path
+    ) {
+      // special case for tile_states
+      previewPath = meta.package.texture_path;
+    }
 
     if (previewPath != undefined) {
       const bytes = read_file(zipBytes, previewPath);

@@ -200,6 +200,13 @@ export function dependencies(meta: PackageMeta) {
   return dependencies;
 }
 
+export function hasPreviewTexture(meta: PackageMeta): boolean {
+  return (
+    meta.package.preview_texture_path != undefined ||
+    meta.package.category == "tile_state"
+  );
+}
+
 // meta passed in should be from the server if availiable,
 // otherwise fallback to a new meta object
 export async function hasEditPermission(

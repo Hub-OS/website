@@ -1,6 +1,7 @@
 .control_bar {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   margin-bottom: 12px;
   gap: 8px;
 }

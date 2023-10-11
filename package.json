@@ -7,6 +7,7 @@
     "dev": "npm run licenses && next dev",
     "build": "npm run licenses && next build",
     "start": "next start",
+    "test": "ava",
     "lint": "next lint",
     "licenses": "node generate-licenses.mjs"
   },
@@ -31,9 +32,19 @@
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
     "@wasm-tool/wasm-pack-plugin": "^1.6.0",
+    "ava": "^5.3.1",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.5",
     "license-ripper": "^0.1.3",
+    "tsx": "^3.13.0",
     "typescript": "^5.0.4"
+  },
+  "ava": {
+    "extensions": {
+      "ts": "module"
+    },
+    "nodeArguments": [
+      "--loader=tsx"
+    ]
   }
 }

@@ -6,19 +6,38 @@ import db from "@/storage/db";
 import { MongoServerError } from "mongodb";
 
 export async function getAccount(req: NextApiRequest, res: NextApiResponse) {
+  if (process.env.TEST_ENV && req.headers.authorization?.startsWith("Basic ")) {
+    // TEST_ENV only
+    // blindly accept any `Authorization: Basic *` request ignoring password
+    const base64 = req.headers.authorization.slice(6);
+    const credentials = Buffer.from(base64, "base64").toString("utf-8");
+    const username = credentials.slice(0, credentials.indexOf(":"));
+
+    let account = await db.findAccountByName(username);
+
+    if (!account) {
+      // create a new account
+      account = {
+        username,
+        normalized_username: normalizeUsername(username),
+        avatar: "",
+      };
+
+      account.id = await db.createAccount(account);
+    }
+
+    return account;
+  }
+
+  // normal flow
+
   const discordUser = await fetchDiscordUser(req, res);
 
   if (!discordUser) {
     return;
   }
 
-  const account = await db.findAccountByDiscordId(discordUser.id);
-
-  if (!account) {
-    return;
-  }
-
-  return account;
+  return await db.findAccountByDiscordId(discordUser.id);
 }
 
 export default async function handler(

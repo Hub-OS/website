@@ -1,5 +1,7 @@
 import { Err, Ok, Result } from "./result";
 
+let fetch = globalThis.fetch;
+
 export async function requestJSON(
   uri: string,
   init?: RequestInit | undefined

@@ -110,6 +110,10 @@ export default function ModPreview({ meta, className }: Props) {
         />
       )}
 
+      {meta.package.category == "library" && !previewPath && (
+        <div className={styles.library_label}>LIBRARY</div>
+      )}
+
       {meta.package.category == "player" && (
         <ElementIcon
           className={styles.player_element}

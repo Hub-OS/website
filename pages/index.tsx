@@ -6,7 +6,7 @@ export default function Home() {
       Hub OS
       <br />
       <br />
-      Latest version: 0.12.0
+      Latest version: 0.13.0
       <br />
       <br />
       Links:

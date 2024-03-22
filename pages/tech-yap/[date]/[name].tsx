@@ -6,7 +6,7 @@ import matter from "gray-matter";
 import postStyles from "@/styles/YapPost.module.css";
 import markdownStyles from "@/styles/Markdown.module.css";
 import Link from "next/link";
-import { readPostFile, getStaticPaths } from "../posts/lib";
+import { readPostFile, getStaticPaths } from "../../../static/tech-yap/lib";
 
 type Props = {
   title: string;

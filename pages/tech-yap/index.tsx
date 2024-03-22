@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getStaticPaths, readPostFile } from "./posts/lib";
+import { getStaticPaths, readPostFile } from "../../static/tech-yap/lib";
 import matter from "gray-matter";
 import markdownStyles from "@/styles/Markdown.module.css";
 

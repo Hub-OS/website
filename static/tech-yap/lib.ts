@@ -1,6 +1,6 @@
 import fs from "node:fs";
 
-const dirPath = "./pages/tech-yap/posts/";
+const dirPath = "./static/tech-yap/posts/";
 
 export function getStaticPaths() {
   return {
@@ -21,7 +21,5 @@ export function readPostFile({
   date,
   name,
 }: NodeJS.Dict<string | string[]>): string {
-  "use static";
-
   return fs.readFileSync(dirPath + date + "-" + name + ".md", "utf-8");
 }

@@ -51,6 +51,7 @@
   margin-bottom: 16px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .main a {

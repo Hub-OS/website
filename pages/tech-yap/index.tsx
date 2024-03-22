@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getStaticPaths, readPostFile } from "../../static/tech-yap/lib";
 import matter from "gray-matter";
 import markdownStyles from "@/styles/Markdown.module.css";
+import styles from "@/styles/TechYap.module.css";
 
 type PostMeta = {
   title: string;
@@ -27,7 +28,7 @@ export default function TechYap({ posts }: Props) {
         </p>
       </div>
       Posts:
-      <ul>
+      <ul className={styles.link_list}>
         {posts.map(({ title, params }) => {
           const href = `/tech-yap/${params.date}/${params.name}`;
 

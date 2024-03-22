@@ -15,9 +15,9 @@ type Props = {
 };
 
 const syntaxStyle = structuredClone(vscDarkPlus);
-syntaxStyle['pre[class*="language-"]'].fontSize = 18;
 syntaxStyle['pre[class*="language-"]'].background = "#0006";
 syntaxStyle['code[class*="language-"]'].fontSize = 18;
+syntaxStyle['code[class*="language-"]'].lineHeight = 1;
 syntaxStyle['code[class*="language-"]'].background = undefined;
 
 export default function Post({ title, date, markdown }: Props) {

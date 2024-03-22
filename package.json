@@ -18,12 +18,15 @@
     "cookies-next": "^2.1.1",
     "discord.js": "^14.7.1",
     "escape-string-regexp": "^5.0.0",
+    "gray-matter": "^4.0.3",
     "lodash": "^4.17.21",
     "mongodb": "^6.1.0",
     "next": "^13.5.4",
     "next-nprogress-bar": "^2.1.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-markdown": "^9.0.1",
+    "react-syntax-highlighter": "^15.5.0",
     "zip-utils": "file:./wasm/pkg"
   },
   "devDependencies": {
@@ -31,6 +34,7 @@
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
+    "@types/react-syntax-highlighter": "^15.5.11",
     "@wasm-tool/wasm-pack-plugin": "^1.6.0",
     "ava": "^5.3.1",
     "eslint": "8.32.0",

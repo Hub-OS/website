@@ -26,6 +26,9 @@ export default function Home() {
           </Link>
         </li>
         <li>
+          <Link href="/tech-yap">TECH YAP</Link>
+        </li>
+        <li>
           <Link href="/cat.png">CAT</Link>
         </li>
       </ul>

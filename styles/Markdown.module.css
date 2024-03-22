@@ -1,0 +1,35 @@
+.markdown {
+  font-family: sans-serif;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.markdown p,
+.markdown pre,
+.markdown > ul,
+.markdown > ol {
+  margin-bottom: 1rem;
+}
+
+.markdown code {
+  font: inherit;
+  background-color: #0005;
+  padding: 2px;
+  color: #ddd;
+  white-space: nowrap;
+}
+
+.markdown pre code {
+  background-color: unset;
+  font-family: monospace;
+  font-size: 16px;
+}
+
+.markdown ul {
+  list-style-type: "- ";
+}
+
+.markdown li {
+  margin-left: 32px;
+  margin-top: 0.25rem;
+}

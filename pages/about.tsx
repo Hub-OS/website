@@ -1,9 +1,13 @@
 import Link from "next/link";
 import styles from "@/styles/About.module.css";
+import Head from "next/head";
 
 export default function Home() {
   return (
     <>
+      <Head>
+        <title>About - Hub OS</title>
+      </Head>
       <span>
         Hub OS is derived from{" "}
         <Link href="https://github.com/TheMaverickProgrammer/OpenNetBattle">

@@ -3,6 +3,7 @@ import { getStaticPaths, readPostFile } from "../../static/tech-yap/lib";
 import matter from "gray-matter";
 import markdownStyles from "@/styles/Markdown.module.css";
 import styles from "@/styles/TechYap.module.css";
+import Head from "next/head";
 
 type PostMeta = {
   title: string;
@@ -19,6 +20,9 @@ type Props = {
 export default function TechYap({ posts }: Props) {
   return (
     <>
+      <Head>
+        <title>Tech Yap - Hub OS</title>
+      </Head>
       <h1>Welcome to the Hub OS Technical Yap</h1>
       <div className={markdownStyles.markdown}>
         <p>

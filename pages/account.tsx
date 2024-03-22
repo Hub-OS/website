@@ -4,6 +4,7 @@ import { useAppContext } from "@/components/context";
 import PageActions from "@/components/page-actions";
 import Link from "next/link";
 import PageActionMessage from "@/components/page-action-message";
+import Head from "next/head";
 
 type Message = {
   text: string;
@@ -36,6 +37,10 @@ export default function Account() {
     case LoginState.LoggedIn:
       return (
         <>
+          <Head>
+            <title>Account - Hub OS</title>
+          </Head>
+
           <div className="input-row">
             Username:
             <input

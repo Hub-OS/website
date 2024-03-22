@@ -8,6 +8,7 @@ import { NextPageContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "@/styles/Namespace.module.css";
+import Head from "next/head";
 
 type Props = { namespace?: Namespace; nameMap: AccountIdNameMap };
 
@@ -187,6 +188,10 @@ export default function NamespacePage({
 
   return (
     <>
+      <Head>
+        <title>Namespaces - Hub OS</title>
+      </Head>
+
       <div className="input-row">
         Prefix:{" "}
         <span style={registered ? { color: "cyan" } : { color: "orange" }}>

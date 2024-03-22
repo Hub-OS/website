@@ -11,6 +11,7 @@ import { requestJSON } from "@/types/request";
 import _ from "lodash";
 import { Ok, Result } from "@/types/result";
 import { PublicAccountData } from "@/types/public-account-data";
+import Head from "next/head";
 
 type Props = {
   creator: PublicAccountData | null;
@@ -83,8 +84,12 @@ export default function ModList({ creator, mods, moreExist }: Props) {
 
   return (
     <>
-      {creator && (
+      {creator ? (
         <div className={styles.creator_section}>
+          <Head>
+            <title>Mods from {creator.username} - Hub OS</title>
+          </Head>
+
           <div>Mods from {creator.username}:</div>
 
           {context.account != undefined &&
@@ -99,6 +104,10 @@ export default function ModList({ creator, mods, moreExist }: Props) {
               </Link>
             ))}
         </div>
+      ) : (
+        <Head>
+          <title>Mods - Hub OS</title>
+        </Head>
       )}
 
       <div className={styles.control_bar}>

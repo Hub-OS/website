@@ -7,6 +7,7 @@ import { NextPageContext } from "next";
 import Link from "next/link";
 import { useState } from "react";
 import styles from "@/styles/Namespace.module.css";
+import Head from "next/head";
 
 type Props = {
   namespaces: Namespace[];
@@ -111,6 +112,10 @@ export default function Namespaces(props: Props) {
 
   return (
     <>
+      <Head>
+        <title>Namespaces - Hub OS</title>
+      </Head>
+
       {invites.length > 0 && (
         <>
           Namespace Join Requests:

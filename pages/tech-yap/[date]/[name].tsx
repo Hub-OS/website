@@ -6,6 +6,7 @@ import matter from "gray-matter";
 import postStyles from "@/styles/YapPost.module.css";
 import markdownStyles from "@/styles/Markdown.module.css";
 import Link from "next/link";
+import Head from "next/head";
 import { readPostFile, getStaticPaths } from "../../../static/tech-yap/lib";
 
 type Props = {
@@ -23,6 +24,10 @@ syntaxStyle['code[class*="language-"]'].background = undefined;
 export default function Post({ title, date, markdown }: Props) {
   return (
     <>
+      <Head>
+        <title>{title} - Hub OS</title>
+      </Head>
+
       <div className={postStyles.top_controls}>
         <Link href="/tech-yap">{"< BACK"}</Link>
 

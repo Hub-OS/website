@@ -2,6 +2,7 @@ import projects from "@/_licenses.json";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import styles from "@/styles/Licenses.module.css";
+import Head from "next/head";
 
 export default function License() {
   const router = useRouter();
@@ -15,6 +16,10 @@ export default function License() {
 
   return (
     <>
+      <Head>
+        <title>{name} - Hub OS</title>
+      </Head>
+
       <div key={project.name} className={styles.list_item}>
         <div className={styles.project_name}>{project.name}</div>
 

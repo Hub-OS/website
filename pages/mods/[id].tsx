@@ -15,6 +15,7 @@ import { PublicAccountData } from "@/types/public-account-data";
 import classNames from "classnames";
 import styles from "@/styles/Mod.module.css";
 import { requestJSON } from "@/types/request";
+import Head from "next/head";
 
 type Props = { meta?: PackageMeta; creator?: PublicAccountData };
 
@@ -50,6 +51,13 @@ export default function ModPage({ meta, creator }: Props) {
 
   return (
     <>
+      <Head>
+        <title>
+          {meta.package.name} - {snakeToTitle(meta.package.category)} Package -
+          Hub OS
+        </title>
+      </Head>
+
       <div className={styles.top_controls}>
         <Link href={context.modQuery ? `/mods?${context.modQuery}` : "/mods"}>
           {"< MODS"}

@@ -5,6 +5,7 @@ import TOML from "@iarna/toml";
 import { PackageMeta, asPackageMeta } from "@/types/package-meta";
 import { Result, Ok, Err } from "@/types/result";
 import { requestVoid } from "@/types/request";
+import Head from "next/head";
 
 let wasmInitiated = false;
 let startedInit = false;
@@ -38,6 +39,10 @@ export default function Upload() {
 
   return (
     <div>
+      <Head>
+        <title>Upload Mods - Hub OS</title>
+      </Head>
+
       <label className={styles.label}>
         {text}
 

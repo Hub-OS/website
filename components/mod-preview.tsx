@@ -1,11 +1,15 @@
 import { PackageMeta, hasPreviewTexture } from "@/types/package-meta";
 import Image from "next/image";
-import styles from "@/styles/ModPreview.module.css";
 import classNames from "classnames";
 import ElementIcon from "./element-icon";
 import { useEffect, useState } from "react";
+import styles from "@/styles/ModPreview.module.css";
 
-type Props = { meta: PackageMeta; className?: string };
+type Props = {
+  meta: PackageMeta;
+  mini?: boolean;
+  className?: string;
+};
 
 const colorMap: { [key: string]: string } = {
   red: "#F83020",
@@ -19,7 +23,7 @@ function mapColors(colors: string[] | undefined) {
   return colors?.map((color) => colorMap[color.toLowerCase()] || color);
 }
 
-export default function ModPreview({ meta, className }: Props) {
+export default function ModPreview({ meta, mini, className }: Props) {
   const encodedId = encodeURIComponent(meta.package.id);
   const [previewPath, setPreviewUri] = useState(
     hasPreviewTexture(meta) && `/api/mods/${encodedId}/preview`
@@ -130,10 +134,13 @@ export default function ModPreview({ meta, className }: Props) {
           <ElementIcon element={meta.package.element} />
 
           {meta.package.secondary_element && (
-            <ElementIcon element={meta.package.secondary_element} />
+            <ElementIcon
+              className={styles.secondary_element}
+              element={meta.package.secondary_element}
+            />
           )}
 
-          {meta.package.codes && (
+          {!mini && meta.package.codes && (
             <div className={styles.codes}>
               {meta.package.codes.map((code, i) => (
                 <div key={i}>{code}</div>

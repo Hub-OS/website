@@ -60,6 +60,10 @@
   left: 2px;
 }
 
+.secondary_element {
+  margin-left: 0;
+}
+
 .health {
   font-family: client-bold;
   position: absolute;

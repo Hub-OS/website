@@ -4,4 +4,5 @@
   margin: 2px;
   background-image: url("/elements.png");
   background-size: auto 20px;
+  flex-shrink: 0;
 }

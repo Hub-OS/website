@@ -14,7 +14,7 @@ export default function ModListing({ meta }: Props) {
       title={meta.package.name}
       href={`/mods/${encodedId}`}
     >
-      <ModPreview meta={meta} className={styles.preview} />
+      <ModPreview meta={meta} className={styles.preview} mini />
       <span className={styles.name}>{meta.package.name}</span>
     </Link>
   );

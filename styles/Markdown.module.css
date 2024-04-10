@@ -7,7 +7,8 @@
 .markdown p,
 .markdown pre,
 .markdown > ul,
-.markdown > ol {
+.markdown > ol,
+.markdown > blockquote {
   margin-bottom: 1rem;
 }
 
@@ -32,4 +33,15 @@
 .markdown li {
   margin-left: 32px;
   margin-top: 0.25rem;
+}
+
+.markdown > blockquote > p {
+  margin-bottom: 0;
+}
+
+.markdown blockquote {
+  padding-left: 1em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-left: 3px solid white;
 }

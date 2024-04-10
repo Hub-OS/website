@@ -108,7 +108,7 @@ There are some libraries based around this concept such as [slotmap](https://cra
 
 Initially yes, but once you've learned this pattern you'll find slotmaps can be used nearly anywhere for shared references and mutability. (Avoid Rc if you need to modify data)
 
-Internally we also have a Tree struct for anything with parents and children. We use either slotmap directly or [hecs](https://crates.io/crates/hecs) (ECS crate) for anything simpler (ex: animators for referencing in Lua and Rust).
+Internally we also have a Tree struct for anything with parents and children. We use either slotmap directly or [hecs](https://crates.io/crates/hecs) (ECS crate) for anything simpler (ex: animators are stored in slotmaps for referencing in Lua and Rust).
 
 ## What does this have to do with rollback?
 

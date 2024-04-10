@@ -82,13 +82,14 @@ fn main() {
     let a_index = 0; // value at 0 is 1
     let b_index = 1; // value at 1 is 2
 
-    println!("{}", list[b_index]);
     // prints "2"
+    println!("{}", list[b_index]);
 
+    // removing the first element, our list is now [2, 3]
     list.remove(a_index);
 
-    println!("{}", list[b_index]);
     // prints "3", but we still wanted to print "2"
+    println!("{}", list[b_index]);
 }
 ```
 

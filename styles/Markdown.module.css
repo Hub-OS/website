@@ -17,16 +17,19 @@
 }
 
 .markdown code {
-  font: inherit;
+  font-family: Menlo, Monaco, Consolas, "Andale Mono", "Ubuntu Mono",
+    "Courier New", monospace;
+  font-size: 98%;
   background-color: #0005;
-  padding: 2px;
+  padding: 3px;
+  padding-top: 0;
+  vertical-align: text-bottom;
   color: #ddd;
   white-space: nowrap;
 }
 
 .markdown pre code {
   background-color: unset;
-  font-family: monospace;
   font-size: 16px;
   padding: 0;
 }

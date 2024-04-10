@@ -1,18 +1,23 @@
 import fs from "node:fs";
+import _ from "lodash";
 
 const dirPath = "./static/tech-yap/posts/";
 
-export function getStaticPaths() {
-  return {
-    paths: fs
-      .readdirSync(dirPath)
-      .filter((path) => path.endsWith(".md"))
-      .map((path) => {
-        const date = path.slice(0, 10);
-        const name = path.slice(11, -3);
+type YapPostPath = { params: { date: string; name: string } };
 
-        return { params: { date, name } };
-      }),
+export function getStaticPaths() {
+  const paths = fs
+    .readdirSync(dirPath)
+    .filter((path) => path.endsWith(".md"))
+    .map((path) => {
+      const date = path.slice(0, 10);
+      const name = path.slice(11, -3);
+
+      return { params: { date, name } };
+    });
+
+  return {
+    paths: _.orderBy(paths, (path: YapPostPath) => path.params.date, "desc"),
     fallback: false,
   };
 }

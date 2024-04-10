@@ -72,7 +72,9 @@ struct SpriteTree {
 }
 ```
 
-There are a few issues still. Since we don't "own" the data / keep it alive through a shared pointer, we can't be certain that the parent hasn't been deleted. That could be resolved by using `sprites.get_mut(index)` instead of `&mut sprites[index]`, the first returns an `Option<&mut Sprite>`, while the second returns a `&mut Sprite` and panics if there's no Sprite. While you're thinking about deleting sprites, you may have also noticed deleting a sprite in the start / middle would cause anything referring to sprites after to be referencing the wrong element. We need our indices to be stable.
+There are a few issues still. Since we don't "own" the data / keep it alive through a shared pointer, we can't be certain that the parent hasn't been deleted. That could be resolved by using `sprites.get_mut(index)` instead of `&mut sprites[index]`, the first returns an `Option<&mut Sprite>`, while the second returns a `&mut Sprite` and panics if there's no Sprite.
+
+While you're thinking about deleting sprites, you may have also noticed deleting a sprite in the start / middle would cause anything referring to sprites after to be referencing the wrong element:
 
 ```rust
 fn main() {
@@ -90,7 +92,7 @@ fn main() {
 }
 ```
 
-Instead of directly storing our sprites in a vec, we could use Option to treat positions in our vec as slots:
+We need our indices to be stable. Instead of directly storing our sprites in a vec, we could use Option to treat positions in our vec as slots:
 
 ```rust
 struct SpriteTree {

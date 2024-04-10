@@ -4,6 +4,10 @@
   line-height: 1.25;
 }
 
+.markdown a {
+  white-space: normal;
+}
+
 .markdown p,
 .markdown pre,
 .markdown > ul,

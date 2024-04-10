@@ -3,7 +3,7 @@ title: Pointer Alternatives for Rollback (Certified Yap)
 author: Konst
 ---
 
-In C++, it wasn't uncommon for us to directly point to an object to use it:
+In C++, it wasn't uncommon for us to directly point to objects:
 
 ```cpp
 // Simplified code:

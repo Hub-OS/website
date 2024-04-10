@@ -25,7 +25,7 @@ export default function Post({ title, date, markdown }: Props) {
   return (
     <>
       <Head>
-        <title>{title} - Hub OS</title>
+        <title>{`${title} - Hub OS`}</title>
       </Head>
 
       <div className={postStyles.top_controls}>

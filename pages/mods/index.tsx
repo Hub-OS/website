@@ -87,7 +87,7 @@ export default function ModList({ creator, mods, moreExist }: Props) {
       {creator ? (
         <div className={styles.creator_section}>
           <Head>
-            <title>Mods from {creator.username} - Hub OS</title>
+            <title>{`Mods from ${creator.username} - Hub OS`}</title>
           </Head>
 
           <div>Mods from {creator.username}:</div>

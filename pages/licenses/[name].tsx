@@ -17,7 +17,7 @@ export default function License() {
   return (
     <>
       <Head>
-        <title>{name} - Hub OS</title>
+        <title>{`${name} - Hub OS`}</title>
       </Head>
 
       <div key={project.name} className={styles.list_item}>

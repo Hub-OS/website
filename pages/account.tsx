@@ -63,6 +63,16 @@ export default function Account() {
             <li>
               <Link href="/mods/upload">Upload New Mods</Link>
             </li>
+            <li>
+              <a
+                onClick={async () => {
+                  await fetch("/api/users/logout");
+                  window.location.href = "/";
+                }}
+              >
+                Sign Out
+              </a>
+            </li>
           </ul>
 
           <PageActions>

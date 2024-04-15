@@ -11,7 +11,7 @@ A summary of our input processing:
 - When we receive remote inputs we store it in a buffer, and if it's for a frame in the past, we roll back and resimulate the battle with their inputs properly accounted for.
 - If we've received inputs from every player we can drop the oldest data in every buffer as we won't need to roll back to that point anymore.
 
-To keep us from getting too far ahead of remote players, we need to know how far ahead we are. Since we should be sending and consuming inputs at a constant rate (excluding client lag and network fluctuations), any unprocessed inputs will let us know how far ahead we are in our simulation.
+To keep us from getting too far ahead of remote players, we need to know how far ahead we are. Since we should be sending and consuming inputs at a constant rate (excluding client lag and network fluctuations), any inputs buffered for us on a remote client will let us know how far ahead we are in our simulation.
 
 ### Slowdown implementation:
 
@@ -81,8 +81,13 @@ fn handle_packet(&mut self, game_io: &GameIO, packet: NetplayPacket) {
         // ...
     }
 }
+```
 
+`BUFFER_TOLERANCE` exists to account for any network fluctuations that cause either player to miss packets or receive them late. Being a little ahead or behind is fine, we want to avoid constantly slowing down the simulation by having a little tolerance to network issues. We also avoid completely halting the simulation by waiting only one frame, and putting the slowdown on cooldown (`SLOW_COOLDOWN`), this will allow remote players' simulations to slowly catch up.
 
+Here is how slowing down is implemented:
+
+```rust
 fn core_update(&mut self, game_io: &GameIO) {
     // ...
 
@@ -101,15 +106,13 @@ fn core_update(&mut self, game_io: &GameIO) {
 }
 ```
 
-`BUFFER_TOLERANCE` exists to account for any network fluctuations that cause either player to miss packets or receive them late. Being a little ahead or behind is fine, we want to avoid constantly slowing down the simulation by having a little tolerance to network issues. We also avoid completely halting the simulation by waiting only one frame, and putting the slowdown on cooldown (`SLOW_COOLDOWN`), this will allow remote players' simulations to slowly catch up.
-
 This slowdown concept also allows us to avoid needing to start the battle at the exact same time. We want the battles to start very close (each client sends a packet to tell the other clients they're ready), but we can skip precise clock syncronization by just easing our timing closer to remotes. It should also allow us to be resilient to client lag spikes / drift.
 
 ### Something odd
 
 We don't seem to be following the logic established at earlier in the article:
 
-> Since we should be sending and consuming inputs at a constant rate (excluding client lag and network fluctuations), any unprocessed inputs will let us know how far ahead we are in our simulation.
+> Since we should be sending and consuming inputs at a constant rate (excluding client lag and network fluctuations), any inputs buffered for us on a remote client will let us know how far ahead we are in our simulation.
 
 Our implementation for reference:
 

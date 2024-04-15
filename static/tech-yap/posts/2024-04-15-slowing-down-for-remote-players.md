@@ -38,7 +38,7 @@ fn handle_local_input(&mut self, game_io: &GameIO) {
 }
 ```
 
-If we see any remote player with substantialy more buffered data for us than the amount we have buffered for them (defined by `BUFFER_TOLERANCE`), we slow down as it means the remote player is running behind:
+If we see any remote player with substantialy more buffered data for us than we have buffered for them (defined by `BUFFER_TOLERANCE`), we slow down as it means the remote player is running behind:
 
 ```rust
 const SLOW_COOLDOWN: FrameTime = INPUT_BUFFER_LIMIT as FrameTime;

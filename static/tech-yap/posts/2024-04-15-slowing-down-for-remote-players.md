@@ -125,4 +125,4 @@ It's not too obvious whether it's important to compare the remote pending input 
 
 ### What about 3+ players?
 
-Remember, buffered inputs aren't deleted until client has received input for every player. It's possible that seeing a large `remote_received_size` means a different client is behind, forcing our inputs to wait. This could be the situation that causes two players to see each other as behind at the same time, requiring us to compare remote's buffer to our buffer, instead of the remotes directly to tolerance.
+Remember, buffered inputs aren't deleted until the client has received input for every player. It's possible that seeing a large `remote_received_size` means a different client is behind, forcing our inputs to wait. This could be the situation that causes two players to see each other as behind at the same time, requiring us to compare remote's buffer to our buffer, instead of the remotes directly to tolerance.

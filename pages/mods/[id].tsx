@@ -127,7 +127,7 @@ export default function ModPage({ meta, creator }: Props) {
       <div className={styles.meta}>
         {creator && (
           <div>
-            Author:
+            Uploader:
             <ul>
               <li>
                 <a

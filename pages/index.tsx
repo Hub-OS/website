@@ -29,7 +29,7 @@ export default function Home() {
 
       <div className={styles.preview_container}>
         <div className={styles.main_preview}>
-          <Image src={currentImage} alt="" />
+          <Image src={currentImage} alt="" priority />
         </div>
         <div className={styles.preview_list}>
           {images.map((image, i) => (

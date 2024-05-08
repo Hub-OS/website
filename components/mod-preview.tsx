@@ -1,9 +1,21 @@
 import { PackageMeta, hasPreviewTexture } from "@/types/package-meta";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import classNames from "classnames";
 import ElementIcon from "./element-icon";
 import { useEffect, useState } from "react";
 import styles from "@/styles/ModPreview.module.css";
+
+import switchDriveHeadImage from "@/public/switch-drive-head.png";
+import switchDriveArmsImage from "@/public/switch-drive-arms.png";
+import switchDriveBodyImage from "@/public/switch-drive-body.png";
+import switchDriveLegsImage from "@/public/switch-drive-legs.png";
+
+const switchDriveImageMap: { [slot: string]: StaticImageData } = {
+  head: switchDriveHeadImage,
+  arms: switchDriveArmsImage,
+  body: switchDriveBodyImage,
+  legs: switchDriveLegsImage,
+};
 
 type Props = {
   meta: PackageMeta;
@@ -154,7 +166,7 @@ export default function ModPreview({ meta, mini, className }: Props) {
         </div>
       )}
 
-      {meta.package.category == "augment" && (
+      {meta.package.category == "augment" && meta.package.shape && (
         <div className={styles.banner}>
           {colors?.map((color) => (
             <div
@@ -165,6 +177,26 @@ export default function ModPreview({ meta, mini, className }: Props) {
           ))}
         </div>
       )}
+
+      {meta.package.category == "augment" &&
+        meta.package.slot &&
+        (() => {
+          const image = switchDriveImageMap[meta.package.slot.toLowerCase()];
+
+          if (!image) {
+            return;
+          }
+
+          return (
+            <Image
+              className={styles.preview_image}
+              src={image}
+              alt="preview image"
+              fill
+              unoptimized
+            />
+          );
+        })()}
     </div>
   );
 }

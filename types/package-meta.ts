@@ -14,6 +14,9 @@ export type PackageMeta = {
     shape?: number[][];
     flat?: boolean;
 
+    // switch drive augments
+    slot: string;
+
     // cards
     codes?: string[];
     long_description?: string;

@@ -17,7 +17,7 @@ import styles from "@/styles/Mod.module.css";
 import { requestJSON } from "@/types/request";
 import Head from "next/head";
 
-type Props = { meta?: PackageMeta; creator?: PublicAccountData };
+type Props = { meta?: PackageMeta; uploader?: PublicAccountData };
 
 function snakeToTitle(text: string) {
   return text
@@ -26,7 +26,7 @@ function snakeToTitle(text: string) {
     .join(" ");
 }
 
-export default function ModPage({ meta, creator }: Props) {
+export default function ModPage({ meta, uploader }: Props) {
   const [hashText, setHashText] = useState("COPY HASH");
   const [hidden, setHidden] = useState(meta?.hidden);
   const [togglingHidden, setTogglingHidden] = useState(false);
@@ -47,15 +47,13 @@ export default function ModPage({ meta, creator }: Props) {
   }
 
   const encodedId = encodeURIComponent(meta.package.id);
+  const categoryTitle = snakeToTitle(meta.package.category);
   const description = meta.package.long_description || meta.package.description;
 
   return (
     <>
       <Head>
-        <title>
-          {meta.package.name} - {snakeToTitle(meta.package.category)} Package -
-          Hub OS
-        </title>
+        <title>{`${meta.package.name} - ${categoryTitle} Package - Hub OS`}</title>
       </Head>
 
       <div className={styles.top_controls}>
@@ -117,7 +115,7 @@ export default function ModPage({ meta, creator }: Props) {
 
         <div className={styles.meta}>
           <div>
-            {meta.package.name} - {snakeToTitle(meta.package.category)} Package
+            {meta.package.name} - {categoryTitle} Package
           </div>
 
           {description && <div>{description}</div>}
@@ -125,24 +123,22 @@ export default function ModPage({ meta, creator }: Props) {
       </div>
 
       <div className={styles.meta}>
-        {creator && (
+        {uploader && (
           <div>
             Uploader:
             <ul>
               <li>
                 <a
-                  href={`/mods?creator=${decodeURIComponent(
-                    creator.id as string
-                  )}`}
+                  href={`/profile/${decodeURIComponent(uploader.id as string)}`}
                 >
-                  {creator.username}
+                  {uploader.username}
                 </a>
               </li>
             </ul>
           </div>
         )}
 
-        {creator && (
+        {uploader && (
           <div>
             Last Update:
             <ul>
@@ -217,13 +213,13 @@ export async function getServerSideProps(context: NextPageContext) {
   }
 
   if (props.meta) {
-    const creatorId = props.meta.creator;
-    const uri = `${process.env.NEXT_PUBLIC_HOST!}/api/users/${creatorId}`;
+    const uploaderId = props.meta.creator;
+    const uri = `${process.env.NEXT_PUBLIC_HOST!}/api/users/${uploaderId}`;
 
-    const creatorResult = await requestJSON(uri);
+    const uploaderResult = await requestJSON(uri);
 
-    if (creatorResult.ok) {
-      props.creator = creatorResult.value;
+    if (uploaderResult.ok) {
+      props.uploader = uploaderResult.value;
     }
   }
 

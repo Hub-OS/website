@@ -210,7 +210,11 @@ export default function NamespacePage({
             return (
               <tr key={member.id as string}>
                 <td className={styles.namespace_cell}>
-                  <a href={"/mods?creator=" + member.id}>{name}</a>
+                  <a
+                    href={"/profile/" + encodeURIComponent(member.id as string)}
+                  >
+                    {name}
+                  </a>
                 </td>
 
                 <td>&nbsp;</td>

@@ -11,14 +11,24 @@ export default async function handler(
     return;
   }
 
-  const account = await getAccount(req, res);
+  let id;
 
-  if (!account) {
-    res.send([]);
-    return;
+  if (typeof req.query.id == "string") {
+    id = db.stringToId(req.query.id);
   }
 
-  const namespaces = await db.findMemberOrInvitedNamespaces(account.id);
+  if (!id) {
+    const account = await getAccount(req, res);
+
+    if (!account) {
+      res.send([]);
+      return;
+    }
+
+    id = account.id;
+  }
+
+  const namespaces = await db.findMemberOrInvitedNamespaces(id);
 
   res.send(namespaces);
 }

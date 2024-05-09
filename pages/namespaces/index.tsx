@@ -4,25 +4,15 @@ import PageActions from "@/components/page-actions";
 import { Namespace, Role } from "@/types/namespace";
 import { requestJSON, requestVoid } from "@/types/request";
 import { NextPageContext } from "next";
-import Link from "next/link";
 import { useState } from "react";
 import styles from "@/styles/Namespace.module.css";
 import Head from "next/head";
+import { requestMemberOrInvitedNamespaces } from "@/client/api";
+import { NamespaceLink } from "@/components/namespace-link";
 
 type Props = {
   namespaces: Namespace[];
 };
-
-function NamespaceLink({ namespace }: { namespace: Namespace }) {
-  return (
-    <Link
-      href={"/namespaces/" + encodeURIComponent(namespace.prefix)}
-      style={namespace.registered ? {} : { color: "orange" }}
-    >
-      {namespace.prefix}*
-    </Link>
-  );
-}
 
 export default function Namespaces(props: Props) {
   const context = useAppContext();
@@ -201,11 +191,7 @@ export async function getServerSideProps(context: NextPageContext) {
     },
   };
 
-  const host = process.env.NEXT_PUBLIC_HOST!;
-  const namespacesResult = await requestJSON(
-    host + "/api/namespaces/member-or-invited",
-    requestInit
-  );
+  const namespacesResult = await requestMemberOrInvitedNamespaces(requestInit);
 
   if (namespacesResult.ok) {
     props.namespaces = namespacesResult.value;

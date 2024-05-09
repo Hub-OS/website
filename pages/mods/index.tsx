@@ -9,12 +9,13 @@ import { useEffect, useState } from "react";
 import styles from "@/styles/ModList.module.css";
 import { requestJSON } from "@/types/request";
 import _ from "lodash";
-import { Ok, Result } from "@/types/result";
+import { Result } from "@/types/result";
 import { PublicAccountData } from "@/types/public-account-data";
 import Head from "next/head";
+import { requestUser } from "@/client/api";
 
 type Props = {
-  creator: PublicAccountData | null;
+  uploader: PublicAccountData | null;
   mods: PackageMeta[];
   moreExist: boolean;
 };
@@ -23,7 +24,7 @@ type HrefParams = {
   page: number;
   category: string | undefined;
   name: string | undefined;
-  creator: string | undefined;
+  uploader: string | undefined;
   sort: string | undefined;
   hidden: boolean;
 };
@@ -53,7 +54,7 @@ function createHref(params: HrefParams): string {
   return "/mods?" + pairs.join("&");
 }
 
-export default function ModList({ creator, mods, moreExist }: Props) {
+export default function ModList({ uploader, mods, moreExist }: Props) {
   const context = useAppContext();
   const router = useRouter();
 
@@ -69,7 +70,7 @@ export default function ModList({ creator, mods, moreExist }: Props) {
     page: Math.max(+(router.query.page || 0), 0),
     category: router.query.category as string | undefined,
     name: router.query.name as string | undefined,
-    creator: router.query.creator as string | undefined,
+    uploader: router.query.uploader as string | undefined,
     sort: router.query.sort as string | undefined,
     hidden: router.query.hidden == "true",
   };
@@ -84,16 +85,16 @@ export default function ModList({ creator, mods, moreExist }: Props) {
 
   return (
     <>
-      {creator ? (
-        <div className={styles.creator_section}>
+      {uploader ? (
+        <div className={styles.uploader_section}>
           <Head>
-            <title>{`Mods from ${creator.username} - Hub OS`}</title>
+            <title>{`Mods from ${uploader.username} - Hub OS`}</title>
           </Head>
 
-          <div>Mods from {creator.username}:</div>
+          <div>Mods from {uploader.username}:</div>
 
           {context.account != undefined &&
-            context.account.id == creator.id &&
+            context.account.id == uploader.id &&
             (params.hidden ? (
               <Link href={createHref({ ...params, page: 0, hidden: false })}>
                 VIEW PUBLIC
@@ -194,11 +195,11 @@ const host = process.env.NEXT_PUBLIC_HOST!;
 const mods_per_page = 25;
 
 export async function getServerSideProps(context: NextPageContext) {
-  const props: Props = { mods: [], creator: null, moreExist: false };
+  const props: Props = { mods: [], uploader: null, moreExist: false };
 
-  const [modsResult, creatorResult] = await Promise.all([
+  const [modsResult, uploaderResult] = await Promise.all([
     requestMods(context),
-    requestCreator(context.query),
+    requestUser(context.query.uploader as string),
   ]);
 
   if (modsResult.ok) {
@@ -210,8 +211,8 @@ export async function getServerSideProps(context: NextPageContext) {
     props.moreExist = true;
   }
 
-  if (creatorResult.ok) {
-    props.creator = creatorResult.value;
+  if (uploaderResult.ok) {
+    props.uploader = uploaderResult.value;
   }
 
   return {
@@ -225,7 +226,7 @@ async function requestMods(
   const page = +(context.query.page || 0);
   const skip = mods_per_page * page;
   const limit = mods_per_page + 1;
-  const forwardedParams = ["category", "name", "creator", "sort", "hidden"];
+  const forwardedParams = ["category", "name", "uploader", "sort", "hidden"];
 
   let url = `${host}/api/mods?skip=${skip}&limit=${limit}`;
 
@@ -244,16 +245,4 @@ async function requestMods(
   };
 
   return (await requestJSON(url, requestInit)) as Result<PackageMeta[], string>;
-}
-
-async function requestCreator(
-  query: NextPageContext["query"]
-): Promise<Result<PublicAccountData | null, string>> {
-  if (!query.creator) {
-    return Ok(null);
-  }
-
-  const uri = `${host}/api/users/${query.creator}`;
-
-  return (await requestJSON(uri)) as Result<PublicAccountData, string>;
 }

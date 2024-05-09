@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { PublicAccountData } from "@/types/public-account-data";
+import {
+  PublicAccountData,
+  intoPublicAccount,
+} from "@/types/public-account-data";
 import { fetchDiscordUser } from "@/types/discord";
 import { Account, normalizeUsername } from "@/types/account";
 import db from "@/storage/db";
@@ -37,7 +40,15 @@ export async function getAccount(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  return await db.findAccountByDiscordId(discordUser.id);
+  const account = await db.findAccountByDiscordId(discordUser.id);
+
+  if (account?.banned) {
+    // this should prevent the user performing any requests under their account
+    // as this function is used by api endpoints that require authentication
+    return;
+  }
+
+  return account;
 }
 
 export default async function handler(
@@ -65,11 +76,7 @@ function handleGet(
   _req: NextApiRequest,
   res: NextApiResponse<PublicAccountData | undefined>
 ) {
-  res.status(200).json({
-    id: account.id,
-    username: account.username,
-    avatar: account.avatar,
-  });
+  res.status(200).json(intoPublicAccount(account));
 }
 
 const USERNAME_REGEX = /^[a-z0-9_-]+$/i;
@@ -112,9 +119,5 @@ async function handlePatch(
 
   Object.assign(account, patch);
 
-  res.status(200).json({
-    id: account.id,
-    username: account.username,
-    avatar: account.avatar,
-  });
+  res.status(200).json(intoPublicAccount(account));
 }

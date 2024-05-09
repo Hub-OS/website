@@ -3,25 +3,39 @@ import Link from "next/link";
 import Head from "next/head";
 import { NextPageContext } from "next";
 import { PublicAccountData } from "@/types/public-account-data";
-import { requestMemberOrInvitedNamespaces, requestUser } from "@/client/api";
+import {
+  requestMemberOrInvitedNamespaces,
+  requestUser,
+  setBan,
+} from "@/client/api";
 import { Namespace } from "@/types/namespace";
 import { NamespaceLink } from "@/components/namespace-link";
-
-type Message = {
-  text: string;
-  isError: boolean;
-};
+import styles from "@/styles/Profile.module.css";
+import { useEffect, useState } from "react";
 
 type Props = {
   user: PublicAccountData | null;
   namespaces: Namespace[];
 };
 
-export default function Profile({ user, namespaces }: Props) {
+export default function Profile(props: Props) {
   const context = useAppContext();
+  const [user, setUser] = useState(() => props.user);
+  const [updatingBan, setUpdatingBan] = useState(() => false);
+
+  useEffect(() => {
+    setUser(props.user);
+  }, [props.user]);
 
   if (!user) {
     return "No account found";
+  }
+
+  let banText = updatingBan ? "BANNING" : "BAN";
+
+  if (user.banned) {
+    // unban
+    banText = "UN" + banText;
   }
 
   return (
@@ -30,7 +44,28 @@ export default function Profile({ user, namespaces }: Props) {
         <title>{`${user.username} - Hub OS`}</title>
       </Head>
 
-      <div>{user.username}</div>
+      <div className={styles.name_bar}>
+        <div>{user.username}</div>
+
+        {context.account?.admin && (
+          <a
+            onClick={async () => {
+              setUpdatingBan(true);
+              const response = await setBan(user.id as string, !user.banned);
+              setUpdatingBan(false);
+
+              if (response.ok) {
+                setUser(response.value);
+              } else {
+                // todo: display
+                console.error(response.error);
+              }
+            }}
+          >
+            {banText}
+          </a>
+        )}
+      </div>
 
       <br />
 
@@ -45,7 +80,7 @@ export default function Profile({ user, namespaces }: Props) {
       <div>
         Associated Namespaces:
         <ul>
-          {namespaces.map((namespace) => (
+          {props.namespaces.map((namespace) => (
             <li key={namespace.prefix}>
               <NamespaceLink key={namespace.prefix} namespace={namespace} />
             </li>

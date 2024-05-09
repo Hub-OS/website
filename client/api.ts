@@ -31,3 +31,12 @@ export async function requestMemberOrInvitedNamespaces(
 
   return (await requestJSON(uri, init)) as Result<Namespace[], string>;
 }
+
+export async function setBan(
+  id: string,
+  ban: boolean
+): Promise<Result<PublicAccountData, string>> {
+  return (await requestJSON(
+    "/api/admin/set-ban?ban=" + ban + "&id=" + encodeURIComponent(id)
+  )) as Result<PublicAccountData, string>;
+}

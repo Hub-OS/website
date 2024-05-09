@@ -39,6 +39,10 @@ async function handleGet(
     query["$package.name"] = req.query.name;
   }
 
+  if (req.query.prefix) {
+    query["^package.id"] = req.query.prefix;
+  }
+
   if (typeof req.query.uploader == "string") {
     const creatorId = db.stringToId(req.query.uploader);
     query["creator"] = creatorId;

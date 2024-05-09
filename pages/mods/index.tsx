@@ -22,6 +22,7 @@ type Props = {
 
 type HrefParams = {
   page: number;
+  prefix: string | undefined;
   category: string | undefined;
   name: string | undefined;
   uploader: string | undefined;
@@ -68,6 +69,7 @@ export default function ModList({ uploader, mods, moreExist }: Props) {
 
   const params = {
     page: Math.max(+(router.query.page || 0), 0),
+    prefix: router.query.prefix as string | undefined,
     category: router.query.category as string | undefined,
     name: router.query.name as string | undefined,
     uploader: router.query.uploader as string | undefined,
@@ -104,6 +106,20 @@ export default function ModList({ uploader, mods, moreExist }: Props) {
                 VIEW HIDDEN
               </Link>
             ))}
+        </div>
+      ) : params.prefix ? (
+        <div className={styles.uploader_section}>
+          <Head>
+            <title>{`${params.prefix}* - Hub OS`}</title>
+          </Head>
+
+          <div>
+            Mods in{" "}
+            <Link href={"/namespaces/" + encodeURIComponent(params.prefix)}>
+              {params.prefix}*
+            </Link>
+            :
+          </div>
         </div>
       ) : (
         <Head>
@@ -226,7 +242,14 @@ async function requestMods(
   const page = +(context.query.page || 0);
   const skip = mods_per_page * page;
   const limit = mods_per_page + 1;
-  const forwardedParams = ["category", "name", "uploader", "sort", "hidden"];
+  const forwardedParams = [
+    "prefix",
+    "category",
+    "name",
+    "uploader",
+    "sort",
+    "hidden",
+  ];
 
   let url = `${host}/api/mods?skip=${skip}&limit=${limit}`;
 

@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "@/styles/Namespace.module.css";
 import Head from "next/head";
+import Link from "next/link";
 
 type Props = { namespace?: Namespace; nameMap: AccountIdNameMap };
 
@@ -201,6 +202,16 @@ export default function NamespacePage({
 
       <br />
 
+      <ul>
+        <li>
+          <Link href={"/mods?prefix=" + encodeURIComponent(namespace.prefix)}>
+            View Mods
+          </Link>
+        </li>
+      </ul>
+
+      <br />
+
       <div>Members:</div>
       <table className="table-list">
         <tbody>
@@ -260,6 +271,7 @@ export default function NamespacePage({
           )}
         </tbody>
       </table>
+
       {isAdmin && (
         <PageActions>
           <PageActionMessage className={"error"}>

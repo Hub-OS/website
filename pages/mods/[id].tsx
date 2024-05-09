@@ -50,6 +50,8 @@ export default function ModPage({ meta, uploader }: Props) {
   const categoryTitle = snakeToTitle(meta.package.category);
   const description = meta.package.long_description || meta.package.description;
 
+  const canEdit = context.account?.admin || meta.creator == context.account?.id;
+
   return (
     <>
       <Head>
@@ -62,7 +64,7 @@ export default function ModPage({ meta, uploader }: Props) {
         </Link>
 
         <div className={styles.owner_controls}>
-          {meta.creator == context.account?.id && (
+          {canEdit && (
             <a
               className={classNames({
                 [styles.disabled_link]: togglingHidden,
@@ -88,7 +90,7 @@ export default function ModPage({ meta, uploader }: Props) {
               {hidden ? "PUBLISH" : "UNLIST"}
             </a>
           )}
-          {meta.creator == context.account?.id && (
+          {canEdit && (
             <a
               className={classNames({
                 [styles.disabled_link]: deleting,

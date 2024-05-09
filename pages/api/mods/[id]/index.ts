@@ -88,7 +88,7 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  if (!(await hasEditPermission(db, meta, account.id))) {
+  if (!account.admin && !(await hasEditPermission(db, meta, account.id))) {
     res.status(403).send(undefined);
     return;
   }

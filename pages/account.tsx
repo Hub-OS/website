@@ -35,6 +35,10 @@ export default function Account() {
     case LoginState.LoggedOut:
       return <>Not logged in.</>;
     case LoginState.LoggedIn:
+      if (!account) {
+        return "Error: Impossible LoginState!";
+      }
+
       return (
         <>
           <Head>
@@ -53,10 +57,17 @@ export default function Account() {
 
           <ul>
             <li>
+              <Link
+                href={"/profile/" + encodeURIComponent(account.id as string)}
+              >
+                View Profile
+              </Link>
+            </li>
+            <li>
               <Link href="/namespaces">View Namespaces</Link>
             </li>
             <li>
-              <Link href={`/mods?creator=${account!.id}`}>
+              <Link href={`/mods?creator=${account.id}`}>
                 View Published Mods
               </Link>
             </li>

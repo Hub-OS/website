@@ -158,7 +158,7 @@ async function handlePatch(req: NextApiRequest, res: NextApiResponse) {
   }
 
   // verify permission
-  if (!(await hasEditPermission(db, meta, account.id))) {
+  if (!account.admin && !(await hasEditPermission(db, meta, account.id))) {
     res.status(403).send(undefined);
     return;
   }

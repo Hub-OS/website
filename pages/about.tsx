@@ -8,16 +8,21 @@ export default function Home() {
       <Head>
         <title>About - Hub OS</title>
       </Head>
-      <span>
+
+      <div>
         Hub OS is derived from{" "}
         <Link href="https://github.com/TheMaverickProgrammer/OpenNetBattle">
           OpenNetBattle
         </Link>
         , splintered off from creative differences.
-      </span>
+      </div>
+
       <br />
       <br />
-      Special Thanks:
+
+      <div>Special Thanks:</div>
+      <br />
+
       <ul className={styles.thanks_list}>
         <li>Abigail Allbright</li>
         <li>Alrysc</li>

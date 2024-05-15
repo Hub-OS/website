@@ -10,6 +10,7 @@
 }
 
 .main_preview {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -22,6 +23,30 @@
 .main_preview > img {
   max-width: 100%;
   height: unset;
+}
+
+.left_arrow,
+.right_arrow {
+  background: none;
+  border: none;
+  color: white;
+  font: inherit;
+  font-weight: bold;
+  font-size: 2rem;
+  cursor: pointer;
+  width: calc(max((100% - 480px) / 2, 64px));
+  height: 100%;
+  text-shadow: #777 2px 2px;
+}
+
+.left_arrow {
+  position: absolute;
+  left: 0;
+}
+
+.right_arrow {
+  position: absolute;
+  right: 0;
 }
 
 .preview_list {

@@ -62,7 +62,31 @@ export default function Home() {
 
       <div className={styles.preview_container}>
         <div className={styles.main_preview}>
+          <button
+            aria-label="Previous Image"
+            className={styles.left_arrow}
+            onClick={() => {
+              if (imageIndex > 0) {
+                setImageIndex(imageIndex - 1);
+              }
+            }}
+          >
+            {"<"}
+          </button>
+
           <Image src={images[imageIndex]} alt="" priority />
+
+          <button
+            aria-label="Next Image"
+            className={styles.right_arrow}
+            onClick={() => {
+              if (imageIndex < images.length - 1) {
+                setImageIndex(imageIndex + 1);
+              }
+            }}
+          >
+            {">"}
+          </button>
         </div>
         <div className={styles.preview_list}>
           {images.map((image, i) => (

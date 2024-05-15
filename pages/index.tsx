@@ -23,7 +23,7 @@ export default function Home() {
   useEffect(() => {
     document.querySelector("." + styles.active_preview_item)?.scrollIntoView({
       behavior: "instant",
-    });
+    } as unknown as ScrollIntoViewOptions);
 
     const listener = (event: KeyboardEvent) => {
       if (event.ctrlKey || event.altKey || event.metaKey) {

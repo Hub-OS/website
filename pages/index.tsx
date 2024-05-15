@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "@/styles/Home.module.css";
 
 import p1 from "@/public/previews/menu-morning.png";
@@ -18,7 +18,40 @@ import p11 from "@/public/previews/library.png";
 const images = [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11];
 
 export default function Home() {
-  const [currentImage, setCurrentImage] = useState(() => images[0]);
+  const [imageIndex, setImageIndex] = useState(() => 0);
+
+  useEffect(() => {
+    document.querySelector("." + styles.active_preview_item)?.scrollIntoView({
+      behavior: "instant",
+    });
+
+    const listener = (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.altKey || event.metaKey) {
+        return;
+      }
+
+      switch (event.code) {
+        case "ArrowLeft":
+          if (imageIndex > 0) {
+            setImageIndex(imageIndex - 1);
+            event.preventDefault();
+          }
+          break;
+        case "ArrowRight":
+          if (imageIndex < images.length - 1) {
+            setImageIndex(imageIndex + 1);
+            event.preventDefault();
+          }
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", listener);
+
+    return () => {
+      window.removeEventListener("keydown", listener);
+    };
+  }, [imageIndex]);
 
   return (
     <>
@@ -29,17 +62,20 @@ export default function Home() {
 
       <div className={styles.preview_container}>
         <div className={styles.main_preview}>
-          <Image src={currentImage} alt="" priority />
+          <Image src={images[imageIndex]} alt="" priority />
         </div>
         <div className={styles.preview_list}>
           {images.map((image, i) => (
             <Image
+              className={
+                i == imageIndex ? styles.active_preview_item : undefined
+              }
               key={i}
               src={image}
               alt=""
               height={80}
               onClick={() => {
-                setCurrentImage(image);
+                setImageIndex(i);
               }}
             />
           ))}

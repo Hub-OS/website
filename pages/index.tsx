@@ -114,7 +114,7 @@ export default function Home() {
             </Link>
           </li>
           <li>
-            <Link href="https://discord.gg/6mWpQ29nMb">DISCORD</Link>
+            <Link href="https://discord.hubos.dev">DISCORD</Link>
           </li>
         </ul>
         <ul>

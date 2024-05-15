@@ -74,7 +74,7 @@ export default function Home() {
             {"<"}
           </button>
 
-          <Image src={images[imageIndex]} alt="" quality={100} priority />
+          <Image src={images[imageIndex]} alt="" unoptimized priority />
 
           <button
             aria-label="Next Image"

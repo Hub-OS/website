@@ -108,11 +108,11 @@ export default function Home() {
 
       <div className={styles.links_container}>
         <ul>
-          <li>
+          {/* <li>
             <Link href="https://github.com/Hub-OS/Hub-OS/releases/latest">
               DOWNLOAD
             </Link>
-          </li>
+          </li> */}
           <li>
             <Link href="https://discord.hubos.dev">DISCORD</Link>
           </li>

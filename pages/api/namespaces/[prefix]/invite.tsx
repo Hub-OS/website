@@ -45,8 +45,8 @@ export default async function handler(
 
   switch (req.method) {
     case "POST": {
-      if (member?.role != "admin") {
-        res.status(403).send("Not an admin");
+      if (member?.role != "admin" && !account.admin) {
+        res.status(403).send("Not a namespace admin");
         return;
       }
 

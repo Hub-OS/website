@@ -39,8 +39,9 @@ export default function NamespacePage({
   }
 
   const id = context.account?.id;
-  const isAdmin =
-    namespace.members.find((member) => member.id == id)?.role == "admin";
+  const isNamespaceAdmin =
+    namespace.members.find((member) => member.id == id)?.role == "admin" ||
+    context.account?.admin;
 
   const inviteMember = async () => {
     if (!invitingName) {
@@ -231,9 +232,9 @@ export default function NamespacePage({
                 <td>&nbsp;</td>
 
                 <td>
-                  {isAdmin && member.role != "invited" ? (
+                  {isNamespaceAdmin && member.role != "invited" ? (
                     <select
-                      disabled={!isAdmin}
+                      disabled={!isNamespaceAdmin}
                       value={member.role}
                       onChange={(e) =>
                         updateRole(member, e.target.value as Role, i)
@@ -247,7 +248,7 @@ export default function NamespacePage({
                   )}
                 </td>
 
-                {isAdmin && (
+                {isNamespaceAdmin && (
                   <td>
                     <a onClick={() => removeMember(member, name, i)}>[-]</a>
                   </td>
@@ -255,7 +256,7 @@ export default function NamespacePage({
               </tr>
             );
           })}
-          {isAdmin && (
+          {isNamespaceAdmin && (
             <tr>
               <td>
                 <input
@@ -272,7 +273,7 @@ export default function NamespacePage({
         </tbody>
       </table>
 
-      {isAdmin && (
+      {isNamespaceAdmin && (
         <PageActions>
           <PageActionMessage className={"error"}>
             {errorMessage}

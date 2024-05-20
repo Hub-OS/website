@@ -97,8 +97,8 @@ async function handlePatch(
     db.compareIds(member.id, account.id)
   );
 
-  if (member?.role != "admin") {
-    res.status(403).send("Not an admin");
+  if (member?.role != "admin" && !account.admin) {
+    res.status(403).send("Not a namespace admin");
     return;
   }
 
@@ -133,8 +133,8 @@ async function handleDelete(
     db.compareIds(member.id, account.id)
   );
 
-  if (member?.role != "admin") {
-    res.status(403).send("Not an admin");
+  if (member?.role != "admin" && !account.admin) {
+    res.status(403).send("Not a namespace admin");
     return;
   }
 

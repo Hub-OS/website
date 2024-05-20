@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAccount } from "../../users/me";
 import db from "@/storage/db";
-import { MemberUpdates, Role } from "@/types/namespace";
+import { MemberUpdates } from "@/types/namespace";
 
 export default async function handler(
   req: NextApiRequest,
@@ -38,8 +38,8 @@ export default async function handler(
     db.compareIds(member.id, account.id)
   );
 
-  if (requesterMember?.role != "admin") {
-    res.status(403).send("Not an admin");
+  if (requesterMember?.role != "admin" && !account.admin) {
+    res.status(403).send("Not a namespace admin");
     return;
   }
 

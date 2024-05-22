@@ -206,7 +206,9 @@ export function dependencies(meta: PackageMeta) {
 export function hasPreviewTexture(meta: PackageMeta): boolean {
   return (
     meta.package.preview_texture_path != undefined ||
-    meta.package.category == "tile_state"
+    meta.package.category == "tile_state" ||
+    (meta.package.category == "status" &&
+      meta.package.icon_texture_path != undefined)
   );
 }
 

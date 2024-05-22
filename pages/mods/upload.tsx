@@ -191,13 +191,17 @@ async function uploadPackage(
   try {
     let previewPath = meta.package.preview_texture_path;
 
-    if (
-      !previewPath &&
-      meta.package.category == "tile_state" &&
-      meta.package.texture_path
-    ) {
-      // special case for tile_states
-      previewPath = meta.package.texture_path;
+    if (!previewPath) {
+      if (meta.package.category == "tile_state" && meta.package.texture_path) {
+        // special case for tile_states
+        previewPath = meta.package.texture_path;
+      } else if (
+        meta.package.category == "status" &&
+        meta.package.icon_texture_path
+      ) {
+        // special case for statuses
+        previewPath = meta.package.icon_texture_path;
+      }
     }
 
     if (previewPath != undefined) {

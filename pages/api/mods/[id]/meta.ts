@@ -67,7 +67,7 @@ async function handlePost(
 
   if (permissionChecks.some((permitted) => !permitted)) {
     // we don't have permission to update every package
-    res.status(403).send("Missing permission for past_ids");
+    res.status(403).send("Missing permission for id or past_ids");
     return;
   }
 

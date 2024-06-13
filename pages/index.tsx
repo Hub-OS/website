@@ -57,7 +57,7 @@ export default function Home() {
     <>
       <header className={styles.header}>
         <span>Hub OS</span>
-        <span>Latest Version: 0.20.0</span>
+        <span>Latest Version: 0.22.0</span>
       </header>
 
       <div className={styles.preview_container}>

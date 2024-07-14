@@ -13,7 +13,7 @@
     "licenses": "node generate-licenses.mjs"
   },
   "engines": {
-    "node": "20"
+    "node": ">=20"
   },
   "dependencies": {
     "@iarna/toml": "^2.2.5",

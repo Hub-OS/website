@@ -8,5 +8,7 @@
   ],
   "module": "zip_util.js",
   "types": "zip_util.d.ts",
-  "sideEffects": false
+  "sideEffects": [
+    "./snippets/*"
+  ]
 }

@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import { ripAll } from "license-ripper";
-import cargoLicenses from "./wasm/licenses.json" assert { type: "json" };
+import cargoLicenses from "./wasm/licenses.json" with { type: "json" };
 
 const config = {
   exclude: [

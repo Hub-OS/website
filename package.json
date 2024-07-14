@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "npm run licenses && next dev",
     "build": "npm run licenses && next build",
+    "build-wasm": "cd wasm && wasm-pack build -t web && cd .. && npx linklocal",
     "start": "next start",
     "test": "ava",
     "lint": "next lint",

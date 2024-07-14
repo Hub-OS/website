@@ -17,6 +17,14 @@ Download dependencies:
 ```
 npm install
 npx linklocal
+cargo install cargo-license
+cargo install wasm-pack
+```
+
+Build the wasm module:
+
+```
+npm run build-wasm
 ```
 
 Run the development server:

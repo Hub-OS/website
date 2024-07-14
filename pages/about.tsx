@@ -18,6 +18,62 @@ export default function Home() {
       </div>
 
       <br />
+
+      <div className={styles.dashed_lists}>
+        How We Think:
+        <br />
+        <ul>
+          <li>
+            Accuracy is not the end goal.
+            <ul>
+              <li>
+                We don't want to adopt bugs and issues from our inspirations, we
+                want to make something truly better.
+              </li>
+            </ul>
+          </li>
+          <br />
+
+          <li>
+            Listen to players and focus on QOL.
+            <ul>
+              <li>
+                Not every idea has to be the default, if someone has a
+                suggestion - no matter how bad it may seem: It's worth listening
+                to. <br />
+                <br />
+                Maybe we can find a way to squeeze in an option, or we can
+                search for another solution that works for everyone.
+              </li>
+            </ul>
+          </li>
+          <br />
+
+          <li>
+            Allow creators to express themselves.
+            <ul>
+              <li>
+                Restrictions on creations are for security, composability, or
+                lack of time.
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <br />
+
+      <div className={styles.dashed_lists}>
+        (Mostly) Unique Features:
+        <br />
+        <ul>
+          <li>MultiBattles (3+ players in battle)</li>
+          <li>Rollback Netcode</li>
+          <li>Resource Packs</li>
+          <li>Many, many, QOL features</li>
+        </ul>
+      </div>
+
       <br />
 
       <div>Special Thanks:</div>

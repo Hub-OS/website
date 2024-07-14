@@ -7,3 +7,8 @@
     column-count: 2;
   }
 }
+
+.dashed_lists ul {
+  list-style-type: "- ";
+  margin-left: 8px;
+}

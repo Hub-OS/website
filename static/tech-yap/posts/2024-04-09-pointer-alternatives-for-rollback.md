@@ -105,9 +105,7 @@ If we need to delete a Sprite, instead of directly deleting the element from the
 
 There are some libraries based around this concept such as [slotmap](https://crates.io/crates/slotmap) and [generational arena](https://crates.io/crates/generational-arena). These track extra information such as a counter called the generation, and a few extra values to make insertion more efficient. This generation is useful as it lets us know if the value we're pointing at was deleted and replaced by something else, to help us avoid checking / overwriting something we weren't intended to point to. While we shouldn't be pointing to deleted data anyway, it's unavoidable in Lua (reference to a sprite on a deleted entity), and we use this property to generate error messages.
 
-## This seems hard.
-
-Initially yes, but once you've learned this pattern you'll find slotmaps can be used nearly anywhere for shared references and mutability. (Avoid Rc if you need to modify data)
+## Where else is this used?
 
 Internally we also have a Tree struct for anything with parents and children. We use either slotmap directly or [hecs](https://crates.io/crates/hecs) (ECS crate) for anything simpler (ex: animators are stored in slotmaps for referencing in Lua and Rust).
 
@@ -115,7 +113,7 @@ Internally we also have a Tree struct for anything with parents and children. We
 
 While we seemed to just be talking about shared mutability, borrow checking, and ownership. We incidentally solved the rollback issue. We can back up our sprite slots list into a state history, and our sprites are referring to their parents using an index / offset that works with any of those lists to get the data of those sprites at the correct point in time.
 
-The pattern we ended up with to replace shared pointers, works perfectly to solve a rollback problem. It's one way Rust makes easy problems hard, and hard problems easy.
+The pattern we ended up with to replace shared pointers, works perfectly to solve a rollback problem. It's one way Rust incidentally made our hard problems easy, even if it made some easy problems harder.
 
 A big part of verifying our code works with rollback is being careful with Cell / RefCell like structures, something that we will already be using sparingly.
 

@@ -441,12 +441,24 @@ export default class MongoBasedDB implements DB {
   }
 
   getPackageHashes(ids: string[]): AsyncGenerator<PackageHashResult> {
-    const mergeIds = {
-      $concatArrays: [["$package.id"], { $ifNull: ["$package.past_ids", []] }],
+    const vars = {
+      ids: {
+        $concatArrays: [
+          ["$package.id"],
+          { $ifNull: ["$package.past_ids", []] },
+        ],
+      },
     };
-    const vars = { ids: mergeIds };
-    const indexOfId = { $indexOfArray: ["$$ids", ids] };
-    const firstMatchingId = { $arrayElemAt: ["$$ids", indexOfId] };
+
+    const firstMatchingId = {
+      $first: {
+        $filter: {
+          input: "$$ids",
+          cond: { $in: ["$$this", ids] },
+          limit: 1,
+        },
+      },
+    };
 
     return this.packages.aggregate([
       {

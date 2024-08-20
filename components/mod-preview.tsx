@@ -126,8 +126,12 @@ export default function ModPreview({ meta, mini, className }: Props) {
         />
       )}
 
+      {meta.package.card_class == "recipe" && !previewPath && (
+        <div className={styles.category_placeholder}>P.A.</div>
+      )}
+
       {meta.package.category == "library" && !previewPath && (
-        <div className={styles.library_label}>LIBRARY</div>
+        <div className={styles.category_placeholder}>LIBRARY</div>
       )}
 
       {meta.package.category == "player" && (

@@ -6,6 +6,7 @@ import {
 } from "@/types/package-meta";
 import db from "@/storage/db";
 import { getAccount } from "../../users/me";
+import { MAX_NEW_DAILY_UPLOADS } from "@/types/limits";
 
 export default async function handler(
   req: NextApiRequest,
@@ -95,6 +96,17 @@ async function handlePost(
         res.status(400).send(message);
         return;
       }
+    }
+
+    const last24Hours = new Date(Date.now() - 60 * 60 * 1000 * 64);
+    const uploadCount = await db.countPackageUploadsForUser(
+      account.id,
+      last24Hours
+    );
+
+    if (uploadCount > MAX_NEW_DAILY_UPLOADS) {
+      res.status(400).send("message");
+      return;
     }
 
     // new package, init

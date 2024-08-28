@@ -74,6 +74,8 @@ export interface DB {
 
   deletePackage(id: string): Promise<void>;
   deletePackages(id: string[]): Promise<void>;
+
+  countPackageUploadsForUser(id: unknown, startDate: Date): Promise<number>;
 }
 
 import Disk from "./disk";

@@ -490,7 +490,13 @@ export default class MongoBasedDB implements DB {
     const name = `${id}.zip`;
     const writeStream = this.bucket.openUploadStream(name);
 
-    await pipeline(stream, writeStream);
+    try {
+      await pipeline(stream, writeStream);
+    } catch (err) {
+      // throw out new upload
+      await this.bucket.delete(writeStream.id);
+      throw err;
+    }
 
     // remove duplicate files
     this.deleteDuplicateFiles(name, writeStream.id);
@@ -522,7 +528,13 @@ export default class MongoBasedDB implements DB {
     const name = `${id}.png`;
     const writeStream = this.bucket.openUploadStream(name);
 
-    await pipeline(stream, writeStream);
+    try {
+      await pipeline(stream, writeStream);
+    } catch (err) {
+      // throw out new upload
+      await this.bucket.delete(writeStream.id);
+      throw err;
+    }
 
     this.deleteDuplicateFiles(name, writeStream.id);
   }
@@ -582,6 +594,13 @@ export default class MongoBasedDB implements DB {
     for await (const file of this.files.find(query)) {
       await this.bucket.delete(file._id);
     }
+  }
+
+  countPackageUploadsForUser(id: unknown, startDate: Date): Promise<number> {
+    return this.packages.countDocuments({
+      creator: id,
+      creation_date: { $gt: startDate },
+    });
   }
 }
 

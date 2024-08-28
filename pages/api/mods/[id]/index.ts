@@ -2,6 +2,7 @@ import db from "@/storage/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAccount } from "../../users/me";
 import { hasEditPermission } from "@/types/package-meta";
+import { MAX_PACKAGE_SIZE, restrictUploadSize } from "@/types/limits";
 
 export default async function handler(
   req: NextApiRequest,
@@ -61,9 +62,17 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  await db.uploadPackageZip(id, req);
+  restrictUploadSize(req, res, MAX_PACKAGE_SIZE);
 
-  res.status(200).send(undefined);
+  try {
+    await db.uploadPackageZip(id, req);
+
+    res.status(200).send(undefined);
+  } catch (err) {
+    if (!res.closed) {
+      throw err;
+    }
+  }
 }
 
 async function handleDelete(req: NextApiRequest, res: NextApiResponse) {

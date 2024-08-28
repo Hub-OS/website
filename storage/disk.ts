@@ -384,7 +384,13 @@ export default class Disk implements DB {
       `storage/_disk/mods/${encodeURIComponent(id)}.zip`
     );
 
-    await pipeline(stream, writeStream);
+    try {
+      await pipeline(stream, writeStream);
+    } catch (err) {
+      // throw out new upload
+      await fsPromises.rm(writeStream.path);
+      throw err;
+    }
 
     const hash = hasher.digest("hex");
 
@@ -409,7 +415,13 @@ export default class Disk implements DB {
       `storage/_disk/mods/${encodeURIComponent(id)}.png`
     );
 
-    await pipeline(stream, writeStream);
+    try {
+      await pipeline(stream, writeStream);
+    } catch (err) {
+      // throw out new upload
+      await fsPromises.rm(writeStream.path);
+      throw err;
+    }
   }
 
   async downloadPackagePreview(
@@ -441,5 +453,14 @@ export default class Disk implements DB {
 
   async deletePackages(ids: string[]): Promise<void> {
     await Promise.all(ids.map((id) => this.deletePackage(id)));
+  }
+
+  async countPackageUploadsForUser(
+    id: unknown,
+    startDate: Date
+  ): Promise<number> {
+    return this.data.packages.filter((p) => {
+      return p.creator == id && p.creation_date > startDate;
+    }).length;
   }
 }

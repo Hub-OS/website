@@ -2,6 +2,7 @@ import db from "@/storage/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAccount } from "../../users/me";
 import { hasEditPermission } from "@/types/package-meta";
+import { MAX_PREVIEW_SIZE, restrictUploadSize } from "@/types/limits";
 
 export default async function handler(
   req: NextApiRequest,
@@ -63,9 +64,17 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  await db.uploadPackagePreview(id, req);
+  restrictUploadSize(req, res, MAX_PREVIEW_SIZE);
 
-  res.status(200).send(undefined);
+  try {
+    await db.uploadPackagePreview(id, req);
+
+    res.status(200).send(undefined);
+  } catch (err) {
+    if (!res.closed) {
+      throw err;
+    }
+  }
 }
 
 export const config = {

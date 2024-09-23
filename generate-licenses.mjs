@@ -20,6 +20,7 @@ const config = {
     "@next/swc-win32-x64-msvc",
     "@next/swc-linux-x64-gnu",
     "@next/swc-linux-x64-musl",
+    "@swc/counter",
   ],
   overrides: {
     "@swc/helpers": { license: "Apache-2.0" },
@@ -47,7 +48,7 @@ async function main() {
   const { resolved, errors } = await ripAll(".", config);
 
   if (
-    errors.missingLicense.length > 0 ||
+    errors.invalidLicense.length > 0 ||
     errors.missingLicenseText.length > 0
   ) {
     console.log("license errors: ", JSON.stringify(errors, null, 2));

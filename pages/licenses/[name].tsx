@@ -28,7 +28,7 @@ export default function License() {
         </div>
       </div>
       <br />
-      <pre>{project.licenseText}</pre>
+      <pre>{project.licenses?.map((l) => l.text)?.join("\n\n-\n\n")}</pre>
     </>
   );
 }

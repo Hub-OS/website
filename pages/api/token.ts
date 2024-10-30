@@ -3,6 +3,7 @@ import { setCookie } from "cookies-next";
 import { fetchDiscordUser } from "@/types/discord";
 import db from "@/storage/db";
 import { normalizeUsername } from "@/types/account";
+import { signJwt } from "@/types/jwt";
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,28 +14,16 @@ export default async function handler(
     return;
   }
 
-  const token = req.body?.token;
-  setCookie("token", token, {
-    req,
-    res,
-    maxAge: 60 * 60 * 24 * 30,
-    httpOnly: true,
-  });
+  const discordToken = req.body?.token;
+  const discordUser = await fetchDiscordUser(discordToken);
 
-  const discordUser = await fetchDiscordUser(req, res);
-
-  if (!discordUser) {
-    res.status(400).send(undefined);
-    return;
-  }
-
-  const account = await db.findAccountByDiscordId(discordUser.id);
+  let account = await db.findAccountByDiscordId(discordUser.id);
 
   if (!account) {
     const username = discordUser.username + "@discord";
 
     // create an account
-    await db.createAccount({
+    account = {
       username,
       normalized_username: normalizeUsername(username),
       discord_id: discordUser.id,
@@ -42,8 +31,18 @@ export default async function handler(
         discordUser.avatar != undefined
           ? `https://cdn.discordapp.com/avatars/${discordUser.id}?size=128`
           : `/default-avatar.png`,
-    });
+    };
+    account.id = await db.createAccount(account);
   }
+
+  const token = await signJwt({ user_id: db.idToString(account.id) });
+
+  setCookie("token", token, {
+    req,
+    res,
+    maxAge: 60 * 60 * 24 * 14,
+    httpOnly: true,
+  });
 
   res.status(200).send(undefined);
 }

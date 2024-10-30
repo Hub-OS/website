@@ -1,6 +1,4 @@
 import discord from "discord.js";
-import { getCookie } from "cookies-next";
-import { NextApiRequest, NextApiResponse } from "next";
 
 type DiscordUser = {
   id: string; // the user's id
@@ -9,16 +7,7 @@ type DiscordUser = {
   avatar?: string; // the user's avatar hash
 };
 
-export async function fetchDiscordUser(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const token = getCookie("token", { req, res });
-
-  if (typeof token != "string") {
-    return;
-  }
-
+export async function fetchDiscordUser(token: string) {
   const rest = new discord.REST({ version: "10", authPrefix: "Bearer" });
   rest.setToken(token);
 

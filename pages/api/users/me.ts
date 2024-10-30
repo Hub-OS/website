@@ -3,10 +3,11 @@ import {
   PublicAccountData,
   intoPublicAccount,
 } from "@/types/public-account-data";
-import { fetchDiscordUser } from "@/types/discord";
 import { Account, normalizeUsername } from "@/types/account";
 import db from "@/storage/db";
 import { MongoServerError } from "mongodb";
+import { getCookie } from "cookies-next";
+import { verifyJwt } from "@/types/jwt";
 
 export async function getAccount(req: NextApiRequest, res: NextApiResponse) {
   if (process.env.TEST_ENV && req.headers.authorization?.startsWith("Basic ")) {
@@ -34,13 +35,19 @@ export async function getAccount(req: NextApiRequest, res: NextApiResponse) {
 
   // normal flow
 
-  const discordUser = await fetchDiscordUser(req, res);
+  const token = getCookie("token", { req, res });
 
-  if (!discordUser) {
+  if (typeof token != "string") {
     return;
   }
 
-  const account = await db.findAccountByDiscordId(discordUser.id);
+  const jwtPayload = await verifyJwt(token);
+
+  if (typeof jwtPayload != "object") {
+    return;
+  }
+
+  const account = await db.findAccountById(db.stringToId(jwtPayload.user_id));
 
   if (account?.banned) {
     // this should prevent the user performing any requests under their account

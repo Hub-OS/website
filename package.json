@@ -23,6 +23,7 @@
     "discord.js": "^14.7.1",
     "escape-string-regexp": "^5.0.0",
     "gray-matter": "^4.0.3",
+    "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mongodb": "^6.1.0",
     "next": "^14.2.4",
@@ -35,6 +36,7 @@
     "zip-utils": "file:./wasm/pkg"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/lodash": "^4.14.191",
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",

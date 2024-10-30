@@ -4,12 +4,14 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 Create a `.env.local` file:
 
-```
+```bash
 NEXT_PUBLIC_DISCORD_CLIENT_ID = ""
 NEXT_PUBLIC_DISCORD_REDIRECT_URI = "http://localhost:3000/mods/upload"
 DISCORD_SECRET = ""
 
 NEXT_PUBLIC_HOST = "http://localhost:3000"
+
+JWT_SECRET = "" # generate with: `ssh-keygen -t rsa-sha2-256 -b 4096 -m PEM -f private.key` copy + paste the string in private.key
 ```
 
 Download dependencies:

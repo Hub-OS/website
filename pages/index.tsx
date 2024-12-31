@@ -115,11 +115,11 @@ export default function Home() {
           <li>
             <Link href="https://discord.hubos.dev">DISCORD</Link>
           </li>
-          <li>
+          {/* <li>
             <Link href="https://bsky.app/profile/hubos.bsky.social">
               BLUESKY
             </Link>
-          </li>
+          </li> */}
         </ul>
         <ul>
           <li>

@@ -7,7 +7,7 @@ import postStyles from "@/styles/YapPost.module.css";
 import markdownStyles from "@/styles/Markdown.module.css";
 import Link from "next/link";
 import Head from "next/head";
-import { readPostFile, getStaticPaths } from "../../../static/tech-yap/lib";
+import { readPostFile, getStaticPaths } from "@/public/static/tech-yap/lib";
 
 type Props = {
   title: string;

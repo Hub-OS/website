@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import _ from "lodash";
 
-const dirPath = "./public/static/tech-yap/posts/";
+const dirPath = "./tech-yap/posts/";
 
 type YapPostPath = { params: { date: string; name: string } };
 

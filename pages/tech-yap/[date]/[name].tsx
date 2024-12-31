@@ -1,13 +1,18 @@
 import { GetStaticPropsContext } from "next";
 import Markdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import SyntaxHighlighter from "react-syntax-highlighter/dist/cjs/prism-light";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import matter from "gray-matter";
 import postStyles from "@/styles/YapPost.module.css";
 import markdownStyles from "@/styles/Markdown.module.css";
 import Link from "next/link";
 import Head from "next/head";
-import { readPostFile, getStaticPaths } from "@/public/static/tech-yap/lib";
+import { readPostFile, getStaticPaths } from "@/tech-yap/lib";
+
+import lua from "react-syntax-highlighter/dist/cjs/languages/prism/lua";
+import rust from "react-syntax-highlighter/dist/cjs/languages/prism/rust";
+SyntaxHighlighter.registerLanguage("lua", lua);
+SyntaxHighlighter.registerLanguage("rust", rust);
 
 type Props = {
   title: string;

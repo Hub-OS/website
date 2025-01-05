@@ -7,6 +7,7 @@
 
 # testing
 /coverage
+/.tsimp/
 
 # next.js
 /.next/

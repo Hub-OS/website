@@ -35,7 +35,7 @@ export async function getAccount(req: NextApiRequest, res: NextApiResponse) {
 
   // normal flow
 
-  const token = getCookie("token", { req, res });
+  const token = await getCookie("token", { req, res });
 
   if (typeof token != "string") {
     return;

@@ -76,11 +76,10 @@ export default function Home() {
         <br />
 
         <p>
-          Hub OS is derived from{" "}
+          Hub OS has roots in{" "}
           <Link href="https://github.com/TheMaverickProgrammer/OpenNetBattle">
             OpenNetBattle
           </Link>
-          , splintered off from creative differences.
         </p>
 
         <br />

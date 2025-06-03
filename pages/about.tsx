@@ -2,7 +2,7 @@ import Link from "next/link";
 import styles from "@/styles/About.module.css";
 import Head from "next/head";
 
-export default function Home() {
+export default function About() {
   return (
     <>
       <Head>
@@ -51,7 +51,7 @@ export default function Home() {
               <ul>
                 <li>
                   Not every idea has to be the default, if someone has a
-                  suggestion - no matter how bad it may seem: It's worth
+                  suggestion - no matter how conflicting it may seem: It's worth
                   listening to. <br />
                   <br />
                   Maybe we can find a way to squeeze in an option, or we can

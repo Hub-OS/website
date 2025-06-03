@@ -12,7 +12,7 @@ export default function Home() {
       <div>
         <p>
           Hub OS is an online battle experience that takes place on
-          interconnected servers or Hubs.
+          interconnected servers, or Hubs.
         </p>
 
         <br />

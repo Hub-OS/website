@@ -1,8 +1,10 @@
 import Link from "next/link";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { useEffect, useState } from "react";
+import { PlayButton } from "@/components/icons";
 import styles from "@/styles/Home.module.css";
 
+import p0 from "@/public/previews/video-thumbnail.png";
 import p1 from "@/public/previews/menu-morning.png";
 import p2 from "@/public/previews/menu-night.png";
 import p3 from "@/public/previews/grand-square-pvp-mat.png";
@@ -15,10 +17,27 @@ import p9 from "@/public/previews/drives.png";
 import p10 from "@/public/previews/blocks.png";
 import p11 from "@/public/previews/library.png";
 
-const images = [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11];
+type CarouselItem = {
+  videoSrc?: string;
+  preview: StaticImageData;
+  description: string;
+};
+
+const carouselItems: CarouselItem[] = [
+  {
+    preview: p0,
+    videoSrc: "https://www.youtube.com/embed/m4aw9rzHMH8?si=9A_My13gP4wXq14v",
+    description: "Video",
+  },
+  // images
+  ...[p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11].map((image, i) => ({
+    preview: image,
+    description: "Screenshot " + (i + 1),
+  })),
+];
 
 export default function Home() {
-  const [imageIndex, setImageIndex] = useState(() => 0);
+  const [currentIndex, setCurrentIndex] = useState(() => 0);
 
   useEffect(() => {
     document.querySelector("." + styles.active_preview_item)?.scrollIntoView({
@@ -32,14 +51,14 @@ export default function Home() {
 
       switch (event.code) {
         case "ArrowLeft":
-          if (imageIndex > 0) {
-            setImageIndex(imageIndex - 1);
+          if (currentIndex > 0) {
+            setCurrentIndex(currentIndex - 1);
             event.preventDefault();
           }
           break;
         case "ArrowRight":
-          if (imageIndex < images.length - 1) {
-            setImageIndex(imageIndex + 1);
+          if (currentIndex < carouselItems.length - 1) {
+            setCurrentIndex(currentIndex + 1);
             event.preventDefault();
           }
           break;
@@ -51,7 +70,9 @@ export default function Home() {
     return () => {
       window.removeEventListener("keydown", listener);
     };
-  }, [imageIndex]);
+  }, [currentIndex]);
+
+  const item = carouselItems[currentIndex];
 
   return (
     <>
@@ -62,25 +83,42 @@ export default function Home() {
       <div className={styles.preview_container}>
         <div className={styles.main_preview}>
           <button
-            aria-label="Previous Image"
+            aria-label="Previous"
             className={styles.left_arrow}
             onClick={() => {
-              if (imageIndex > 0) {
-                setImageIndex(imageIndex - 1);
+              if (currentIndex > 0) {
+                setCurrentIndex(currentIndex - 1);
               }
             }}
           >
             {"<"}
           </button>
 
-          <Image src={images[imageIndex]} alt="" unoptimized priority />
+          {item.videoSrc ? (
+            <iframe
+              width="480"
+              height="320"
+              src={item.videoSrc}
+              title={item.description}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          ) : (
+            <Image
+              src={item.preview}
+              alt={item.description}
+              unoptimized
+              priority
+            />
+          )}
 
           <button
-            aria-label="Next Image"
+            aria-label="Next"
             className={styles.right_arrow}
             onClick={() => {
-              if (imageIndex < images.length - 1) {
-                setImageIndex(imageIndex + 1);
+              if (currentIndex < carouselItems.length - 1) {
+                setCurrentIndex(currentIndex + 1);
               }
             }}
           >
@@ -88,19 +126,23 @@ export default function Home() {
           </button>
         </div>
         <div className={styles.preview_list}>
-          {images.map((image, i) => (
-            <Image
-              className={
-                i == imageIndex ? styles.active_preview_item : undefined
-              }
+          {carouselItems.map((item, i) => (
+            <div
               key={i}
-              src={image}
-              alt=""
-              height={80}
+              className={
+                i == currentIndex ? styles.active_preview_item : undefined
+              }
               onClick={() => {
-                setImageIndex(i);
+                setCurrentIndex(i);
               }}
-            />
+            >
+              <Image src={item.preview} alt={item.description} height={80} />
+              {item.videoSrc && (
+                <div className={styles.play_circle}>
+                  <PlayButton size={22} />
+                </div>
+              )}
+            </div>
           ))}
         </div>
       </div>
@@ -115,11 +157,11 @@ export default function Home() {
           <li>
             <Link href="https://discord.hubos.dev">DISCORD</Link>
           </li>
-          {/* <li>
+          <li>
             <Link href="https://bsky.app/profile/hubos.bsky.social">
               BLUESKY
             </Link>
-          </li> */}
+          </li>
         </ul>
         <ul>
           <li>

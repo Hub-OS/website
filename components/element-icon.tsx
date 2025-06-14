@@ -22,7 +22,10 @@ type Props = {
 };
 
 export default function ElementIcon({ element, className, style }: Props) {
-  const offset = elements.indexOf(element as string) + 1;
+  const offset =
+    element == undefined
+      ? 0
+      : elements.indexOf((element as string).toLowerCase()) + 1;
 
   return (
     <div

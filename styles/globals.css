@@ -4,6 +4,11 @@
 }
 
 @font-face {
+  font-family: client-bold-mono;
+  src: url("/bold-mono.ttf") format("truetype");
+}
+
+@font-face {
   font-family: client-thin;
   src: url("/thin.ttf") format("truetype");
 }
@@ -129,17 +134,18 @@ h5 {
   font-weight: normal;
   font-family: client-bold;
   margin-bottom: 0.5rem;
+  margin-left: -2px;
 }
 
 h1 {
-  font-size: 30px;
+  font-size: 40px;
 }
 
 h2,
 h3,
 h4,
 h5 {
-  font-size: 24px;
+  font-size: 30px;
 }
 
 iframe {

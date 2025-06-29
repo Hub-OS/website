@@ -18,7 +18,7 @@ export default function About() {
         <br />
 
         <div className={styles.dashed_lists}>
-          <h2>Highlights:</h2>
+          <h2>Highlights</h2>
 
           <ul>
             <li>Rollback Netcode</li>
@@ -33,7 +33,7 @@ export default function About() {
         <br />
 
         <div className={styles.dashed_lists}>
-          <h2>How We Think:</h2>
+          <h2>How We Think</h2>
           <ul>
             <li>
               Accuracy is not the end goal.
@@ -73,7 +73,9 @@ export default function About() {
           </ul>
         </div>
 
-        <h2>History:</h2>
+        <br />
+
+        <h2>History</h2>
 
         <p>
           Hub OS has roots in{" "}
@@ -84,7 +86,7 @@ export default function About() {
 
         <br />
 
-        <h2>Special Thanks:</h2>
+        <h2>Special Thanks</h2>
 
         <ul className={styles.thanks_list}>
           <li>Abigail Allbright</li>

@@ -80,7 +80,7 @@ export default function Home() {
         <span>Hub OS</span>
       </header>
 
-      <div className={styles.preview_container}>
+      <div>
         <div className={styles.main_preview}>
           <button
             aria-label="Previous"
@@ -181,6 +181,13 @@ export default function Home() {
             <Link href="/cat.png">CAT</Link>
           </li>
         </ul>
+      </div>
+
+      <div className={styles.itch}>
+        Download on <Link href="https://hub-os.itch.io/hub-os">itch.io</Link>
+        <br />
+        Use the <Link href="https://itch.io/app">itch app</Link> for automatic
+        updates
       </div>
     </>
   );

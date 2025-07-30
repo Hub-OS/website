@@ -605,54 +605,77 @@ export default class MongoBasedDB implements DB {
 }
 
 function toMongoQuery(query: Query) {
-  const mongoQuery: Query = {};
+  let mongoQuery: Query = {};
+  const orRoots = [];
 
   for (let key in query) {
     const value = query[key];
 
-    // handle "!"
-    const oldKey = key;
-    key = key.replace(/^!+/, "");
-    const invert = (oldKey.length - key.length) % 2 == 1;
+    // handle |
+    const branches = key.split(" | ");
 
-    // handle other special prefixes
-    const firstChar = key[0];
+    if (branches.length > 1) {
+      const $or = branches.map((key) => {
+        const mongoSubQuery = {};
+        resolveMongoSubQuery(mongoSubQuery, key, value);
+        return mongoSubQuery;
+      });
 
-    switch (firstChar) {
-      case "$":
-        // special search case
-        if (typeof value == "string") {
-          mongoQuery[key.slice(1)] = {
-            $regex: new RegExp(escapeStringRegexp(value), "i"),
-          };
-        }
-        break;
-      case "^":
-        // special search case
-        if (typeof value == "string") {
-          mongoQuery[key.slice(1)] = {
-            $regex: new RegExp("^" + escapeStringRegexp(value), "i"),
-          };
-        }
-        break;
-      default:
-        // type check to protect against possible attacks
-        if (Array.isArray(value)) {
-          mongoQuery[key] = { $in: value };
-        } else if (typeof value != "object") {
-          mongoQuery[key] = value;
-        } else if (value instanceof ObjectId) {
-          mongoQuery[key] = value;
-        }
-        break;
-    }
-
-    if (invert) {
-      mongoQuery[key] = { $not: mongoQuery[key] };
+      orRoots.push({ $or });
+    } else {
+      resolveMongoSubQuery(mongoQuery, key, value);
     }
   }
 
+  if (orRoots.length > 0) {
+    orRoots.push(mongoQuery);
+    mongoQuery = { $and: orRoots };
+  }
+
   return mongoQuery;
+}
+
+function resolveMongoSubQuery(mongoQuery: Query, key: string, value: any) {
+  // handle "!"
+  const oldKey = key;
+  key = key.replace(/^!+/, "");
+  const invert = (oldKey.length - key.length) % 2 == 1;
+
+  // handle other special prefixes
+  const firstChar = key[0];
+
+  switch (firstChar) {
+    case "$":
+      // special search case
+      if (typeof value == "string") {
+        mongoQuery[key.slice(1)] = {
+          $regex: new RegExp(escapeStringRegexp(value), "i"),
+        };
+      }
+      break;
+    case "^":
+      // special search case
+      if (typeof value == "string") {
+        mongoQuery[key.slice(1)] = {
+          $regex: new RegExp("^" + escapeStringRegexp(value), "i"),
+        };
+      }
+      break;
+    default:
+      // type check to protect against possible attacks
+      if (Array.isArray(value)) {
+        mongoQuery[key] = { $in: value };
+      } else if (typeof value != "object") {
+        mongoQuery[key] = value;
+      } else if (value instanceof ObjectId) {
+        mongoQuery[key] = value;
+      }
+      break;
+  }
+
+  if (invert) {
+    mongoQuery[key] = { $not: mongoQuery[key] };
+  }
 }
 
 function toMongoSortParam(sortMethod: SortMethod): {

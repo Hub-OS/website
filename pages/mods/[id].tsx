@@ -51,11 +51,12 @@ export default function ModPage({ meta, uploader }: Props) {
   const description = meta.package.long_description || meta.package.description;
 
   const canEdit = context.account?.admin || meta.creator == context.account?.id;
+  const name = meta.package.long_name || meta.package.name;
 
   return (
     <>
       <Head>
-        <title>{`${meta.package.name} - ${categoryTitle} Package - Hub OS`}</title>
+        <title>{`${name} - ${categoryTitle} Package - Hub OS`}</title>
       </Head>
 
       <div className={styles.top_controls}>
@@ -117,7 +118,7 @@ export default function ModPage({ meta, uploader }: Props) {
 
         <div className={styles.meta}>
           <div>
-            {meta.package.name} - {categoryTitle} Package
+            {name} - {categoryTitle} Package
           </div>
 
           {description && <div>{description}</div>}

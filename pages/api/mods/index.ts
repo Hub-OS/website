@@ -36,7 +36,7 @@ async function handleGet(
   }
 
   if (req.query.name) {
-    query["$package.name"] = req.query.name;
+    query["$package.name | $package.long_name"] = req.query.name;
   }
 
   if (req.query.prefix) {

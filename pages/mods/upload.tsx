@@ -89,7 +89,9 @@ export default function Upload() {
 
               const packageMeta = packageMetaResult.value;
 
-              setText(`UPLOADING ${packageMeta.package.name.toUpperCase()}`);
+              const name =
+                packageMeta.package.long_name || packageMeta.package.name;
+              setText(`UPLOADING ${name.toUpperCase()}`);
 
               const urlResult = await uploadPackage(packageMeta, rezipped);
 
@@ -113,7 +115,9 @@ export default function Upload() {
           {log.map(({ packageMeta, url }, i) => (
             <li key={i}>
               <a href={url} target="_blank" rel="noreferrer">
-                {packageMeta.package.id} - {packageMeta.package.name}
+                {packageMeta.package.id}
+                {" - "}
+                {packageMeta.package.long_name || packageMeta.package.name}
               </a>
             </li>
           ))}

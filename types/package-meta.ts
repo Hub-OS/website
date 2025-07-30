@@ -7,6 +7,7 @@ export type PackageMeta = {
     id: string;
     past_ids?: string[];
     name: string;
+    long_name?: string;
     description?: string;
 
     // block augments

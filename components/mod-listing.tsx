@@ -8,14 +8,16 @@ type Props = { meta: PackageMeta };
 export default function ModListing({ meta }: Props) {
   const encodedId = encodeURIComponent(meta.package.id);
 
+  const label = meta.package.long_name || meta.package.name;
+
   return (
     <Link
       className={styles.container}
-      title={meta.package.name}
+      title={label}
       href={`/mods/${encodedId}`}
     >
       <ModPreview meta={meta} className={styles.preview} mini />
-      <span className={styles.name}>{meta.package.name}</span>
+      <span className={styles.name}>{label}</span>
     </Link>
   );
 }

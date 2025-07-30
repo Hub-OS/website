@@ -30,7 +30,8 @@ export default async function handler(
   const [meta] = await db.listPackages(query, null, 0, 1);
 
   if (meta) {
-    const message = `Blocked by ${meta.package.name} (${meta.package.id})`;
+    const name = meta.package.long_name || meta.package.name;
+    const message = `Blocked by ${name} (${meta.package.id})`;
     res.status(400).send(message);
     return;
   }

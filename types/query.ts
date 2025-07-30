@@ -8,12 +8,16 @@ import _ from "lodash";
 // { ["$package.name"]: "te" } // custom case insensitive partial search
 // { ["^package.name"]: "dev.konstinople." } // custom case for case insensitive prefix search
 // { ["!package.name"]: any } // inverts the expression
+// { ["$package.name | $package.long_name"]: any } // tests multiple expressions, and passes if at least one passes
 
 export type Query = { [key: string]: any };
 
 export function queryTest(query: Query, other: PackageMeta) {
   for (let key in query) {
-    if (!testKey(other, query[key], key)) {
+    const value = query[key];
+    const branches = key.split(" | ");
+
+    if (!branches.some((key) => testKey(other, value, key))) {
       return false;
     }
   }

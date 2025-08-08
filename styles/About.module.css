@@ -1,13 +1,3 @@
-.thanks_list {
-  column-count: 3;
-}
-
-@media (max-width: 560px) {
-  .thanks_list {
-    column-count: 2;
-  }
-}
-
 .dashed_lists ul {
   list-style-type: "- ";
   margin-left: 8px;

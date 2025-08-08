@@ -1,0 +1,13 @@
+.credits {
+  text-align: center;
+}
+
+.long_list {
+  column-count: 3;
+}
+
+@media (max-width: 560px) {
+  .long_list {
+    column-count: 2;
+  }
+}

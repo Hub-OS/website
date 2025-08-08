@@ -63,7 +63,7 @@ const CREDITS_LIST: [string, string[]][] = [
     ],
   ],
   ["Our Roots", ["OpenNetBattle"]],
-  ["For Inspiring Us", ["Mega Man Battle Network", "Capcom"]],
+  ["Our Inspiration", ["Mega Man Battle Network", "Capcom"]],
 ];
 
 export default function Credits() {

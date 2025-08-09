@@ -5,7 +5,7 @@ import classNames from "classnames";
 import styles from "@/styles/Credits.module.css";
 
 const CREDITS_LINKS: { [key: string]: React.JSX.Element } = {
-  "Mondo.sp": (
+  "mondo.": (
     <Link href="https://www.youtube.com/channel/UC70QE2DBtzkG_W4_NWLvW2A">
       YouTube
     </Link>

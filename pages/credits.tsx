@@ -18,7 +18,7 @@ const CREDITS_LINKS: { [key: string]: React.JSX.Element } = {
 };
 
 const CREDITS_LIST: [string, string[]][] = [
-  ["Music", ["Mondo.sp"]],
+  ["Music", ["mondo."]],
   ["Sound Design", ["DJRezzed"]],
   ["Graphics", ["Konst", "Salad"]],
   ["User Experience", ["Gray Nine", "KayThree"]],

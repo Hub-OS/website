@@ -17,7 +17,11 @@ import styles from "@/styles/Mod.module.css";
 import { requestJSON } from "@/types/request";
 import Head from "next/head";
 
-type Props = { meta?: PackageMeta; uploader?: PublicAccountData };
+type Props = {
+  meta?: PackageMeta;
+  uploader?: PublicAccountData;
+  canEdit?: boolean;
+};
 
 function snakeToTitle(text: string) {
   return text
@@ -26,7 +30,7 @@ function snakeToTitle(text: string) {
     .join(" ");
 }
 
-export default function ModPage({ meta, uploader }: Props) {
+export default function ModPage({ meta, uploader, canEdit }: Props) {
   const [hashText, setHashText] = useState("COPY HASH");
   const [hidden, setHidden] = useState(meta?.hidden);
   const [togglingHidden, setTogglingHidden] = useState(false);
@@ -49,8 +53,6 @@ export default function ModPage({ meta, uploader }: Props) {
   const encodedId = encodeURIComponent(meta.package.id);
   const categoryTitle = snakeToTitle(meta.package.category);
   const description = meta.package.long_description || meta.package.description;
-
-  const canEdit = context.account?.admin || meta.creator == context.account?.id;
   const name = meta.package.long_name || meta.package.name;
 
   return (
@@ -207,24 +209,52 @@ export async function getServerSideProps(context: NextPageContext) {
   const props: Props = {};
 
   const encodedId = encodeURIComponent(context.query.id as string);
-  const uri = `${process.env.NEXT_PUBLIC_HOST!}/api/mods/${encodedId}/meta`;
 
-  const metaResult = await requestJSON(uri);
+  async function requestMeta() {
+    const uri = `${process.env.NEXT_PUBLIC_HOST!}/api/mods/${encodedId}/meta`;
 
-  if (metaResult.ok) {
-    props.meta = metaResult.value;
-  }
+    const metaResult = await requestJSON(uri);
 
-  if (props.meta) {
-    const uploaderId = props.meta.creator;
-    const uri = `${process.env.NEXT_PUBLIC_HOST!}/api/users/${uploaderId}`;
-
-    const uploaderResult = await requestJSON(uri);
-
-    if (uploaderResult.ok) {
-      props.uploader = uploaderResult.value;
+    if (metaResult.ok) {
+      props.meta = metaResult.value;
     }
   }
+
+  async function requestUploader() {
+    if (props.meta) {
+      const uploaderId = props.meta.creator;
+      const uri = `${process.env.NEXT_PUBLIC_HOST!}/api/users/${uploaderId}`;
+
+      const uploaderResult = await requestJSON(uri);
+
+      if (uploaderResult.ok) {
+        props.uploader = uploaderResult.value;
+      }
+    }
+  }
+
+  async function requestEditPermission() {
+    const cookie = context.req?.headers.cookie;
+
+    if (cookie) {
+      const uri = `${process.env
+        .NEXT_PUBLIC_HOST!}/api/mods/${encodedId}/edit-permission`;
+
+      const requestResult = await requestJSON(uri, {
+        headers: { cookie },
+      });
+
+      if (requestResult.ok) {
+        props.canEdit = requestResult.value;
+      }
+    }
+  }
+
+  await Promise.all([
+    requestMeta(),
+    requestUploader(),
+    requestEditPermission(),
+  ]);
 
   return {
     props,

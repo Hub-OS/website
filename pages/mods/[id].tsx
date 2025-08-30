@@ -222,20 +222,15 @@ export async function getServerSideProps(context: NextPageContext) {
 
   async function requestUploader() {
     if (props.meta) {
-      console.log("a");
       const uploaderId = props.meta.creator;
       const uri = `${process.env.NEXT_PUBLIC_HOST!}/api/users/${uploaderId}`;
 
       const uploaderResult = await requestJSON(uri);
 
       if (uploaderResult.ok) {
-        console.log("b");
         props.uploader = uploaderResult.value;
-      } else {
-        console.log("c");
       }
     }
-    console.log("d");
   }
 
   async function requestEditPermission() {

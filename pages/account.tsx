@@ -67,7 +67,7 @@ export default function Account() {
               <Link href="/namespaces">View Namespaces</Link>
             </li>
             <li>
-              <Link href={`/mods?creator=${account.id}`}>
+              <Link href={`/mods?uploader=${account.id}`}>
                 View Published Mods
               </Link>
             </li>

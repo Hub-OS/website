@@ -40,33 +40,35 @@ export default function Post({ title, date, markdown }: Props) {
       </div>
 
       <h1>{title}</h1>
-      <Markdown
-        className={markdownStyles.markdown}
-        components={{
-          code(props) {
-            const { children, className, node, ...rest } = props;
-            const match = /language-(\w+)/.exec(className || "");
 
-            return match ? (
-              // @ts-ignore, {...rest} matches documentation
-              <SyntaxHighlighter
-                {...rest}
-                PreTag="div"
-                language={match[1]}
-                style={syntaxStyle}
-              >
-                {String(children).replace(/\n$/, "")}
-              </SyntaxHighlighter>
-            ) : (
-              <code {...rest} className={className}>
-                {children}
-              </code>
-            );
-          },
-        }}
-      >
-        {markdown}
-      </Markdown>
+      <div className={markdownStyles.markdown}>
+        <Markdown
+          components={{
+            code(props) {
+              const { children, className, node, ...rest } = props;
+              const match = /language-(\w+)/.exec(className || "");
+
+              return match ? (
+                // @ts-ignore, {...rest} matches documentation
+                <SyntaxHighlighter
+                  {...rest}
+                  PreTag="div"
+                  language={match[1]}
+                  style={syntaxStyle}
+                >
+                  {String(children).replace(/\n$/, "")}
+                </SyntaxHighlighter>
+              ) : (
+                <code {...rest} className={className}>
+                  {children}
+                </code>
+              );
+            },
+          }}
+        >
+          {markdown}
+        </Markdown>
+      </div>
     </>
   );
 }

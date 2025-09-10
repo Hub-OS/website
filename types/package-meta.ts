@@ -229,7 +229,7 @@ export async function hasEditPermission(
 
   if (!namespace) {
     // no restrictive namespace
-    return true;
+    return false;
   }
 
   const member = namespace.members.find((member) =>

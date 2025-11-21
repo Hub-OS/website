@@ -19,6 +19,11 @@ export default async function handler(
 
   let account = await db.findAccountByDiscordId(discordUser.id);
 
+  const avatar =
+    discordUser.avatar != undefined
+      ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}?size=128`
+      : `/default-avatar.png`;
+
   if (!account) {
     const username = discordUser.username + "@discord";
 
@@ -27,12 +32,12 @@ export default async function handler(
       username,
       normalized_username: normalizeUsername(username),
       discord_id: discordUser.id,
-      avatar:
-        discordUser.avatar != undefined
-          ? `https://cdn.discordapp.com/avatars/${discordUser.id}?size=128`
-          : `/default-avatar.png`,
+      avatar,
     };
+
     account.id = await db.createAccount(account);
+  } else if (account.avatar != avatar) {
+    await db.patchAccount(account.id, { avatar }).catch(console.error);
   }
 
   const token = await signJwt({ user_id: db.idToString(account.id) });

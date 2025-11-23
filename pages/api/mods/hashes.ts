@@ -20,30 +20,5 @@ export default async function handler(
 ) {
   const ids = toStringArray(req.query.id);
 
-  const streamIn = db.getPackageHashes(ids);
-
-  await pipeline(
-    streamIn,
-    // stream JSON array to avoid storing all results in memory
-    async function* (source) {
-      let next;
-
-      for await (const chunk of source) {
-        if (next) {
-          yield next + ",";
-        } else {
-          yield "[";
-        }
-
-        next = JSON.stringify(chunk);
-      }
-
-      if (!next) {
-        next = "[";
-      }
-
-      yield next + "]";
-    },
-    res.status(200)
-  );
+  await pipeline(db.getPackageHashes(ids), streamJson, res.status(200));
 }

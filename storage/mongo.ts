@@ -25,6 +25,7 @@ import {
 import crypto from "crypto";
 import { pipeline } from "stream/promises";
 import escapeStringRegexp from "escape-string-regexp";
+import { BugReport } from "@/types/bug-report";
 
 // db: web
 // collections: users, packages
@@ -601,6 +602,25 @@ export default class MongoBasedDB implements DB {
       creator: id,
       creation_date: { $gt: startDate },
     });
+  }
+
+  async createBugReport(type: string, content: string): Promise<void> {
+    await this.db
+      .collection("bugReports")
+      .insertOne({ type, content, creation_date: new Date() });
+
+    // delete anything older than 30 days
+    const date = new Date(Date.now() - 1000 * 60 * 60 * 24 * 30);
+
+    await this.db
+      .collection("bugReports")
+      .deleteMany({ creation_date: { $lt: date } });
+  }
+
+  listBugReports(): AsyncGenerator<BugReport> {
+    const cursor = this.db.collection("bugReports").find({});
+
+    return cursor as unknown as AsyncGenerator<BugReport>;
   }
 }
 

@@ -2,6 +2,7 @@ import { Account, AccountIdNameMap } from "@/types/account";
 import { PackageMeta } from "@/types/package-meta";
 import { Query } from "@/types/query";
 import { SortMethod } from "@/types/sort-method";
+import { BugReport } from "@/types/bug-report";
 
 export type PackageHashResult = { id: string; category: string; hash?: string };
 
@@ -76,6 +77,10 @@ export interface DB {
   deletePackages(id: string[]): Promise<void>;
 
   countPackageUploadsForUser(id: unknown, startDate: Date): Promise<number>;
+
+  createBugReport(type: string, body: string): Promise<void>;
+
+  listBugReports(): AsyncGenerator<BugReport>;
 }
 
 import Disk from "./disk";

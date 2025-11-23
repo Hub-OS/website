@@ -86,6 +86,18 @@ export default function Account() {
             </li>
           </ul>
 
+          {account.admin && (
+            <>
+              <br />
+
+              <ul>
+                <li>
+                  <Link href="/crash-reports">Crash Reports</Link>
+                </li>
+              </ul>
+            </>
+          )}
+
           <PageActions>
             {message && (
               <PageActionMessage

@@ -5,6 +5,7 @@ import { Query, queryTest } from "@/types/query";
 import { sortBy, SortMethod } from "@/types/sort-method";
 import { Account, AccountIdNameMap, normalizeUsername } from "@/types/account";
 import { MemberUpdates, Namespace, Role } from "@/types/namespace";
+import { BugReport } from "@/types/bug-report";
 import { DB, PackageHashResult } from "./db";
 import fs from "fs";
 import fsPromises from "fs/promises";
@@ -16,6 +17,7 @@ type Data = {
   packages: PackageMeta[];
   namespaces: Namespace[];
   accounts: Account[];
+  bugReports: BugReport[];
   latest_account: number;
 };
 
@@ -26,6 +28,7 @@ function loadData(): Data {
     packages: [],
     namespaces: [],
     accounts: [],
+    bugReports: [],
     latest_account: 0,
   };
 
@@ -462,5 +465,19 @@ export default class Disk implements DB {
     return this.data.packages.filter((p) => {
       return p.creator == id && p.creation_date > startDate;
     }).length;
+  }
+
+  async createBugReport(type: string, content: string): Promise<void> {
+    this.data.bugReports.push({ type, content, creation_date: new Date() });
+  }
+
+  listBugReports(): AsyncGenerator<BugReport> {
+    const bugReports = [...this.data.bugReports];
+
+    return (async function* () {
+      for (let i = 0; i < bugReports.length; i++) {
+        yield bugReports[i];
+      }
+    })();
   }
 }

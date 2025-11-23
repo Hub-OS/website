@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import db from "@/storage/db";
 import { getAccount } from "./users/me";
 import { pipeline } from "stream/promises";
-import { streamJson } from "@/types/json-stream";
+import { streamJson } from "@/util/json-stream";
 
 export default async function handler(
   req: NextApiRequest,

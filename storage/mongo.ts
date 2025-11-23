@@ -1,13 +1,8 @@
-import { PackageMeta } from "@/types/package-meta";
-import { Query } from "@/types/query";
-import { SortMethod } from "@/types/sort-method";
-import { Account, AccountIdNameMap, normalizeUsername } from "@/types/account";
-import {
-  MemberUpdates,
-  Namespace,
-  Role,
-  SYMBOL_REGEX,
-} from "@/types/namespace";
+import { PackageMeta } from "@/util/package-meta";
+import { Query } from "@/util/query";
+import { SortMethod } from "@/util/sort-method";
+import { Account, AccountIdNameMap, normalizeUsername } from "@/util/account";
+import { MemberUpdates, Namespace, Role, SYMBOL_REGEX } from "@/util/namespace";
 import { DB, PackageHashResult } from "./db";
 import {
   Collection,
@@ -25,7 +20,7 @@ import {
 import crypto from "crypto";
 import { pipeline } from "stream/promises";
 import escapeStringRegexp from "escape-string-regexp";
-import { BugReport } from "@/types/bug-report";
+import { BugReport } from "@/util/bug-report";
 
 // db: web
 // collections: users, packages

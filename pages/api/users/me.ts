@@ -2,12 +2,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 import {
   PublicAccountData,
   intoPublicAccount,
-} from "@/types/public-account-data";
-import { Account, normalizeUsername } from "@/types/account";
+} from "@/util/public-account-data";
+import { Account, normalizeUsername } from "@/util/account";
 import db from "@/storage/db";
 import { MongoServerError } from "mongodb";
 import { getCookie } from "cookies-next";
-import { verifyJwt } from "@/types/jwt";
+import { verifyJwt } from "@/util/jwt";
 
 export async function getAccount(req: NextApiRequest, res: NextApiResponse) {
   if (process.env.TEST_ENV && req.headers.authorization?.startsWith("Basic ")) {

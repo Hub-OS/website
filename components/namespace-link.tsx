@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Namespace } from "@/types/namespace";
+import { Namespace } from "@/util/namespace";
 
 export function NamespaceLink({ namespace }: { namespace: Namespace }) {
   return (

@@ -1,5 +1,5 @@
 import ModListing from "@/components/mod-listing";
-import { PackageMeta } from "@/types/package-meta";
+import { PackageMeta } from "@/util/package-meta";
 import { NextPageContext } from "next";
 import Link from "next/link";
 import PageActions from "@/components/page-actions";
@@ -7,10 +7,10 @@ import { useAppContext } from "@/components/context";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "@/styles/ModList.module.css";
-import { requestJSON } from "@/types/request";
+import { requestJSON } from "@/util/request";
 import _ from "lodash";
-import { Result } from "@/types/result";
-import { PublicAccountData } from "@/types/public-account-data";
+import { Result } from "@/util/result";
+import { PublicAccountData } from "@/util/public-account-data";
 import Head from "next/head";
 import { requestUser } from "@/client/api";
 

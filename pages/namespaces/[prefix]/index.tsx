@@ -1,9 +1,9 @@
 import { useAppContext } from "@/components/context";
 import PageActionMessage from "@/components/page-action-message";
 import PageActions from "@/components/page-actions";
-import { Account, AccountIdNameMap } from "@/types/account";
-import { Namespace, Member, Role } from "@/types/namespace";
-import { requestJSON, requestVoid } from "@/types/request";
+import { Account, AccountIdNameMap } from "@/util/account";
+import { Namespace, Member, Role } from "@/util/namespace";
+import { requestJSON, requestVoid } from "@/util/request";
 import { NextPageContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";

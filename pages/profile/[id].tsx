@@ -2,13 +2,13 @@ import { useAppContext } from "@/components/context";
 import Link from "next/link";
 import Head from "next/head";
 import { NextPageContext } from "next";
-import { PublicAccountData } from "@/types/public-account-data";
+import { PublicAccountData } from "@/util/public-account-data";
 import {
   requestMemberOrInvitedNamespaces,
   requestUser,
   setBan,
 } from "@/client/api";
-import { Namespace } from "@/types/namespace";
+import { Namespace } from "@/util/namespace";
 import { NamespaceLink } from "@/components/namespace-link";
 import styles from "@/styles/Profile.module.css";
 import { useEffect, useState } from "react";

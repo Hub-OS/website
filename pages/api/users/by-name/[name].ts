@@ -1,5 +1,5 @@
 import db from "@/storage/db";
-import { PublicAccountData } from "@/types/public-account-data";
+import { PublicAccountData } from "@/util/public-account-data";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(

@@ -1,8 +1,8 @@
 import db from "@/storage/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAccount } from "../../users/me";
-import { hasEditPermission } from "@/types/package-meta";
-import { MAX_PACKAGE_SIZE, restrictUploadSize } from "@/types/limits";
+import { hasEditPermission } from "@/util/package-meta";
+import { MAX_PACKAGE_SIZE, restrictUploadSize } from "@/util/limits";
 
 export default async function handler(
   req: NextApiRequest,

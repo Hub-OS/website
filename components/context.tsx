@@ -1,5 +1,5 @@
-import { PublicAccountData } from "@/types/public-account-data";
-import { LoginState } from "@/types/login-state";
+import { PublicAccountData } from "@/util/public-account-data";
+import { LoginState } from "@/util/login-state";
 import { useRouter } from "next/router";
 import {
   createContext,

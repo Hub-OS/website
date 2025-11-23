@@ -1,6 +1,6 @@
-import { BugReport } from "@/types/bug-report";
-import { requestJSON } from "@/types/request";
-import { Result } from "@/types/result";
+import { BugReport } from "@/util/bug-report";
+import { requestJSON } from "@/util/request";
+import { Result } from "@/util/result";
 import { NextPageContext } from "next";
 
 type Props = {

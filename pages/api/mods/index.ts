@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { PackageMeta } from "@/types/package-meta";
+import { PackageMeta } from "@/util/package-meta";
 import db from "@/storage/db";
-import { Query } from "@/types/query";
-import { fromString as sortMethodFromString } from "@/types/sort-method";
+import { Query } from "@/util/query";
+import { fromString as sortMethodFromString } from "@/util/sort-method";
 import { getAccount } from "../users/me";
 
 export default async function handler(

@@ -1,4 +1,4 @@
-import { LoginState } from "@/types/login-state";
+import { LoginState } from "@/util/login-state";
 import Link from "next/link";
 import Image from "next/image";
 import { useAppContext } from "./context";

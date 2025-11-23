@@ -1,7 +1,7 @@
 import db from "@/storage/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAccount } from "../../users/me";
-import { hasEditPermission } from "@/types/package-meta";
+import { hasEditPermission } from "@/util/package-meta";
 
 export default async function handler(
   req: NextApiRequest,

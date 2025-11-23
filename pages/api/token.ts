@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { setCookie } from "cookies-next";
-import { fetchDiscordUser } from "@/types/discord";
+import { fetchDiscordUser } from "@/util/discord";
 import db from "@/storage/db";
-import { normalizeUsername } from "@/types/account";
-import { signJwt } from "@/types/jwt";
+import { normalizeUsername } from "@/util/account";
+import { signJwt } from "@/util/jwt";
 
 export default async function handler(
   req: NextApiRequest,

@@ -1,8 +1,8 @@
-import { Account, AccountIdNameMap } from "@/types/account";
-import { PackageMeta } from "@/types/package-meta";
-import { Query } from "@/types/query";
-import { SortMethod } from "@/types/sort-method";
-import { BugReport } from "@/types/bug-report";
+import { Account, AccountIdNameMap } from "@/util/account";
+import { PackageMeta } from "@/util/package-meta";
+import { Query } from "@/util/query";
+import { SortMethod } from "@/util/sort-method";
+import { BugReport } from "@/util/bug-report";
 
 export type PackageHashResult = { id: string; category: string; hash?: string };
 
@@ -85,7 +85,7 @@ export interface DB {
 
 import Disk from "./disk";
 import MongoBasedDB from "./mongo";
-import { MemberUpdates, Namespace } from "@/types/namespace";
+import { MemberUpdates, Namespace } from "@/util/namespace";
 
 let db: DB;
 

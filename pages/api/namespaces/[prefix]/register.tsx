@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "@/storage/db";
-import { Query } from "@/types/query";
+import { Query } from "@/util/query";
 
 export default async function handler(
   req: NextApiRequest,

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAccount } from "../../users/me";
 import db from "@/storage/db";
-import { MemberUpdates, Namespace, SYMBOL_REGEX } from "@/types/namespace";
+import { MemberUpdates, Namespace, SYMBOL_REGEX } from "@/util/namespace";
 
 export default async function handler(
   req: NextApiRequest,

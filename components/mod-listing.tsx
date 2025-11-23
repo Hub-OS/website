@@ -1,4 +1,4 @@
-import { PackageMeta } from "@/types/package-meta";
+import { PackageMeta } from "@/util/package-meta";
 import Link from "next/link";
 import ModPreview from "./mod-preview";
 import styles from "@/styles/ModListing.module.css";

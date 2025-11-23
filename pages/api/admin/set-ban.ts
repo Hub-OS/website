@@ -2,7 +2,7 @@ import db from "@/storage/db";
 import {
   PublicAccountData,
   intoPublicAccount,
-} from "@/types/public-account-data";
+} from "@/util/public-account-data";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAccount } from "../users/me";
 

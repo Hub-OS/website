@@ -1,8 +1,8 @@
 import { useAppContext } from "@/components/context";
 import PageActionMessage from "@/components/page-action-message";
 import PageActions from "@/components/page-actions";
-import { Namespace, Role } from "@/types/namespace";
-import { requestJSON, requestVoid } from "@/types/request";
+import { Namespace, Role } from "@/util/namespace";
+import { requestJSON, requestVoid } from "@/util/request";
 import { NextPageContext } from "next";
 import { useState } from "react";
 import styles from "@/styles/Namespace.module.css";

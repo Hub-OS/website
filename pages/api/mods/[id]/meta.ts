@@ -3,10 +3,10 @@ import {
   asPackageMeta,
   hasEditPermission,
   PackageMeta,
-} from "@/types/package-meta";
+} from "@/util/package-meta";
 import db from "@/storage/db";
 import { getAccount } from "../../users/me";
-import { MAX_NEW_DAILY_UPLOADS } from "@/types/limits";
+import { MAX_NEW_DAILY_UPLOADS } from "@/util/limits";
 
 export default async function handler(
   req: NextApiRequest,

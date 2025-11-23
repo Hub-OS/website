@@ -1,11 +1,11 @@
 // default storage implementation for development
 
-import { PackageMeta } from "@/types/package-meta";
-import { Query, queryTest } from "@/types/query";
-import { sortBy, SortMethod } from "@/types/sort-method";
-import { Account, AccountIdNameMap, normalizeUsername } from "@/types/account";
-import { MemberUpdates, Namespace, Role } from "@/types/namespace";
-import { BugReport } from "@/types/bug-report";
+import { PackageMeta } from "@/util/package-meta";
+import { Query, queryTest } from "@/util/query";
+import { sortBy, SortMethod } from "@/util/sort-method";
+import { Account, AccountIdNameMap, normalizeUsername } from "@/util/account";
+import { MemberUpdates, Namespace, Role } from "@/util/namespace";
+import { BugReport } from "@/util/bug-report";
 import { DB, PackageHashResult } from "./db";
 import fs from "fs";
 import fsPromises from "fs/promises";

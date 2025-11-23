@@ -2,7 +2,7 @@ import {
   dependencies,
   hasDependencies,
   PackageMeta,
-} from "@/types/package-meta";
+} from "@/util/package-meta";
 import { useEffect, useState } from "react";
 import { NextPageContext } from "next";
 import Link from "next/link";
@@ -11,10 +11,10 @@ import clipboardCopy from "clipboard-copy";
 import { useAppContext } from "@/components/context";
 import ModPreview from "@/components/mod-preview";
 import PageActions from "@/components/page-actions";
-import { PublicAccountData } from "@/types/public-account-data";
+import { PublicAccountData } from "@/util/public-account-data";
 import classNames from "classnames";
 import styles from "@/styles/Mod.module.css";
-import { requestJSON } from "@/types/request";
+import { requestJSON } from "@/util/request";
 import Head from "next/head";
 
 type Props = {

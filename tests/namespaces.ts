@@ -1,7 +1,7 @@
 import test, { ExecutionContext } from "ava";
 import { requestJSON, requestVoid } from "../types/request";
-import { Namespace } from "@/types/namespace";
-import { PublicAccountData } from "@/types/public-account-data";
+import { Namespace } from "@/util/namespace";
+import { PublicAccountData } from "@/util/public-account-data";
 
 const host = "http://localhost:3000";
 const userA = "TEST USER A";

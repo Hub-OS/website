@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { LoginState } from "@/types/login-state";
+import { LoginState } from "@/util/login-state";
 import { useAppContext } from "@/components/context";
 import PageActions from "@/components/page-actions";
 import Link from "next/link";

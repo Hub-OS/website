@@ -1,4 +1,4 @@
-import { PackageMeta, hasPreviewTexture } from "@/types/package-meta";
+import { PackageMeta, hasPreviewTexture } from "@/util/package-meta";
 import Image, { StaticImageData } from "next/image";
 import classNames from "classnames";
 import ElementIcon from "./element-icon";

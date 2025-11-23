@@ -2,9 +2,9 @@ import styles from "@/styles/Upload.module.css";
 import { useEffect, useState } from "react";
 import init, { read_file, rezip_packages, hook_panics } from "zip-utils";
 import TOML from "@iarna/toml";
-import { PackageMeta, asPackageMeta } from "@/types/package-meta";
-import { Result, Ok, Err } from "@/types/result";
-import { requestVoid } from "@/types/request";
+import { PackageMeta, asPackageMeta } from "@/util/package-meta";
+import { Result, Ok, Err } from "@/util/result";
+import { requestVoid } from "@/util/request";
 import Head from "next/head";
 
 let wasmInitiated = false;

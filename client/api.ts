@@ -1,7 +1,7 @@
-import { Namespace } from "@/types/namespace";
-import { PublicAccountData } from "@/types/public-account-data";
-import { requestJSON } from "@/types/request";
-import { Ok, Result } from "@/types/result";
+import { Namespace } from "@/util/namespace";
+import { PublicAccountData } from "@/util/public-account-data";
+import { requestJSON } from "@/util/request";
+import { Ok, Result } from "@/util/result";
 
 const host = process.env.NEXT_PUBLIC_HOST!;
 

@@ -12,15 +12,20 @@ export default function BugReports({ reports }: Props) {
     <>
       {reports.ok
         ? reports.value.map((report) => {
-            console.log(report);
             const date = new Date(report.creation_date);
 
             return (
               <div key={report._id! as string}>
                 <div>{date.toLocaleString()}</div>
-                <br />
 
-                <div style={{ overflow: "auto", whiteSpace: "pre" }}>
+                <div
+                  style={{
+                    overflow: "auto",
+                    whiteSpace: "pre",
+                    background: "#0006",
+                    padding: "8px",
+                  }}
+                >
                   {report.content}
                 </div>
                 <br />

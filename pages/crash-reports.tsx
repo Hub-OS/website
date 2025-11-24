@@ -8,31 +8,37 @@ type Props = {
 };
 
 export default function BugReports({ reports }: Props) {
+  if (!reports.ok) {
+    return reports.error;
+  }
+
+  if (reports.value.length == 0) {
+    return "No crashes in the last 30 days! :)";
+  }
+
   return (
     <>
-      {reports.ok
-        ? reports.value.map((report) => {
-            const date = new Date(report.creation_date);
+      {reports.value.map((report) => {
+        const date = new Date(report.creation_date);
 
-            return (
-              <div key={report._id! as string}>
-                <div>{date.toLocaleString()}</div>
+        return (
+          <div key={report._id! as string}>
+            <div>{date.toLocaleString()}</div>
 
-                <div
-                  style={{
-                    overflow: "auto",
-                    whiteSpace: "pre",
-                    background: "#0006",
-                    padding: "8px",
-                  }}
-                >
-                  {report.content}
-                </div>
-                <br />
-              </div>
-            );
-          })
-        : reports.error}
+            <div
+              style={{
+                overflow: "auto",
+                whiteSpace: "pre",
+                background: "#0006",
+                padding: "8px",
+              }}
+            >
+              {report.content}
+            </div>
+            <br />
+          </div>
+        );
+      })}
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import db, { PackageHashResult } from "@/storage/db";
 import { pipeline } from "stream/promises";
+import { streamJson } from "@/util/json-stream";
 
 function toStringArray(value?: string | string[]) {
   if (value == undefined) {

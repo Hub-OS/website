@@ -617,7 +617,10 @@ export default class MongoBasedDB implements DB {
   }
 
   listBugReports(): AsyncGenerator<BugReport> {
-    const cursor = this.db.collection("bugReports").find({});
+    const cursor = this.db
+      .collection("bugReports")
+      .find({})
+      .sort({ creation_date: -1 });
 
     return cursor as unknown as AsyncGenerator<BugReport>;
   }

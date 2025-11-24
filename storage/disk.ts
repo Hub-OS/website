@@ -49,6 +49,10 @@ function loadData(): Data {
       db[key] = db[key] || defaultData[key];
     }
 
+    for (const report of db.bugReports) {
+      report.creation_date = new Date(report.creation_date);
+    }
+
     return db;
   } catch {
     return defaultData;
@@ -468,7 +472,18 @@ export default class Disk implements DB {
   }
 
   async createBugReport(type: string, content: string): Promise<void> {
-    this.data.bugReports.push({ type, content, creation_date: new Date() });
+    // delete anything older than 30 days, or anything with matching content
+    const filterDate = Date.now() - 1000 * 60 * 60 * 24 * 30;
+    this.data.bugReports = this.data.bugReports.filter(
+      (report) =>
+        +report.creation_date > filterDate || report.content != content
+    );
+
+    this.data.bugReports.unshift({
+      type,
+      content,
+      creation_date: new Date(),
+    });
   }
 
   listBugReports(): AsyncGenerator<BugReport> {

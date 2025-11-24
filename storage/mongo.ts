@@ -602,7 +602,11 @@ export default class MongoBasedDB implements DB {
   async createBugReport(type: string, content: string): Promise<void> {
     await this.db
       .collection("bugReports")
-      .insertOne({ type, content, creation_date: new Date() });
+      .replaceOne(
+        { content },
+        { type, content, creation_date: new Date() },
+        { upsert: true }
+      );
 
     // delete anything older than 30 days
     const date = new Date(Date.now() - 1000 * 60 * 60 * 24 * 30);

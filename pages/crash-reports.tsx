@@ -12,12 +12,19 @@ export default function BugReports({ reports }: Props) {
     return reports.error;
   }
 
-  if (reports.value.length == 0) {
+  const crashCount = reports.value.length;
+
+  if (crashCount == 0) {
     return "No crashes in the last 30 days! :)";
   }
 
   return (
     <>
+      <div>
+        {crashCount} unique crash{crashCount != 1 && "es"} in the last 30 days.
+      </div>
+      <br />
+
       {reports.value.map((report) => {
         const date = new Date(report.creation_date);
 

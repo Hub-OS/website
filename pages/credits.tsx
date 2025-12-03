@@ -24,7 +24,15 @@ const CREDITS_LIST: [string, string[]][] = [
   ["User Experience", ["Gray Nine", "KayThree"]],
   [
     "Testers",
-    ["DeltaFiend", "Jack", "KayThree", "Kyqurikan", "PlayerZero", "Void.ExE"],
+    [
+      "DeltaFiend",
+      "Jack",
+      "KayThree",
+      "Kyqurikan",
+      "PlayerZero",
+      "Tim (Tchomp)",
+      "Void.ExE",
+    ],
   ],
   ["Technical Design", ["Dawn Elaine", "JamesKing", "Mars"]],
   ["Programmers", ["Dawn Elaine", "JamesKing", "Konst"]],

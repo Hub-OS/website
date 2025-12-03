@@ -170,20 +170,9 @@ export default function ModPreview({ meta, mini, className }: Props) {
         </div>
       )}
 
-      {meta.package.category == "augment" && meta.package.shape && (
-        <div className={styles.banner}>
-          {colors?.map((color) => (
-            <div
-              key={color}
-              className={styles.block_color}
-              style={{ backgroundColor: color }}
-            />
-          ))}
-        </div>
-      )}
-
       {meta.package.category == "augment" &&
-        meta.package.slot &&
+        !meta.package.shape &&
+        typeof meta.package.slot == "string" &&
         (() => {
           const image = switchDriveImageMap[meta.package.slot.toLowerCase()];
 
@@ -201,6 +190,38 @@ export default function ModPreview({ meta, mini, className }: Props) {
             />
           );
         })()}
+
+      {meta.package.category == "augment" && meta.package.shape && (
+        <div className={styles.banner}>
+          {colors?.map((color) => (
+            <div
+              key={color}
+              className={styles.block_color}
+              style={{ backgroundColor: color }}
+            />
+          ))}
+
+          {
+            // display switch drive slot at the end of the color list
+            typeof meta.package.slot == "string" &&
+              (() => {
+                const image =
+                  switchDriveImageMap[meta.package.slot.toLowerCase()];
+
+                if (image) {
+                  return (
+                    <Image
+                      className={styles.block_color}
+                      src={image}
+                      alt="preview image"
+                      unoptimized
+                    />
+                  );
+                }
+              })()
+          }
+        </div>
+      )}
     </div>
   );
 }

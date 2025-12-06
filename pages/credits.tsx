@@ -30,6 +30,7 @@ const CREDITS_LIST: [string, string[]][] = [
       "KayThree",
       "Kyqurikan",
       "PlayerZero",
+      "Sefaia",
       "Tim (Tchomp)",
       "Void.ExE",
     ],

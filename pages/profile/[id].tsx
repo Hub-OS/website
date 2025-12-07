@@ -49,6 +49,7 @@ export default function Profile(props: Props) {
 
         {context.account?.admin && (
           <a
+            className="admin-link"
             onClick={async () => {
               setUpdatingBan(true);
               const response = await setBan(user.id as string, !user.banned);

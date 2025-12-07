@@ -92,7 +92,9 @@ export default function Account() {
 
               <ul>
                 <li>
-                  <Link href="/crash-reports">Crash Reports</Link>
+                  <Link className="admin-link" href="/crash-reports">
+                    Crash Reports
+                  </Link>
                 </li>
               </ul>
             </>

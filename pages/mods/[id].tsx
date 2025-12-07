@@ -55,6 +55,8 @@ export default function ModPage({ meta, uploader, canEdit }: Props) {
   const description = meta.package.long_description || meta.package.description;
   const name = meta.package.long_name || meta.package.name;
 
+  const isAdmin = context.account?.admin;
+
   return (
     <>
       <Head>
@@ -67,10 +69,11 @@ export default function ModPage({ meta, uploader, canEdit }: Props) {
         </Link>
 
         <div className={styles.owner_controls}>
-          {canEdit && (
+          {(canEdit || isAdmin) && (
             <a
               className={classNames({
                 [styles.disabled_link]: togglingHidden,
+                ["admin-link"]: !canEdit,
               })}
               onClick={async () => {
                 setTogglingHidden(true);

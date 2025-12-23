@@ -22,6 +22,7 @@ const CREDITS_LIST: [string, string[]][] = [
   ["Sound Design", ["DJRezzed"]],
   ["Graphics", ["Konst", "Salad"]],
   ["User Experience", ["Gray Nine", "KayThree"]],
+  ["Localization", ["Rockin"]],
   [
     "Testers",
     [

@@ -31,6 +31,7 @@ const CREDITS_LIST: [string, string[]][] = [
       "KayThree",
       "Kyqurikan",
       "PlayerZero",
+      "Region Locking",
       "Sefaia",
       "Tim (Tchomp)",
       "Void.ExE",

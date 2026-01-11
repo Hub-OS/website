@@ -30,6 +30,7 @@ const CREDITS_LIST: [string, string[]][] = [
       "Jack",
       "KayThree",
       "Kyqurikan",
+      "LDR100",
       "PlayerZero",
       "Region Locking",
       "Sefaia",

@@ -9,6 +9,7 @@ import _ from "lodash";
 // { ["^package.name"]: "dev.konstinople." } // custom case for case insensitive prefix search
 // { ["!package.name"]: any } // inverts the expression
 // { ["$package.name | $package.long_name"]: any } // tests multiple expressions, and passes if at least one passes
+// { ["?package.recipes"]: boolean } // existence check
 
 export type Query = { [key: string]: any };
 
@@ -42,6 +43,16 @@ function testKey(other: PackageMeta, queryValue: any, key: string): boolean {
       key = key.slice(1);
       isPrefixSearch = true;
       break;
+    case "?":
+      key = key.slice(1);
+      const value = _.get(other, key.slice(0, -1));
+
+      if (queryValue) {
+        // truthy means it must exist
+        return value != null;
+      } else {
+        return value == null;
+      }
   }
 
   const value = _.get(other, key);

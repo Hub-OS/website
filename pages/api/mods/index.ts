@@ -32,7 +32,12 @@ async function handleGet(
   };
 
   if (req.query.category) {
-    query["package.category"] = req.query.category;
+    if (req.query.category == "recipe") {
+      query["package.category"] = "card";
+      query["?package.recipes"] = true;
+    } else {
+      query["package.category"] = req.query.category;
+    }
   }
 
   if (req.query.exact_name) {

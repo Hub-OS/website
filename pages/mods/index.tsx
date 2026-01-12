@@ -139,6 +139,7 @@ export default function ModList({ uploader, mods, moreExist }: Props) {
         >
           <option value="">All</option>
           <option value="card">Cards</option>
+          <option value="recipe">Recipes</option>
           <option value="augment">Augments</option>
           <option value="encounter">Encounters</option>
           <option value="player">Players</option>

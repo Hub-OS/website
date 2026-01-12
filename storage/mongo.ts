@@ -683,6 +683,10 @@ function resolveMongoSubQuery(mongoQuery: Query, key: string, value: any) {
         };
       }
       break;
+    case "?":
+      // special search case
+      mongoQuery[key.slice(1)] = { $exists: !!value };
+      break;
     default:
       // type check to protect against possible attacks
       if (Array.isArray(value)) {

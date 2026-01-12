@@ -246,6 +246,7 @@ async function requestMods(
     "prefix",
     "category",
     "name",
+    "exact_name",
     "uploader",
     "sort",
     "hidden",

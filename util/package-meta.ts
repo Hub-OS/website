@@ -1,6 +1,11 @@
 import { DB } from "@/storage/db";
 import { Account } from "./account";
 
+type CardRecipe =
+  | { id: string; codes: string[] }
+  | { name: string; codes: string[] }
+  | { mix: ({ name: string } | { id: string })[] };
+
 export type PackageMeta = {
   package: {
     category: string;
@@ -31,6 +36,7 @@ export type PackageMeta = {
     time_freeze?: boolean;
     skip_time_freeze_intro?: boolean;
     meta_classes?: string[];
+    recipes?: CardRecipe[];
 
     // players
     health?: number;

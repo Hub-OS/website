@@ -35,7 +35,9 @@ async function handleGet(
     query["package.category"] = req.query.category;
   }
 
-  if (req.query.name) {
+  if (req.query.exact_name) {
+    query["package.name"] = req.query.exact_name;
+  } else if (req.query.name) {
     query["$package.name | $package.long_name"] = req.query.name;
   }
 

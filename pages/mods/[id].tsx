@@ -30,6 +30,106 @@ function snakeToTitle(text: string) {
     .join(" ");
 }
 
+function ExactNameLink({ name, category }: { name: string; category: string }) {
+  return (
+    <Link
+      href={`/mods?exact_name=${encodeURIComponent(name)}&category=${category}`}
+    >
+      "{name}"
+    </Link>
+  );
+}
+
+function RecipeList({ meta }: { meta: PackageMeta }) {
+  type IdToNameMap = { [id: string]: string };
+  const [idToNameMap, setIdToNameMap] = useState<IdToNameMap>({});
+
+  useEffect(() => {
+    const map: IdToNameMap = {};
+
+    if (!meta || !meta.package.recipes) {
+      return;
+    }
+
+    let valid = true;
+    const requestId = (id: string) => {
+      const encodedId = encodeURIComponent(id);
+
+      requestJSON(`/api/mods/${encodedId}/meta`).then((result) => {
+        console.log(result.ok, valid);
+        if (result.ok && valid) {
+          const otherMeta = result.value as PackageMeta;
+          map[id] = otherMeta.package.name;
+          setIdToNameMap({ ...map });
+        }
+      });
+    };
+
+    for (const recipe of meta.package.recipes) {
+      if ("id" in recipe) {
+        requestId(recipe.id);
+      } else if ("mix" in recipe) {
+        for (const card of recipe.mix) {
+          if ("id" in card) {
+            requestId(card.id);
+          }
+        }
+      }
+    }
+
+    return () => {
+      valid = false;
+    };
+  }, [meta]);
+
+  const idToNameComponent = (id: string) => {
+    return <Link href={`/mods/${id}`}>{idToNameMap[id] ?? id}</Link>;
+  };
+
+  return (
+    <div>
+      Recipes:
+      {meta.package.recipes?.map((recipe, i) => {
+        if ("id" in recipe) {
+          return (
+            <div key={i}>
+              {idToNameComponent(recipe.id)}
+              {": "}
+              {recipe.codes.join(" -> ")}
+            </div>
+          );
+        } else if ("name" in recipe) {
+          return (
+            <div key={i}>
+              <ExactNameLink name={recipe.name} category="card" />
+              {recipe.codes.join(" -> ")}
+            </div>
+          );
+        } else if ("mix" in recipe) {
+          return (
+            <div key={i}>
+              {recipe.mix.map((card, i) => {
+                return (
+                  <span key={i}>
+                    {i > 0 && " -> "}
+                    {"id" in card ? (
+                      idToNameComponent(card.id)
+                    ) : (
+                      <ExactNameLink name={card.name} category="card" />
+                    )}
+                  </span>
+                );
+              })}
+            </div>
+          );
+        } else {
+          return <div key={i}>{"? -> ? -> ?"}</div>;
+        }
+      })}
+    </div>
+  );
+}
+
 export default function ModPage({ meta, uploader, canEdit }: Props) {
   const [hashText, setHashText] = useState("COPY HASH");
   const [hidden, setHidden] = useState(meta?.hidden);
@@ -127,6 +227,8 @@ export default function ModPage({ meta, uploader, canEdit }: Props) {
           </div>
 
           {description && <div>{description}</div>}
+
+          <RecipeList meta={meta} />
         </div>
       </div>
 

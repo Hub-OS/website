@@ -35,6 +35,7 @@ const CREDITS_LIST: [string, string[]][] = [
       "Region Locking",
       "Sefaia",
       "Tim (Tchomp)",
+      "timinatoor",
       "Void.ExE",
     ],
   ],

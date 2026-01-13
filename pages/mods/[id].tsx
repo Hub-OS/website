@@ -228,7 +228,7 @@ export default function ModPage({ meta, uploader, canEdit }: Props) {
 
           {description && <div>{description}</div>}
 
-          <RecipeList meta={meta} />
+          {meta.package.recipes && <RecipeList meta={meta} />}
         </div>
       </div>
 

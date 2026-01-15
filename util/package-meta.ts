@@ -4,7 +4,7 @@ import { Account } from "./account";
 type CardRecipe =
   | { id: string; codes: string[] }
   | { name: string; codes: string[] }
-  | { mix: ({ name: string } | { id: string })[] };
+  | { mix: ({ name: string } | { id: string })[]; ordered?: boolean };
 
 export type PackageMeta = {
   package: {

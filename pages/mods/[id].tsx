@@ -111,7 +111,7 @@ function RecipeList({ meta }: { meta: PackageMeta }) {
               {recipe.mix.map((card, i) => {
                 return (
                   <span key={i}>
-                    {i > 0 && " -> "}
+                    {i > 0 && (recipe.ordered ?? true ? " -> " : " + ")}
                     {"id" in card ? (
                       idToNameComponent(card.id)
                     ) : (

@@ -14,6 +14,14 @@ export default function Layout({ children }: Props) {
       <Head>
         <title>Hub OS</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="description"
+          content={[
+            "Hub OS is an open-source Mega Man Battle Network fan project and",
+            "online battle experience that takes place on interconnected servers,",
+            "or Hubs.",
+          ].join(" ")}
+        />
         <link rel="icon" href="/favicon.png" />
       </Head>
 

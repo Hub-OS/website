@@ -2,7 +2,6 @@ import { GetStaticPropsContext } from "next";
 import Markdown from "@/components/markdown";
 import matter from "gray-matter";
 import postStyles from "@/styles/YapPost.module.css";
-import markdownStyles from "@/styles/Markdown.module.css";
 import Link from "next/link";
 import Head from "next/head";
 import { readPostFile, getStaticPaths } from "@/tech-yap/lib";
@@ -28,9 +27,7 @@ export default function Post({ title, date, markdown }: Props) {
 
       <h1>{title}</h1>
 
-      <div className={markdownStyles.markdown}>
-        <Markdown>{markdown}</Markdown>
-      </div>
+      <Markdown>{markdown}</Markdown>
     </>
   );
 }

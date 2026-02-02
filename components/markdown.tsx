@@ -3,6 +3,7 @@
 import ReactMarkdown from "react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/cjs/prism-light";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import markdownStyles from "@/styles/Markdown.module.css";
 
 import lua from "react-syntax-highlighter/dist/cjs/languages/prism/lua";
 import rust from "react-syntax-highlighter/dist/cjs/languages/prism/rust";
@@ -21,31 +22,33 @@ export default function Markdown({
   children: string | null | undefined;
 }) {
   return (
-    <ReactMarkdown
-      components={{
-        code(props) {
-          const { children, className, node, ...rest } = props;
-          const match = /language-(\w+)/.exec(className || "");
+    <div className={markdownStyles.markdown}>
+      <ReactMarkdown
+        components={{
+          code(props) {
+            const { children, className, node, ...rest } = props;
+            const match = /language-(\w+)/.exec(className || "");
 
-          return match ? (
-            // @ts-ignore, {...rest} matches documentation
-            <SyntaxHighlighter
-              {...rest}
-              PreTag="div"
-              language={match[1]}
-              style={syntaxStyle}
-            >
-              {String(children).replace(/\n$/, "")}
-            </SyntaxHighlighter>
-          ) : (
-            <code {...rest} className={className}>
-              {children}
-            </code>
-          );
-        },
-      }}
-    >
-      {children}
-    </ReactMarkdown>
+            return match ? (
+              // @ts-ignore, {...rest} matches documentation
+              <SyntaxHighlighter
+                {...rest}
+                PreTag="div"
+                language={match[1]}
+                style={syntaxStyle}
+              >
+                {String(children).replace(/\n$/, "")}
+              </SyntaxHighlighter>
+            ) : (
+              <code {...rest} className={className}>
+                {children}
+              </code>
+            );
+          },
+        }}
+      >
+        {children}
+      </ReactMarkdown>
+    </div>
   );
 }

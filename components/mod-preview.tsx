@@ -38,7 +38,7 @@ function mapColors(colors: string[] | undefined) {
 export default function ModPreview({ meta, mini, className }: Props) {
   const encodedId = encodeURIComponent(meta.package.id);
   const [previewPath, setPreviewUri] = useState(
-    hasPreviewTexture(meta) && `/api/mods/${encodedId}/preview`
+    hasPreviewTexture(meta) && `/api/mods/${encodedId}/preview`,
   );
   const [colors, setColors] = useState<string[] | undefined>();
 
@@ -51,34 +51,45 @@ export default function ModPreview({ meta, mini, className }: Props) {
     const shape = meta.package.shape;
     const flat = meta.package.flat;
 
-    if (!color || !shape) {
+    if (!color || !Array.isArray(shape)) {
       setPreviewUri(
-        hasPreviewTexture(meta) && `/api/mods/${encodedId}/preview`
+        hasPreviewTexture(meta) && `/api/mods/${encodedId}/preview`,
       );
 
       return;
     }
 
     const blockLen = 3;
-    const gridLen = 5;
-    const marginX = 6;
+    const gridLen = 7;
+    const marginX = 4;
 
-    const canvas_len = blockLen * gridLen;
+    const canvasLen = blockLen * gridLen;
 
     const canvas = document.createElement("canvas");
-    canvas.width = canvas_len + marginX;
-    canvas.height = canvas_len;
+    canvas.width = canvasLen + marginX;
+    canvas.height = canvasLen;
 
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
     ctx.strokeStyle = "#0002";
     ctx.fillStyle = color;
 
-    for (let i = 0; i < gridLen; i++) {
+    const shapeWidth = shape[0]?.length ?? 0;
+    const xOffset = Math.ceil((gridLen - shapeWidth) / 2) * blockLen;
+    const yOffset = Math.ceil((gridLen - shape.length) / 2) * blockLen;
+    ctx.translate(xOffset, yOffset);
+
+    for (let i = 0; i < shape.length; i++) {
       const y = i * blockLen;
 
-      for (let j = 0; j < gridLen; j++) {
-        if (!shape[i][j]) {
+      const line = shape[i];
+
+      if (!Array.isArray(line)) {
+        continue;
+      }
+
+      for (let j = 0; j < line.length; j++) {
+        if (!line[j]) {
           continue;
         }
 

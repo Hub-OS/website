@@ -26,6 +26,7 @@ const CREDITS_LIST: [string, string[]][] = [
   [
     "Testers",
     [
+      "Astrayisso",
       "DeltaFiend",
       "Jack",
       "KayThree",

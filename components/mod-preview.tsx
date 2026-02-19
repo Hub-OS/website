@@ -46,9 +46,10 @@ export default function ModPreview({ meta, mini, className }: Props) {
     setColors(mapColors(meta.package.colors));
   }, [meta.package.colors]);
 
+  const shape = meta.package.shape ?? meta.package.shapes?.[0];
+
   useEffect(() => {
     const color = colors?.[0];
-    const shape = meta.package.shape;
     const flat = meta.package.flat;
 
     if (!color || !Array.isArray(shape)) {
@@ -182,7 +183,7 @@ export default function ModPreview({ meta, mini, className }: Props) {
       )}
 
       {meta.package.category == "augment" &&
-        !meta.package.shape &&
+        !shape &&
         typeof meta.package.slot == "string" &&
         (() => {
           const image = switchDriveImageMap[meta.package.slot.toLowerCase()];
@@ -202,7 +203,7 @@ export default function ModPreview({ meta, mini, className }: Props) {
           );
         })()}
 
-      {meta.package.category == "augment" && meta.package.shape && (
+      {meta.package.category == "augment" && shape && (
         <div className={styles.banner}>
           {colors?.map((color) => (
             <div

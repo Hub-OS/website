@@ -18,6 +18,7 @@ export type PackageMeta = {
     // block augments
     colors?: string[];
     shape?: number[][];
+    shapes?: number[][][];
     flat?: boolean;
 
     // switch drive augments
@@ -167,7 +168,7 @@ function isDefinitionList(data: any) {
       (v: any) =>
         typeof v == "object" &&
         typeof v.id == "string" &&
-        typeof v.path == "string"
+        typeof v.path == "string",
     )
   );
 }
@@ -224,7 +225,7 @@ export function hasPreviewTexture(meta: PackageMeta): boolean {
 export async function hasEditPermission(
   db: DB,
   meta: PackageMeta,
-  accountId: Account["id"]
+  accountId: Account["id"],
 ): Promise<boolean> {
   if (meta.creator && db.compareIds(meta.creator, accountId)) {
     // is owner
@@ -239,7 +240,7 @@ export async function hasEditPermission(
   }
 
   const member = namespace.members.find((member) =>
-    db.compareIds(member.id, accountId)
+    db.compareIds(member.id, accountId),
   );
 
   if (!member || member.role == "invited") {

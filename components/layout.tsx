@@ -15,6 +15,7 @@ export default function Layout({ children }: Props) {
         <title>Hub OS</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
+          key="description"
           name="description"
           content={[
             "Hub OS is an open-source Mega Man Battle Network fan project and",

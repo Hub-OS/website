@@ -111,7 +111,7 @@ function RecipeList({ meta }: { meta: PackageMeta }) {
               {recipe.mix.map((card, i) => {
                 return (
                   <span key={i}>
-                    {i > 0 && (recipe.ordered ?? true ? " -> " : " + ")}
+                    {i > 0 && ((recipe.ordered ?? true) ? " -> " : " + ")}
                     {"id" in card ? (
                       idToNameComponent(card.id)
                     ) : (
@@ -142,7 +142,7 @@ export default function ModPage({ meta, uploader, canEdit }: Props) {
   // locale can only be handled on the client, as the server doesn't have this information
   useEffect(() => {
     setUpdatedDate(
-      meta ? new Date(meta.updated_date).toLocaleString() : undefined
+      meta ? new Date(meta.updated_date).toLocaleString() : undefined,
     );
   }, [meta]);
 
@@ -161,6 +161,11 @@ export default function ModPage({ meta, uploader, canEdit }: Props) {
     <>
       <Head>
         <title>{`${name} - ${categoryTitle} Package - Hub OS`}</title>
+        <meta
+          key="description"
+          name="description"
+          content={meta.package.long_description ?? meta.package.description}
+        />
       </Head>
 
       <div className={styles.top_controls}>

@@ -51,12 +51,19 @@ function RecipeList({ meta }: { meta: PackageMeta }) {
       return;
     }
 
+    const requestedIds: { [key: string]: boolean } = {};
+
     let valid = true;
     const requestId = (id: string) => {
+      if (requestedIds[id]) {
+        return;
+      }
+
+      requestedIds[id] = true;
+
       const encodedId = encodeURIComponent(id);
 
       requestJSON(`/api/mods/${encodedId}/meta`).then((result) => {
-        console.log(result.ok, valid);
         if (result.ok && valid) {
           const otherMeta = result.value as PackageMeta;
           map[id] = otherMeta.package.name;

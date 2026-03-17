@@ -31,7 +31,6 @@ const CREDITS_LIST: [string, string[]][] = [
       "Jack",
       "KayThree",
       "Kyqurikan",
-      "LDR100",
       "PlayerZero",
       "Region Locking",
       "Sefaia",
@@ -40,7 +39,7 @@ const CREDITS_LIST: [string, string[]][] = [
       "Void.ExE",
     ],
   ],
-  ["Technical Design", ["Dawn Elaine", "JamesKing", "Mars"]],
+  ["Technical Design", ["Dawn Elaine", "JamesKing", "LDR100", "Mars"]],
   ["Programmers", ["Dawn Elaine", "JamesKing", "Konst"]],
   ["Core Team", ["Dawn Elaine", "Konst", "Mars"]],
   [

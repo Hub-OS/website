@@ -99,7 +99,7 @@ export default class MongoBasedDB implements DB {
   }
 
   async findAccountByDiscordId(
-    discordId: string
+    discordId: string,
   ): Promise<Account | undefined> {
     const user = await this.users.findOne({ discord_id: discordId });
 
@@ -137,12 +137,12 @@ export default class MongoBasedDB implements DB {
 
   async findExistingNamespaceConflict(
     accountId: unknown,
-    prefix: string
+    prefix: string,
   ): Promise<string | undefined> {
     // find identical match
     const exists = await this.namespaces.findOne(
       { prefix },
-      { projection: { _id: 0 } }
+      { projection: { _id: 0 } },
     );
 
     if (exists) {
@@ -230,7 +230,7 @@ export default class MongoBasedDB implements DB {
   }
 
   async findMemberOrInvitedNamespaces(
-    accountId: unknown
+    accountId: unknown,
   ): Promise<Namespace[]> {
     return this.namespaces
       .find({ "members.id": accountId as ObjectId })
@@ -292,11 +292,11 @@ export default class MongoBasedDB implements DB {
 
   async updateNamespaceMembers(
     prefix: string,
-    updates: MemberUpdates
+    updates: MemberUpdates,
   ): Promise<void> {
     type UpdateOneSpread = [
       Partial<Namespace> | UpdateFilter<Namespace>,
-      UpdateOptions | undefined
+      UpdateOptions | undefined,
     ];
     const updateOperations: UpdateOneSpread[] = [];
 
@@ -352,8 +352,8 @@ export default class MongoBasedDB implements DB {
     // update, separate updates as we're not allowed to modify the same field in multiple operations
     await Promise.all(
       updateOperations.map((args) =>
-        this.namespaces.updateOne({ prefix }, ...args)
-      )
+        this.namespaces.updateOne({ prefix }, ...args),
+      ),
     );
 
     // todo: prevent duplicates from invites to the same user from multiple sessions
@@ -382,7 +382,7 @@ export default class MongoBasedDB implements DB {
             dependencies: meta.dependencies,
             defines: meta.defines,
           },
-        }
+        },
       );
     } else {
       meta.creation_date = new Date();
@@ -422,7 +422,7 @@ export default class MongoBasedDB implements DB {
     query: Query,
     sortMethod: SortMethod | null,
     skip: number,
-    count: number
+    count: number,
   ): Promise<PackageMeta[]> {
     const mongoQuery = toMongoQuery(query);
 
@@ -441,7 +441,13 @@ export default class MongoBasedDB implements DB {
       ids: {
         $concatArrays: [
           ["$package.id"],
-          { $ifNull: ["$package.past_ids", []] },
+          {
+            $cond: {
+              if: { $eq: [{ $type: "$package.past_ids" }, "array"] },
+              then: "$package.past_ids",
+              else: [],
+            },
+          },
         ],
       },
     };
@@ -515,7 +521,7 @@ export default class MongoBasedDB implements DB {
   }
 
   async downloadPackageZip(
-    id: string
+    id: string,
   ): Promise<NodeJS.ReadableStream | undefined> {
     return this.openDownloadStream(`${id}.zip`);
   }
@@ -536,7 +542,7 @@ export default class MongoBasedDB implements DB {
   }
 
   async downloadPackagePreview(
-    id: string
+    id: string,
   ): Promise<NodeJS.ReadableStream | undefined> {
     return this.openDownloadStream(`${id}.png`);
   }
@@ -553,7 +559,7 @@ export default class MongoBasedDB implements DB {
   }
 
   async openDownloadStream(
-    name: string
+    name: string,
   ): Promise<NodeJS.ReadableStream | undefined> {
     const file = await this.files.findOne({ filename: name });
 
@@ -605,7 +611,7 @@ export default class MongoBasedDB implements DB {
       .replaceOne(
         { content },
         { type, content, creation_date: new Date() },
-        { upsert: true }
+        { upsert: true },
       );
 
     // delete anything older than 30 days

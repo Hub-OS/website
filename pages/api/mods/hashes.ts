@@ -17,7 +17,7 @@ function toStringArray(value?: string | string[]) {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<PackageHashResult[]>
+  res: NextApiResponse<PackageHashResult[]>,
 ) {
   const ids = toStringArray(req.query.id);
 

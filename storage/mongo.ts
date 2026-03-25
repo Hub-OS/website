@@ -606,27 +606,41 @@ export default class MongoBasedDB implements DB {
   }
 
   async createBugReport(type: string, content: string): Promise<void> {
-    await this.db
-      .collection("bugReports")
-      .replaceOne(
-        { content },
-        { type, content, creation_date: new Date() },
-        { upsert: true },
-      );
+    await this.db.collection("bugReports").updateOne(
+      { content },
+      {
+        $set: {
+          type,
+          content,
+          creation_date: new Date(),
+          last_report_date: new Date(),
+        },
+        $inc: {
+          total_reports: 1,
+        },
+      },
+      { upsert: true },
+    );
 
     // delete anything older than 30 days
     const date = new Date(Date.now() - 1000 * 60 * 60 * 24 * 30);
 
-    await this.db
-      .collection("bugReports")
-      .deleteMany({ creation_date: { $lt: date } });
+    await this.db.collection("bugReports").deleteMany({
+      $or: [
+        { last_report_date: { $lt: date } },
+        { last_report_date: { $exists: false }, creation_date: { $lt: date } },
+      ],
+    });
   }
 
   listBugReports(): AsyncGenerator<BugReport> {
     const cursor = this.db
       .collection("bugReports")
       .find({})
-      .sort({ creation_date: -1 });
+      .sort([
+        ["last_report_date", -1],
+        ["creation_date", -1],
+      ]);
 
     return cursor as unknown as AsyncGenerator<BugReport>;
   }

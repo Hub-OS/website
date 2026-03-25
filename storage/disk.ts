@@ -110,7 +110,7 @@ export default class Disk implements DB {
   async findAccountByName(username: string): Promise<Account | undefined> {
     const normalized_username = normalizeUsername(username);
     return this.data.accounts.find(
-      (account) => account.normalized_username == normalized_username
+      (account) => account.normalized_username == normalized_username,
     );
   }
 
@@ -119,16 +119,16 @@ export default class Disk implements DB {
   }
 
   async findAccountByDiscordId(
-    discordId: string
+    discordId: string,
   ): Promise<Account | undefined> {
     return this.data.accounts.find(
-      (account) => account.discord_id == discordId
+      (account) => account.discord_id == discordId,
     );
   }
 
   async createAccountNameMap(ids: unknown[]): Promise<AccountIdNameMap> {
     const users = this.data.accounts.filter((account) =>
-      ids.includes(account.id)
+      ids.includes(account.id),
     );
 
     const map: { [id: string]: string } = {};
@@ -146,7 +146,7 @@ export default class Disk implements DB {
 
   async registerNamespace(prefix: string): Promise<void> {
     const namespace = this.data.namespaces.find(
-      (namespace) => namespace.prefix == prefix
+      (namespace) => namespace.prefix == prefix,
     );
 
     if (namespace) {
@@ -156,7 +156,7 @@ export default class Disk implements DB {
 
   async findExistingNamespaceConflict(
     accountId: unknown,
-    prefix: string
+    prefix: string,
   ): Promise<string | undefined> {
     let relevantNamespace: Namespace | undefined;
     let conflict;
@@ -184,7 +184,7 @@ export default class Disk implements DB {
       }
 
       const isAdmin = namespace.members.some(
-        (member) => member.id == accountId && member.role == "admin"
+        (member) => member.id == accountId && member.role == "admin",
       );
 
       if (isAdmin) {
@@ -206,7 +206,7 @@ export default class Disk implements DB {
     const isAdmin =
       relevantNamespace &&
       relevantNamespace.members.some(
-        (member) => member.id == accountId && member.role == "admin"
+        (member) => member.id == accountId && member.role == "admin",
       );
 
     if (isAdmin && relevantNamespace!.prefix.length > conflict.prefix.length) {
@@ -219,10 +219,10 @@ export default class Disk implements DB {
   }
 
   async findMemberOrInvitedNamespaces(
-    accountId: unknown
+    accountId: unknown,
   ): Promise<Namespace[]> {
     return this.data.namespaces.filter((namespace) =>
-      namespace.members.some((member) => member.id == accountId)
+      namespace.members.some((member) => member.id == accountId),
     );
   }
 
@@ -251,7 +251,7 @@ export default class Disk implements DB {
 
   async updateNamespaceMembers(
     prefix: string,
-    updates: MemberUpdates
+    updates: MemberUpdates,
   ): Promise<void> {
     const namespace = await this.findNamespace(prefix);
 
@@ -274,7 +274,7 @@ export default class Disk implements DB {
     }
 
     namespace.members = namespace.members.filter(
-      (member) => !updates.removed.includes(member.id)
+      (member) => !updates.removed.includes(member.id),
     );
 
     namespace.members = _.uniqBy(namespace.members, (member) => member.id);
@@ -282,7 +282,7 @@ export default class Disk implements DB {
 
   async deleteNamespace(prefix: string): Promise<void> {
     const index = this.data.namespaces.findIndex(
-      (namespace) => namespace.prefix == prefix
+      (namespace) => namespace.prefix == prefix,
     );
 
     this.data.namespaces.splice(index, 1);
@@ -319,7 +319,7 @@ export default class Disk implements DB {
 
   async findPackageMeta(id: string): Promise<PackageMeta | undefined> {
     return this.data.packages.find(
-      (meta) => meta.package.id == id || meta.package.past_ids?.includes(id)
+      (meta) => meta.package.id == id || meta.package.past_ids?.includes(id),
     );
   }
 
@@ -334,13 +334,13 @@ export default class Disk implements DB {
     query: Query,
     sortMethod: SortMethod | null,
     skip: number,
-    count: number
+    count: number,
   ): Promise<PackageMeta[]> {
     const packages = [];
 
     // innefficient, creates a new array
     const relevantPackages = this.data.packages.filter((meta) =>
-      queryTest(query, meta)
+      queryTest(query, meta),
     );
 
     if (sortMethod) {
@@ -359,11 +359,11 @@ export default class Disk implements DB {
       .filter(
         (meta) =>
           ids.includes(meta.package.id) ||
-          meta.package.past_ids?.some((id) => ids.includes(id))
+          meta.package.past_ids?.some((id) => ids.includes(id)),
       )
       .map((meta) => ({
         id: [meta.package.id, ...(meta.package.past_ids || [])].find((id) =>
-          ids.includes(id)
+          ids.includes(id),
         )!,
         category: meta.package.category,
         hash: meta.hash,
@@ -388,7 +388,7 @@ export default class Disk implements DB {
     });
 
     const writeStream = fs.createWriteStream(
-      `storage/_disk/mods/${encodeURIComponent(id)}.zip`
+      `storage/_disk/mods/${encodeURIComponent(id)}.zip`,
     );
 
     try {
@@ -410,16 +410,16 @@ export default class Disk implements DB {
   }
 
   async downloadPackageZip(
-    id: string
+    id: string,
   ): Promise<NodeJS.ReadableStream | undefined> {
     return fs.createReadStream(
-      `storage/_disk/mods/${encodeURIComponent(id)}.zip`
+      `storage/_disk/mods/${encodeURIComponent(id)}.zip`,
     );
   }
 
   async uploadPackagePreview(id: string, stream: NodeJS.ReadableStream) {
     const writeStream = fs.createWriteStream(
-      `storage/_disk/mods/${encodeURIComponent(id)}.png`
+      `storage/_disk/mods/${encodeURIComponent(id)}.png`,
     );
 
     try {
@@ -432,10 +432,10 @@ export default class Disk implements DB {
   }
 
   async downloadPackagePreview(
-    id: string
+    id: string,
   ): Promise<NodeJS.ReadableStream | undefined> {
     return fs.createReadStream(
-      `storage/_disk/mods/${encodeURIComponent(id)}.png`
+      `storage/_disk/mods/${encodeURIComponent(id)}.png`,
     );
   }
 
@@ -464,7 +464,7 @@ export default class Disk implements DB {
 
   async countPackageUploadsForUser(
     id: unknown,
-    startDate: Date
+    startDate: Date,
   ): Promise<number> {
     return this.data.packages.filter((p) => {
       return p.creator == id && p.creation_date > startDate;
@@ -476,14 +476,25 @@ export default class Disk implements DB {
     const filterDate = Date.now() - 1000 * 60 * 60 * 24 * 30;
     this.data.bugReports = this.data.bugReports.filter(
       (report) =>
-        +report.creation_date > filterDate || report.content != content
+        +(report.last_report_date ?? report.creation_date) > filterDate,
     );
 
-    this.data.bugReports.unshift({
-      type,
-      content,
-      creation_date: new Date(),
-    });
+    const report = this.data.bugReports.find(
+      (report) => report.content == content,
+    );
+
+    if (report) {
+      report.last_report_date = new Date();
+      report.total_reports = (report.total_reports ?? 1) + 1;
+    } else {
+      this.data.bugReports.unshift({
+        type,
+        content,
+        creation_date: new Date(),
+        last_report_date: new Date(),
+        total_reports: 1,
+      });
+    }
   }
 
   listBugReports(): AsyncGenerator<BugReport> {

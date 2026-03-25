@@ -2,6 +2,7 @@ import { BugReport } from "@/util/bug-report";
 import { requestJSON } from "@/util/request";
 import { Result } from "@/util/result";
 import { NextPageContext } from "next";
+import styles from "@/styles/CrashReports.module.css";
 
 type Props = {
   reports: Result<BugReport[], string>;
@@ -26,11 +27,16 @@ export default function BugReports({ reports }: Props) {
       <br />
 
       {reports.value.map((report) => {
-        const date = new Date(report.creation_date);
+        const totalReports = report.total_reports ?? 1;
+        const date = new Date(report.last_report_date ?? report.creation_date);
 
         return (
           <div key={report._id! as string}>
-            <div>{date.toLocaleString()}</div>
+            <div className={styles.crash_header}>
+              <div>Total Reports: {totalReports}</div>
+
+              <div>{date.toLocaleString()}</div>
+            </div>
 
             <div
               style={{
@@ -61,7 +67,7 @@ export async function getServerSideProps(context: NextPageContext) {
 
   const reports = (await requestJSON(
     `${host}/api/crash-reports`,
-    requestInit
+    requestInit,
   )) as Result<BugReport[], string>;
 
   const props: Props = { reports };

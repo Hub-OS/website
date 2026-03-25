@@ -6,14 +6,14 @@ import { streamJson } from "@/util/json-stream";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   switch (req.method) {
     case "POST":
-      handlerPost(req, res);
+      await handlerPost(req, res);
       break;
     case "GET":
-      handlerGet(req, res);
+      await handlerGet(req, res);
       break;
     default:
       res.status(400).send({});
@@ -37,5 +37,5 @@ async function handlerGet(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  pipeline(db.listBugReports(), streamJson, res.status(200));
+  await pipeline(db.listBugReports(), streamJson, res.status(200));
 }

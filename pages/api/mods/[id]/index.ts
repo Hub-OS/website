@@ -6,7 +6,7 @@ import { MAX_PACKAGE_SIZE, restrictUploadSize } from "@/util/limits";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method == "GET") {
     await handleGet(req, res);
@@ -110,5 +110,6 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse) {
 export const config = {
   api: {
     bodyParser: false,
+    responseLimit: "8mb",
   },
 };

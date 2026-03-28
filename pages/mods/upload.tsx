@@ -16,6 +16,7 @@ export default function Upload() {
   const [value, setValue] = useState("");
   const [text, setText] = useState("PREPARING...");
   const [preparing, setPreparing] = useState(true);
+  const [hideNewUploads, setHideNewUploads] = useState(false);
   let [log, setLog] = useState<UploadLog>([]);
 
   useEffect(() => {
@@ -93,7 +94,11 @@ export default function Upload() {
                 packageMeta.package.long_name || packageMeta.package.name;
               setText(`UPLOADING ${name.toUpperCase()}`);
 
-              const urlResult = await uploadPackage(packageMeta, rezipped);
+              const urlResult = await uploadPackage(
+                packageMeta,
+                rezipped,
+                hideNewUploads,
+              );
 
               if (!urlResult.ok) {
                 setText(urlResult.error);
@@ -110,7 +115,18 @@ export default function Upload() {
       </label>
 
       <div className={styles.log}>
-        Upload Log:
+        <div className={styles.upload_controls}>
+          <span>Upload Log:</span>
+
+          <label>
+            <input
+              type="checkbox"
+              checked={hideNewUploads}
+              onChange={(e) => setHideNewUploads(e.target.checked)}
+            />
+            Upload Hidden
+          </label>
+        </div>
         <ul>
           {log.map(({ packageMeta, url }, i) => (
             <li key={i}>
@@ -167,14 +183,18 @@ function resolvePackageMeta(zipBytes: Uint8Array): Result<PackageMeta, string> {
 
 async function uploadPackage(
   meta: PackageMeta,
-  zipBytes: Uint8Array
+  zipBytes: Uint8Array,
+  hideNewUploads: boolean,
 ): Promise<Result<string, string>> {
   const encodedId = encodeURIComponent(meta.package.id);
 
   const uploadMetaResponse = await requestVoid(`/api/mods/${encodedId}/meta`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ meta: meta }),
+    body: JSON.stringify({
+      meta,
+      hideNewUploads,
+    }),
   });
 
   if (!uploadMetaResponse.ok) {
@@ -226,7 +246,7 @@ async function uploadPackage(
 
 async function fetch200(
   input: RequestInfo | URL,
-  init?: RequestInit
+  init?: RequestInit,
 ): Promise<Response> {
   const response = await fetch(input, init);
 

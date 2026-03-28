@@ -109,6 +109,17 @@ input:not([type]) {
   font-size: 14px;
 }
 
+input[type="checkbox"] {
+  height: 20px;
+  margin: 5px;
+  aspect-ratio: 1;
+}
+
+label {
+  white-space: nowrap;
+  user-select: none;
+}
+
 .table-list {
   width: fit-content;
   margin-left: 16px;

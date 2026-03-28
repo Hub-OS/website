@@ -10,7 +10,7 @@ import { MAX_NEW_DAILY_UPLOADS } from "@/util/limits";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method == "GET") {
     await handleGet(req, res);
@@ -25,7 +25,7 @@ export default async function handler(
 
 async function handleGet(
   req: NextApiRequest,
-  res: NextApiResponse<PackageMeta | undefined>
+  res: NextApiResponse<PackageMeta | undefined>,
 ) {
   const meta = await db.findPackageMeta(req.query.id as string);
 
@@ -39,7 +39,7 @@ async function handleGet(
 
 async function handlePost(
   req: NextApiRequest,
-  res: NextApiResponse<PackageMeta | string>
+  res: NextApiResponse<PackageMeta | string>,
 ) {
   const account = await getAccount(req, res);
 
@@ -63,7 +63,7 @@ async function handlePost(
 
   const matchingMetas = await db.findPackageMetas(ids);
   const permissionChecks = await Promise.all(
-    matchingMetas.map((meta) => hasEditPermission(db, meta, account.id))
+    matchingMetas.map((meta) => hasEditPermission(db, meta, account.id)),
   );
 
   if (permissionChecks.some((permitted) => !permitted)) {
@@ -73,7 +73,7 @@ async function handlePost(
   }
 
   const matchingIdExists = matchingMetas.some(
-    (m) => m.package.id == meta.package.id
+    (m) => m.package.id == meta.package.id,
   );
 
   if (!matchingIdExists) {
@@ -82,7 +82,7 @@ async function handlePost(
     // make sure we have namespace permission
     if (namespace) {
       const member = namespace.members.find((member) =>
-        db.compareIds(member.id, account.id)
+        db.compareIds(member.id, account.id),
       );
 
       if (!member || member.role == "invited") {
@@ -101,7 +101,7 @@ async function handlePost(
     const last24Hours = new Date(Date.now() - 60 * 60 * 1000 * 64);
     const uploadCount = await db.countPackageUploadsForUser(
       account.id,
-      last24Hours
+      last24Hours,
     );
 
     if (uploadCount > MAX_NEW_DAILY_UPLOADS) {
@@ -109,14 +109,15 @@ async function handlePost(
       return;
     }
 
+    console.log(typeof req.body.hideNewUploads);
     // new package, init
-    meta.hidden = false;
+    meta.hidden = req.body.hideNewUploads == true;
     meta.creator = account.id;
   }
 
   // enforcing uniqueness
   const nonMatchingMetas = matchingMetas.filter(
-    (m) => m.package.id != meta.package.id
+    (m) => m.package.id != meta.package.id,
   );
 
   if (nonMatchingMetas.length > 0) {

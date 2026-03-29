@@ -6,7 +6,7 @@ import { MAX_PREVIEW_SIZE, restrictUploadSize } from "@/util/limits";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method == "GET") {
     await handleGet(req, res);
@@ -64,7 +64,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  restrictUploadSize(req, res, MAX_PREVIEW_SIZE);
+  restrictUploadSize(req, res, "preview", MAX_PREVIEW_SIZE);
 
   try {
     await db.uploadPackagePreview(id, req);

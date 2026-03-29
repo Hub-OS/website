@@ -10,7 +10,8 @@ export const MAX_NEW_DAILY_UPLOADS = 150;
 export function restrictUploadSize(
   req: NextApiRequest,
   res: NextApiResponse,
-  limit: number
+  categoryName: string,
+  limit: number,
 ) {
   let size = 0;
 
@@ -18,7 +19,9 @@ export function restrictUploadSize(
     size += chunk.length;
 
     if (size > limit) {
-      res.status(400).send("Exceeded package size limit");
+      res
+        .status(400)
+        .send(`Exceeded ${categoryName} size limit (${limit / KiB}KiB)`);
       req.destroy();
     }
   });

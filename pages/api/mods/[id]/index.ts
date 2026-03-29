@@ -62,7 +62,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  restrictUploadSize(req, res, MAX_PACKAGE_SIZE);
+  restrictUploadSize(req, res, "zip", MAX_PACKAGE_SIZE);
 
   try {
     await db.uploadPackageZip(id, req);

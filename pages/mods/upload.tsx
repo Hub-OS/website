@@ -209,7 +209,14 @@ async function uploadPackage(
     });
   } catch (err) {
     console.error(err);
-    return Err("FAILED TO UPLOAD PACKAGE");
+
+    let message = "FAILED TO UPLOAD PACKAGE";
+
+    if (err instanceof Error) {
+      message += "\n" + trimResponseError(err.message);
+    }
+
+    return Err(message);
   }
 
   try {
@@ -231,14 +238,20 @@ async function uploadPackage(
     if (previewPath != undefined) {
       const bytes = read_file(zipBytes, previewPath);
 
-      await fetch(`/api/mods/${encodedId}/preview`, {
+      await fetch200(`/api/mods/${encodedId}/preview`, {
         method: "POST",
         headers: { "Content-Type": "application/octet-stream" },
         body: bytes,
       });
     }
-  } catch {
-    // ignore preview failure
+  } catch (err) {
+    console.error(err);
+
+    if (err instanceof Error) {
+      return Err(
+        "FAILED TO UPLOAD PREVIEW:\n" + trimResponseError(err.message),
+      );
+    }
   }
 
   return Ok(`/mods/${encodedId}`);
@@ -251,6 +264,8 @@ async function fetch200(
   const response = await fetch(input, init);
 
   if (!response.ok) {
+    // this error format is trimmed by readers when displaying to the user
+    // make sure to adjust trimError() when changing this
     let errorText = `"${input.toString()}" (${response.status})`;
     const responseText = await response.text();
 
@@ -262,4 +277,17 @@ async function fetch200(
   }
 
   return response;
+}
+
+function trimResponseError(message: string) {
+  // skip the URL + status
+  const separator = "): ";
+  const index = message.indexOf(separator);
+
+  if (index == -1) {
+    // return the error directly
+    return message;
+  }
+
+  return message.slice(index + separator.length);
 }

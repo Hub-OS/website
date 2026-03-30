@@ -109,7 +109,6 @@ async function handlePost(
       return;
     }
 
-    console.log(typeof req.body.hideNewUploads);
     // new package, init
     meta.hidden = req.body.hideNewUploads == true;
     meta.creator = account.id;

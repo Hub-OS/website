@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import init, { read_file, rezip_packages, hook_panics } from "zip-utils";
 import TOML from "@iarna/toml";
 import { PackageMeta, parsePackageMeta } from "@/util/package-meta";
-import * as z from "zod";
 import { Result, Ok, Err } from "@/util/result";
 import { requestVoid } from "@/util/request";
 import Head from "next/head";

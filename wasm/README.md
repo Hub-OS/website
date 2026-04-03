@@ -4,6 +4,6 @@ WASM module for parsing zips + rezipping to get a the zip with the signature as 
 
 Install [cargo-license](https://crates.io/crates/cargo-license) with `cargo install cargo-license`
 
-Install [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/)
+Install wasm-pack `cargo install wasm-pack`
 
 Run `wasm-pack build -t web` in the wasm folder and `npx linklocal` in the parent folder

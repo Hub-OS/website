@@ -23,9 +23,9 @@ type Props = {
 
 export default function ElementIcon({ element, className, style }: Props) {
   const offset =
-    element == undefined
-      ? 0
-      : elements.indexOf((element as string).toLowerCase()) + 1;
+    typeof element == "string"
+      ? elements.indexOf(element.toLowerCase()) + 1
+      : 0;
 
   return (
     <div

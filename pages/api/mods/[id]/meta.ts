@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import {
-  asPackageMeta,
+  parsePackageMeta,
   hasEditPermission,
   PackageMeta,
 } from "@/util/package-meta";
@@ -48,9 +48,16 @@ async function handlePost(
     return;
   }
 
-  const meta = asPackageMeta(req.body.meta);
+  const metaResult = parsePackageMeta(req.body.meta);
 
-  if (!meta || meta.package.id != req.query.id) {
+  if (metaResult.error) {
+    res.status(400).send("Invalid package meta");
+    return;
+  }
+
+  const meta = metaResult.data;
+
+  if (meta.package.id != req.query.id) {
     res.status(400).send("Invalid package ID");
     return;
   }

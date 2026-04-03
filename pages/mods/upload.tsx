@@ -2,7 +2,8 @@ import styles from "@/styles/Upload.module.css";
 import { useEffect, useState } from "react";
 import init, { read_file, rezip_packages, hook_panics } from "zip-utils";
 import TOML from "@iarna/toml";
-import { PackageMeta, asPackageMeta } from "@/util/package-meta";
+import { PackageMeta, parsePackageMeta } from "@/util/package-meta";
+import * as z from "zod";
 import { Result, Ok, Err } from "@/util/result";
 import { requestVoid } from "@/util/request";
 import Head from "next/head";
@@ -172,11 +173,25 @@ function resolvePackageMeta(zipBytes: Uint8Array): Result<PackageMeta, string> {
     return Err("MISSING CATEGORY");
   }
 
-  packageMeta = asPackageMeta(packageMeta);
+  const metaResult = parsePackageMeta(packageMeta);
 
-  if (!packageMeta) {
-    return Err("INVALID PACKAGE.TOML");
+  if (metaResult.error) {
+    const errorMessages = ["INVALID PACKAGE.TOML:"];
+
+    for (const issue of metaResult.error.issues) {
+      let message = issue.message;
+
+      if (issue.path.length > 0) {
+        message += " at " + issue.path.join(".");
+      }
+
+      errorMessages.push(message);
+    }
+
+    return Err(errorMessages.join("\n"));
   }
+
+  packageMeta = metaResult.data;
 
   return Ok(packageMeta);
 }

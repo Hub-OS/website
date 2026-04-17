@@ -28,6 +28,8 @@ const CREDITS_LIST: [string, string[]][] = [
     [
       "Astrayisso",
       "DeltaFiend",
+      "Entropy",
+      "GabyMogaX",
       "Jack",
       "KayThree",
       "Kyqurikan",

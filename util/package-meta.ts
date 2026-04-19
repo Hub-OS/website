@@ -106,6 +106,7 @@ const PackageMetaValidator = z.object({
       libraries: z.array(z.string()).optional(),
       statuses: z.array(z.string()).optional(),
       cards: z.array(z.string()).optional(),
+      tile_states: z.array(z.string()).optional(),
     })
     .optional(),
   // storage specific
@@ -118,16 +119,6 @@ const PackageMetaValidator = z.object({
 
 export type PackageMeta = z.infer<typeof PackageMetaValidator>;
 
-const dependencyListNames = [
-  "augments",
-  "encounters",
-  "characters",
-  "libraries",
-  "statuses",
-  "cards",
-  "tile_states",
-];
-
 export function parsePackageMeta(obj: any) {
   return PackageMetaValidator.safeParse(obj);
 }
@@ -137,11 +128,7 @@ export function hasDependencies(meta: PackageMeta) {
     return false;
   }
 
-  const dependencyListMap = meta.dependencies as { [key: string]: string[] };
-
-  for (const name of dependencyListNames) {
-    const list = dependencyListMap[name];
-
+  for (const list of Object.values(meta.dependencies)) {
     if (list?.length > 0) {
       return true;
     }
@@ -157,11 +144,7 @@ export function dependencies(meta: PackageMeta) {
     return dependencies;
   }
 
-  const dependencyListMap = meta.dependencies as { [key: string]: string[] };
-
-  for (const name of dependencyListNames) {
-    const list = dependencyListMap[name];
-
+  for (const list of Object.values(meta.dependencies)) {
     if (list) {
       dependencies.push(...list);
     }

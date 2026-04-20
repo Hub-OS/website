@@ -1,6 +1,7 @@
 import {
   dependencies,
   hasDependencies,
+  hasPreviewTexture,
   PackageMeta,
 } from "@/util/package-meta";
 import { useEffect, useState } from "react";
@@ -175,6 +176,13 @@ export default function ModPage({ meta, uploader, canEdit }: Props) {
           name="description"
           content={meta.package.long_description ?? meta.package.description}
         />
+        {/* Open Graph image */}
+        {hasPreviewTexture(meta) && (
+          <meta
+            property="og:image"
+            content={`/api/mods/${encodedId}/preview`}
+          />
+        )}
       </Head>
 
       <div className={styles.top_controls}>

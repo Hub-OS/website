@@ -149,7 +149,9 @@ export default function ModPage({ meta, uploader, canEdit }: Props) {
   // locale can only be handled on the client, as the server doesn't have this information
   useEffect(() => {
     setUpdatedDate(
-      meta ? new Date(meta.updated_date).toLocaleString() : undefined,
+      meta?.updated_date
+        ? new Date(meta.updated_date).toLocaleString()
+        : undefined,
     );
   }, [meta]);
 

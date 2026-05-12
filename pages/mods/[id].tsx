@@ -261,7 +261,7 @@ export default function ModPage({ meta, uploader, canEdit }: Props) {
             <ul>
               <li>
                 <a
-                  href={`/profile/${decodeURIComponent(uploader.id as string)}`}
+                  href={`/profile/${encodeURIComponent(uploader.id as string)}`}
                 >
                   {uploader.username}
                 </a>

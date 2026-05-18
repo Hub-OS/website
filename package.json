@@ -27,9 +27,9 @@
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mongodb": "^6.1.0",
-    "next": "16.2.1",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "next": "16.2.6",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
     "react-markdown": "10.1",
     "react-syntax-highlighter": "^15.5.0",
     "sharp": "0.34",
@@ -40,13 +40,13 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/lodash": "^4.14.191",
     "@types/node": "18.11.18",
-    "@types/react": "19.2.10",
+    "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@types/react-syntax-highlighter": "^15.5.11",
     "@wasm-tool/wasm-pack-plugin": "^1.6.0",
     "ava": "6.2",
     "eslint": "9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "16.2.6",
     "license-ripper": "^0.8",
     "tsimp": "^2.0.12",
     "typescript": "^5.0.4"
@@ -60,7 +60,7 @@
     ]
   },
   "overrides": {
-    "@types/react": "19.2.10",
+    "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3"
   }
 }

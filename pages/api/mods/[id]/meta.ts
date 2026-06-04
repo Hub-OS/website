@@ -126,7 +126,10 @@ async function handlePost(
     (m) => m.package.id != meta.package.id,
   );
 
-  if (nonMatchingMetas.length > 0) {
+  if (nonMatchingMetas.length == 1) {
+    const oldId = nonMatchingMetas[0].package.id;
+    await db.patchPackageMeta(oldId, { "package.id": meta.package.id });
+  } else if (nonMatchingMetas.length > 1) {
     await db.deletePackages(nonMatchingMetas.map((meta) => meta.package.id));
   }
 

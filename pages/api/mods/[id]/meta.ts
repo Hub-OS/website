@@ -112,7 +112,8 @@ async function handlePost(
     );
 
     if (uploadCount > MAX_NEW_DAILY_UPLOADS) {
-      res.status(400).send("message");
+      const message = `Exceeded daily new upload limit`;
+      res.status(400).send(message);
       return;
     }
 

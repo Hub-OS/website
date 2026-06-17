@@ -343,7 +343,7 @@ export default class Disk implements DB {
       queryTest(query, meta),
     );
 
-    if (sortMethod) {
+    if (sortMethod != null) {
       sortBy(relevantPackages, sortMethod);
     }
 

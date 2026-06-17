@@ -1,5 +1,4 @@
 import { PackageMeta } from "./package-meta";
-import _ from "lodash";
 
 export enum SortMethod {
   CreationDate,
@@ -23,13 +22,23 @@ export function fromString(s?: string | string[]): SortMethod {
 export function sortBy(packages: PackageMeta[], sortMethod: SortMethod) {
   switch (sortMethod) {
     case SortMethod.CreationDate:
-      _.sortBy(packages, (meta) => -meta.creation_date);
+      packages.sort((metaA, metaB) => {
+        return +metaB.creation_date! - +metaA.creation_date!;
+      });
       break;
     case SortMethod.RecentlyUpdated:
-      _.sortBy(packages, (meta) => -meta.updated_date);
+      packages.sort((metaA, metaB) => {
+        return +metaB.updated_date! - +metaA.updated_date!;
+      });
       break;
     case SortMethod.PackageId:
-      _.sortBy(packages, (meta) => meta.package.id);
+      packages.sort((metaA, metaB) => {
+        if (metaA.package.id < metaB.package.id) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
       break;
     // case SortMethod.Downloads:
     //   packages.sort((a, b) => b.downloads - a.downloads);

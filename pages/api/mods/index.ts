@@ -7,7 +7,7 @@ import { getAccount } from "../users/me";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method == "GET") {
     await handleGet(req, res);
@@ -18,7 +18,7 @@ export default async function handler(
 
 async function handleGet(
   req: NextApiRequest,
-  res: NextApiResponse<PackageMeta[] | undefined>
+  res: NextApiResponse<PackageMeta[] | undefined>,
 ) {
   let skip = Math.floor(+((req.query.skip as string) || 0));
 

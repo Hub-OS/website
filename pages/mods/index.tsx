@@ -82,7 +82,7 @@ export default function ModList({ uploader, mods, moreExist }: Props) {
   const [debouncedPushRoute] = useState(() =>
     _.debounce((href: string) => {
       router.push(href);
-    }, 300)
+    }, 300),
   );
 
   return (
@@ -238,7 +238,7 @@ export async function getServerSideProps(context: NextPageContext) {
 }
 
 async function requestMods(
-  context: NextPageContext
+  context: NextPageContext,
 ): Promise<Result<PackageMeta[], string>> {
   const page = +(context.query.page || 0);
   const skip = mods_per_page * page;

@@ -30,7 +30,7 @@ export interface DB {
 
   findExistingNamespaceConflict(
     accountId: unknown,
-    prefix: string
+    prefix: string,
   ): Promise<string | undefined>;
 
   findMemberOrInvitedNamespaces(accountId: unknown): Promise<Namespace[]>;
@@ -55,7 +55,7 @@ export interface DB {
     query: Query,
     sortMethod: SortMethod | null,
     skip: number,
-    count: number
+    count: number,
   ): Promise<PackageMeta[]>;
 
   getPackageHashes(ids: string[]): AsyncGenerator<PackageHashResult>;
@@ -66,11 +66,11 @@ export interface DB {
 
   uploadPackagePreview(
     id: string,
-    stream: NodeJS.ReadableStream
+    stream: NodeJS.ReadableStream,
   ): Promise<void>;
 
   downloadPackagePreview(
-    id: string
+    id: string,
   ): Promise<NodeJS.ReadableStream | undefined>;
 
   deletePackage(id: string): Promise<void>;

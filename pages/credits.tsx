@@ -32,6 +32,7 @@ const CREDITS_LIST: [string, string[]][] = [
       "GabyMogaX",
       "Jack",
       "KayThree",
+      "kiwami",
       "Kyqurikan",
       "PlayerZero",
       "Region Locking",

@@ -144,6 +144,7 @@ export default function ModPage({ meta, uploader, canEdit }: Props) {
   const [togglingHidden, setTogglingHidden] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [updatedDate, setUpdatedDate] = useState<string | undefined>(undefined);
+  const [uploadDate, setUploadDate] = useState<string | undefined>(undefined);
   const context = useAppContext();
   const router = useRouter();
 
@@ -152,6 +153,12 @@ export default function ModPage({ meta, uploader, canEdit }: Props) {
     setUpdatedDate(
       meta?.updated_date
         ? new Date(meta.updated_date).toLocaleString()
+        : undefined,
+    );
+
+    setUploadDate(
+      meta?.creation_date
+        ? new Date(meta.creation_date).toLocaleString()
         : undefined,
     );
   }, [meta]);
@@ -270,7 +277,16 @@ export default function ModPage({ meta, uploader, canEdit }: Props) {
           </div>
         )}
 
-        {uploader && (
+        {uploadDate != undefined && (
+          <div>
+            Upload Date:
+            <ul>
+              <li>{uploadDate}</li>
+            </ul>
+          </div>
+        )}
+
+        {updatedDate != undefined && (
           <div>
             Last Update:
             <ul>

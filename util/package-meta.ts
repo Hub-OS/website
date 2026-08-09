@@ -107,6 +107,7 @@ const PackageMetaValidator = z.object({
       statuses: z.array(z.string()).optional(),
       cards: z.array(z.string()).optional(),
       tile_states: z.array(z.string()).optional(),
+      players: z.array(z.string()).optional(),
     })
     .optional(),
   // storage specific

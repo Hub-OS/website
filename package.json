@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@bprogress/next": "^3.2.12",
-    "@iarna/toml": "3",
+    "toml": "5.0.0",
     "classnames": "^2.3.2",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "5",

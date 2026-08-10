@@ -1,7 +1,7 @@
 import styles from "@/styles/Upload.module.css";
 import { useEffect, useState } from "react";
 import init, { read_file, rezip_packages, hook_panics } from "zip-utils";
-import TOML from "@iarna/toml";
+import toml from "toml";
 import { PackageMeta, parsePackageMeta } from "@/util/package-meta";
 import { Result, Ok, Err } from "@/util/result";
 import { requestVoid } from "@/util/request";
@@ -155,7 +155,7 @@ function resolvePackageMeta(zipBytes: Uint8Array): Result<PackageMeta, string> {
   let packageMeta;
 
   try {
-    packageMeta = TOML.parse(text) as any;
+    packageMeta = toml.parse(text) as any;
   } catch (err) {
     return Err("INVALID PACKAGE.TOML");
   }
